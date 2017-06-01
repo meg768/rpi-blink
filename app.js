@@ -11,7 +11,7 @@ var App = function() {
 
 			args.usage('Usage: $0 <command> [options]')
 
-//			args.command(require('./src/commands/off.js'));
+			args.command(require('./src/commands/off.js'));
 			args.command(require('./src/commands/on.js'));
 
 			args.help();
