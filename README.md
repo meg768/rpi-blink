@@ -5,8 +5,8 @@
 
 ## Update
 
-$ sudo apt-get update
-$ sudo apt-get upgrade
+	$ sudo apt-get update
+	$ sudo apt-get upgrade
 
 ## Links
 http://www.sweclockers.com/forum/trad/1461722-ssh-till-raspberry-pi-fran-macbook-connection-refused
