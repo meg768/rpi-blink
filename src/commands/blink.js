@@ -60,7 +60,7 @@ module.exports.handler = function(args) {
 
 	}
 	catch(error) {
-		console.log(error.message);
+		console.log(error.stack);
 	}
 
 };
