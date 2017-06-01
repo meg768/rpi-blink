@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/meg768/rpi-blink/issues"
   },
-  "homepage": "https://github.com/meg768/rpi-blink#readme"
+  "homepage": "https://github.com/meg768/rpi-blink#readme",
+  "dependencies": {
+    "yargs": "^8.0.1"
+  }
 }

@@ -4,18 +4,39 @@ var Gpio = require('pigpio').Gpio;
 
 var led = new Gpio(17, {mode: Gpio.OUTPUT});
 
-console.log('rpi-blink');
-led.digitalWrite(1);
+var App = function() {
 
-/*
-var dutyCycle = 0;
 
-setInterval(function () {
-  led.pwmWrite(dutyCycle);
+	this.fileName = __filename;
 
-  dutyCycle += 5;
-  if (dutyCycle > 255) {
-    dutyCycle = 0;
-  }
-}, 20);
-*/
+	function run() {
+		try {
+			var args = require('yargs');
+
+			args.usage('Usage: $0 <command> [options]')
+
+			args.command(require('./src/commands/off.js'));
+			args.command(require('./src/commands/on.js'));
+
+			args.help();
+
+			args.check(function(argv) {
+				return true;
+			});
+
+			args.demand(1);
+
+			args.argv;
+
+		}
+		catch(error) {
+			console.log(error.stack);
+			process.exit(-1);
+		}
+
+	};
+
+	run();
+};
+
+module.exports = new App();
