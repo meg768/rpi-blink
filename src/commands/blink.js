@@ -32,6 +32,7 @@ module.exports.handler = function(args) {
 		var promise = Promise.resolve();
 		var onoff   = 0;
 
+		console.log(args.iterations);
 		for (var i = 0; i < args.iterations; i++) {
 			promise = promise.then(function() {
 				led.digitalWrite(onoff);
