@@ -13,6 +13,7 @@ var App = function() {
 
 			args.command(require('./src/commands/off.js'));
 			args.command(require('./src/commands/on.js'));
+			args.command(require('./src/commands/blink.js'));
 
 			args.help();
 
