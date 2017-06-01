@@ -21,11 +21,11 @@ module.exports.handler = function(args) {
 		setInterval(function () {
 		  led.pwmWrite(dutyCycle);
 
-		  dutyCycle += 5;
+		  dutyCycle += 1;
 		  if (dutyCycle > 255) {
 		    dutyCycle = 0;
 		  }
-		}, 20);
+	  }, 5);
 
 
 	}
