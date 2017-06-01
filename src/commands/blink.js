@@ -48,7 +48,7 @@ module.exports.handler = function(args) {
 		for (var i = 0; i < args.iterations; i++) {
 			promise = promise.then(function() {
 				console.log(i);
-				return onoff(i % 0, args.delay);
+				return onoff(i % 2, args.delay);
 			});
 		}
 
