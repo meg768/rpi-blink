@@ -32,7 +32,7 @@ module.exports.handler = function(args) {
 
 		led.digitalWrite(1);
 
-		delay(1000).then(function() {
+		delay(args.delay).then(function() {
 			led.digitalWrite(0);
 			return delay(args.delay);
 		})
