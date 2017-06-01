@@ -18,7 +18,6 @@ var Module = new function() {
 
 		try {
 			var Gpio = require('pigpio').Gpio;
-			console.log('Turning off!');
 			var led = new Gpio(args.pin, {mode: Gpio.OUTPUT});
 			led.digitalWrite(0);
 
