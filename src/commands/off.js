@@ -22,7 +22,7 @@ var Module = new function() {
 			var Gpio = require('pigpio').Gpio;
 			console.log('Turning on!');
 			var led = new Gpio(args.pin, {mode: Gpio.OUTPUT});
-			led.digitalWrite(1);
+			led.digitalWrite(0);
 
 		}
 		catch(error) {
