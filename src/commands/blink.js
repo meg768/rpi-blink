@@ -33,7 +33,7 @@ module.exports.handler = function(args) {
 
 		function onoff(mode, ms) {
 			return new Promise(function(resolve, reject) {
-				led.digitalWrite(onoff);
+				led.digitalWrite(mode);
 
 				delay(ms).then(function() {
 					resolve();
@@ -46,7 +46,7 @@ module.exports.handler = function(args) {
 
 		for (var i = 0; i < args.iterations; i++) {
 			promise = promise.then(function() {
-				return onoff(i % 0, args.delay);
+				return onoff(i % 0 == 0 ? 0 : 1, args.delay);
 			});
 		}
 
