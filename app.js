@@ -5,8 +5,9 @@ var Gpio = require('pigpio').Gpio;
 var led = new Gpio(17, {mode: Gpio.OUTPUT});
 
 console.log('rpi-blink');
+led.digitalWrite(1);
 
-
+/*
 var dutyCycle = 0;
 
 setInterval(function () {
@@ -17,3 +18,4 @@ setInterval(function () {
     dutyCycle = 0;
   }
 }, 20);
+*/
