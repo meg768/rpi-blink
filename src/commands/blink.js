@@ -5,8 +5,8 @@ module.exports.describe = 'Blink on the specified pin';
 
 module.exports.builder = function(args) {
 
-	args.option('delay', {alias: 'd', describe:'Delay', default: 500});
-	args.option('iterations', {alias: 'i', describe:'Iterations', default: 3});
+	args.option('delay', {alias: 'd', describe:'Delay', default: 250});
+	args.option('iterations', {alias: 'i', describe:'Iterations', default: 5});
 
 	args.wrap(null);
 
@@ -34,7 +34,6 @@ module.exports.handler = function(args) {
 
 		function onoff(ms) {
 			return new Promise(function(resolve, reject) {
-				console.log('writing', mode)
 				led.digitalWrite(0);
 
 				delay(ms).then(function() {
@@ -54,7 +53,6 @@ module.exports.handler = function(args) {
 
 		for (var i = 0; i < args.iterations; i++) {
 			promise = promise.then(function() {
-				console.log(i);
 				return onoff(args.delay);
 			});
 		}
