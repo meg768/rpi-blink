@@ -30,13 +30,15 @@ module.exports.handler = function(args) {
 		var Gpio    = require('pigpio').Gpio;
 		var led     = new Gpio(args.pin, {mode: Gpio.OUTPUT});
 		var promise = Promise.resolve();
+		var mode    = 0;
 
-		function onoff(mode, ms) {
+		function onoff(ms) {
 			return new Promise(function(resolve, reject) {
 				console.log('writing', mode)
 				led.digitalWrite(mode ? 1 : 0);
 
 				delay(ms).then(function() {
+					mode = !mode;
 					resolve();
 				});
 			});
@@ -48,7 +50,7 @@ module.exports.handler = function(args) {
 		for (var i = 0; i < args.iterations; i++) {
 			promise = promise.then(function() {
 				console.log(i);
-				return onoff(i % 2, args.delay);
+				return onoff(args.delay);
 			});
 		}
 
