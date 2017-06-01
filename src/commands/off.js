@@ -3,8 +3,6 @@ var Module = new function() {
 
 	function defineArgs(args) {
 
-		args.option('pin', {alias: 'p', describe:'Pin number'});
-
 		args.wrap(null);
 
 		args.check(function(argv) {
@@ -31,7 +29,7 @@ var Module = new function() {
 		}
 	}
 
-	module.exports.command  = 'off';
+	module.exports.command  = 'off <pin>';
 	module.exports.describe = 'Turn off the specified pin';
 	module.exports.builder  = defineArgs;
 	module.exports.handler  = run;
