@@ -54,7 +54,7 @@ module.exports.handler = function(args) {
 			console.log('Finished.');
 		})
 		.catch(function(error) {
-			console.error(error.message);
+			console.error(error.stack);
 
 		});
 
