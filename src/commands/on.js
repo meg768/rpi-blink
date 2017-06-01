@@ -30,7 +30,7 @@ var Module = new function() {
 		}
 	}
 
-	module.exports.command  = 'on <pin>';
+	module.exports.command  = 'on';
 	module.exports.describe = 'Turn on the specified pin';
 	module.exports.builder  = defineArgs;
 	module.exports.handler  = run;

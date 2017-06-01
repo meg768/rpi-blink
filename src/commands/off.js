@@ -31,7 +31,7 @@ var Module = new function() {
 		}
 	}
 
-	module.exports.command  = 'off <pin>';
+	module.exports.command  = 'off';
 	module.exports.describe = 'Turn off the specified pin';
 	module.exports.builder  = defineArgs;
 	module.exports.handler  = run;
