@@ -20,7 +20,7 @@ var Module = new function() {
 
 		try {
 			var Gpio = require('pigpio').Gpio;
-			console.log('Turning on!');
+			console.log('Turning off!');
 			var led = new Gpio(args.pin, {mode: Gpio.OUTPUT});
 			led.digitalWrite(0);
 
@@ -30,8 +30,8 @@ var Module = new function() {
 		}
 	}
 
-	module.exports.command  = 'on <pin>';
-	module.exports.describe = 'Turn on the specified pin';
+	module.exports.command  = 'off <pin>';
+	module.exports.describe = 'Turn off the specified pin';
 	module.exports.builder  = defineArgs;
 	module.exports.handler  = run;
 
