@@ -30,17 +30,21 @@ module.exports.handler = function(args) {
 		var Gpio    = require('pigpio').Gpio;
 		var led     = new Gpio(args.pin, {mode: Gpio.OUTPUT});
 		var promise = Promise.resolve();
-		var mode    = 0;
+		var mode    = false;
 
 		function onoff(ms) {
 			return new Promise(function(resolve, reject) {
 				console.log('writing', mode)
-				led.digitalWrite(mode ? 1 : 0);
+				led.digitalWrite(0);
 
 				delay(ms).then(function() {
-					mode = !mode;
-					resolve();
-				});
+					led.digitalWrite(1);
+				})
+				.then(function() {
+					led.digitalWrite(0);
+
+				})
+				.then(resolve);
 			});
 
 		}
