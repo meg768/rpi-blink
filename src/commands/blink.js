@@ -32,12 +32,16 @@ module.exports.handler = function(args) {
 		var promise = Promise.resolve();
 		var onoff   = 0;
 
+		led.digitalWrite(0);
+
 		console.log(args.iterations);
 		for (var i = 0; i < args.iterations; i++) {
 			promise = promise.then(function() {
-				led.digitalWrite(onoff);
-				onoff = !onoff;
-				return delay(args.delay);
+				led.digitalWrite(1);
+
+				return delay(args.delay).then(function() {
+					led.digitalWrite(0);
+				});
 			});
 		}
 
