@@ -15,7 +15,7 @@ module.exports.builder = function(args) {
 module.exports.handler = function(args) {
 	try {
 		var Gpio = require('pigpio').Gpio;
-		var led = new Gpio(args.pin, {mode: Gpio.OUTPUT}),
+		var led = new Gpio(args.pin, {mode: Gpio.OUTPUT});
 		var dutyCycle = 0;
 
 		setInterval(function () {
