@@ -1,11 +1,9 @@
 
-module.exports.command  = 'on';
+module.exports.command  = 'on <pin>';
 module.exports.describe = 'Turn on the specified pin';
 
 
 module.exports.builder = function(args) {
-
-	args.option('pin', {alias: 'p', describe:'Pin number'});
 
 	args.wrap(null);
 
