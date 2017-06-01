@@ -5,7 +5,7 @@ module.exports.describe = 'Blink on the specified pin';
 
 module.exports.builder = function(args) {
 
-//	args.option('pin', {alias: 'p', describe:'Pin number'});
+	args.option('delay', {alias: 'd', describe:'Delay', default: 100});
 
 	args.wrap(null);
 
@@ -34,11 +34,11 @@ module.exports.handler = function(args) {
 
 		delay(1000).then(function() {
 			led.digitalWrite(0);
-			return delay(1000);
+			return delay(args.delay);
 		})
 		.then(function() {
 			led.digitalWrite(1);
-			return delay(1000);
+			return delay(args.delay);
 		})
 		.then(function() {
 			led.digitalWrite(0);
