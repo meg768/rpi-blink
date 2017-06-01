@@ -3,8 +3,6 @@
 var App = function() {
 
 
-	this.fileName = __filename;
-
 	function run() {
 		try {
 			var args = require('yargs');
