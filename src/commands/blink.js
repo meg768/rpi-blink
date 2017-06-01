@@ -33,6 +33,7 @@ module.exports.handler = function(args) {
 
 		function onoff(mode, ms) {
 			return new Promise(function(resolve, reject) {
+				console.log('writing', mode)
 				led.digitalWrite(mode ? 1 : 0);
 
 				delay(ms).then(function() {
