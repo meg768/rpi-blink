@@ -19,7 +19,7 @@ module.exports.builder = function(args) {
 };
 
 
-module.exports.handler = new function() {
+module.exports.handler = function() {
 	try {
 		var Gpio = require('pigpio').Gpio;
 		console.log('Turning on!');
