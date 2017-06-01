@@ -18,6 +18,7 @@ var Module = new function() {
 
 	function run(args) {
 
+		console.log('sdfdfdfsdfg');
 		try {
 			var Gpio = require('pigpio').Gpio;
 			console.log('Turning off!');
