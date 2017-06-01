@@ -37,7 +37,7 @@ module.exports.handler = function(args) {
 
 				delay(ms).then(function() {
 					resolve();
-				};
+				});
 			});
 
 		}
