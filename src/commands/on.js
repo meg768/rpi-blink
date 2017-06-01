@@ -1,4 +1,3 @@
-var Gpio = require('pigpio').Gpio;
 
 var Module = new function() {
 
@@ -8,13 +7,21 @@ var Module = new function() {
 
 		args.wrap(null);
 
+		args.check(function(argv) {
+			if (argv.pin <= 0)
+				throw new Error('Invalid pin number');
+
+			return true;
+		});
+
 	}
 
-	function run(argv) {
+	function run(args) {
 
 		try {
+			var Gpio = require('pigpio').Gpio;
 			console.log('dfg');
-			var led = new Gpio(argv.pin, {mode: Gpio.OUTPUT});
+			var led = new Gpio(args.pin, {mode: Gpio.OUTPUT});
 			led.digitalWrite(1);
 
 		}

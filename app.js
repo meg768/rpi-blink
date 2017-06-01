@@ -1,9 +1,5 @@
 #!/usr/bin/env node
 
-var Gpio = require('pigpio').Gpio;
-
-var led = new Gpio(17, {mode: Gpio.OUTPUT});
-
 var App = function() {
 
 
@@ -15,7 +11,7 @@ var App = function() {
 
 			args.usage('Usage: $0 <command> [options]')
 
-			args.command(require('./src/commands/off.js'));
+//			args.command(require('./src/commands/off.js'));
 			args.command(require('./src/commands/on.js'));
 
 			args.help();
