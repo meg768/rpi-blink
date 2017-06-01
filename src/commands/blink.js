@@ -39,15 +39,12 @@ module.exports.handler = function(args) {
 
 				delay(ms).then(function() {
 					led.digitalWrite(1);
-					return Promise.resolve();
+					return delay(ms);
 				})
 				.then(function() {
 					led.digitalWrite(0);
-					return Promise.resolve();
-
-				})
-				.then(function() {
 					resolve();
+
 				});
 			});
 
