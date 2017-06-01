@@ -8,7 +8,7 @@ var Module = new function() {
 		args.wrap(null);
 
 		args.check(function(argv) {
-			if (argv.pin <= 0)
+			if (argv.pin <= 0 || argv.pin == undefined)
 				throw new Error('Invalid pin number');
 
 			return true;
