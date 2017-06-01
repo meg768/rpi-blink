@@ -1,5 +1,5 @@
 
-module.exports.command  = 'on <pin>';
+module.exports.command  = 'blink <pin>';
 module.exports.describe = 'Blink on the specified pin';
 
 
