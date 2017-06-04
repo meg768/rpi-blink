@@ -6,8 +6,7 @@ module.exports.describe = 'Test Wiring Pi';
 
 module.exports.builder = function(args) {
 
-	args.option('mode', {alias: 'm', describe:'Mode', default: 0});
-	args.option('color', {alias: 'c', describe:'command', default: 0});
+	args.option('mode', {alias: 'm', describe:'Mode', default: 27});
 	args.option('red', {alias: 'r', describe:'red', default: 255});
 	args.option('green', {alias: 'g', describe:'green', default: 255});
 	args.option('blue', {alias: 'b', describe:'blue', default: 255});
@@ -27,7 +26,7 @@ module.exports.handler = function(args) {
 
 		var colors = [parseInt(args.red), parseInt(args.green), parseInt(args.blue)];
 		console.log(colors);
-		wire.writeBytes(27, colors, function(error) {
+		wire.writeBytes(parseInt(args.mode), colors, function(error) {
 			if (error)
 				console.log(error);
 		});
