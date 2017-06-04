@@ -18,6 +18,7 @@
   "homepage": "https://github.com/meg768/rpi-blink#readme",
   "dependencies": {
     "yargs": "^8.0.1",
-	"pigpio": "*"
+	"pigpio": "*",
+	"wiring-pi": "*"
   }
 }
