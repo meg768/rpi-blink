@@ -18,9 +18,14 @@ module.exports.handler = function(args) {
 
 	try {
 
-		var id = wpi.wiringPiI2CSetup(0x26);
-		wpi.wiringPiI2CWriteReg8(id, args.mode);
-		wpi.wiringPiI2CClose(id);
+		var i2c = require('i2c');
+		var wire = new i2c(0x26, {device: '/dev/i2c-1'}); // point to your i2c address, debug provides REPL interface
+
+		wire.writeByte(parseInt(args.mode), function(error) {
+			if (error)
+				console.log(error);
+		});
+
 
 	}
 	catch(error) {
