@@ -9,8 +9,8 @@ module.exports.builder = function(args) {
 	args.option('mode', {alias: 'm', describe:'Mode', default: 0});
 	args.option('color', {alias: 'c', describe:'command', default: 0});
 	args.option('red', {alias: 'r', describe:'red', default: 255});
-	args.option('green', {alias: 'g', describe:'green', default: 0});
-	args.option('blue', {alias: 'b', describe:'blue', default: 0});
+	args.option('green', {alias: 'g', describe:'green', default: 255});
+	args.option('blue', {alias: 'b', describe:'blue', default: 255});
 
 	args.wrap(null);
 
