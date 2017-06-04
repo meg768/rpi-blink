@@ -25,7 +25,9 @@ module.exports.handler = function(args) {
 		var I2C = require('i2c');
 		var wire = new I2C(0x26, {device: '/dev/i2c-1'}); // point to your i2c address, debug provides REPL interface
 
-		wire.writeBytes(27, [parseInt(args.red), parseInt(args.green), parseInt(args.blue)], function(error) {
+		var colors = [parseInt(args.red), parseInt(args.green), parseInt(args.blue)];
+
+		wire.writeBytes(27, colors, function(error) {
 			if (error)
 				console.log(error);
 		});
