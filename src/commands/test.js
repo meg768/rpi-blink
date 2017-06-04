@@ -25,12 +25,13 @@ module.exports.handler = function(args) {
 		var I2C = require('i2c');
 		var wire = new I2C(0x26, {device: '/dev/i2c-1'}); // point to your i2c address, debug provides REPL interface
 
-		wire.write([parseInt(27), parseInt(args.red), parseInt(args.green), parseInt(args.blue)], function(error) {
+		wire.write([27, parseInt(args.red), parseInt(args.green), parseInt(args.blue)], function(error) {
 			if (error)
 				console.log(error);
 		});
 
 		wire.on('data', function(data) {
+			console.log(data);
 		  // result for continuous stream contains data buffer, address, length, timestamp
 		});
 
