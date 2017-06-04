@@ -7,7 +7,10 @@ module.exports.describe = 'Test Wiring Pi';
 module.exports.builder = function(args) {
 
 	args.option('mode', {alias: 'm', describe:'Mode', default: 0});
-	args.option('command', {alias: 'c', describe:'command', default: 0});
+	args.option('color', {alias: 'c', describe:'command', default: 0});
+	args.option('red', {alias: 'r', describe:'red', default: 255});
+	args.option('green', {alias: 'g', describe:'green', default: 0});
+	args.option('blue', {alias: 'b', describe:'blue', default: 0});
 
 	args.wrap(null);
 
@@ -19,10 +22,10 @@ module.exports.handler = function(args) {
 
 	try {
 
-		var i2c = require('i2c');
-		var wire = new i2c(0x26, {device: '/dev/i2c-1'}); // point to your i2c address, debug provides REPL interface
+		var I2C = require('i2c');
+		var wire = new I2C(0x26, {device: '/dev/i2c-1'}); // point to your i2c address, debug provides REPL interface
 
-		wire.writeBytes(parseInt(args.command), [2, 4], function(error) {
+		wire.write([parseInt(27), parseInt(args.red), parseInt(args.green), parseInt(args.blue)], function(error) {
 			if (error)
 				console.log(error);
 		});
