@@ -1,4 +1,3 @@
-var wpi = require('wiring-pi');
 
 module.exports.command  = 'test';
 module.exports.describe = 'Test Wiring Pi';
