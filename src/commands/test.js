@@ -25,7 +25,7 @@ module.exports.handler = function(args) {
 
 		var colors = [parseInt(args.red), parseInt(args.green), parseInt(args.blue)];
 		console.log(colors);
-		wire.writeBytes(parseInt(args.mode), colors, function(error) {
+		wire.writeBytes(parseInt(args.command), colors, function(error) {
 			if (error)
 				console.log(error);
 		});
