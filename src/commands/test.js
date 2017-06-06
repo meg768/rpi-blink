@@ -46,6 +46,8 @@ module.exports.handler = function(args) {
 		  // result for continuous stream contains data buffer, address, length, timestamp
 		});
 
+		setTimeout(function(){}, 10000);
+
 
 	}
 	catch(error) {
