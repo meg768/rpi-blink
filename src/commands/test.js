@@ -16,6 +16,7 @@ function NeopixelStrip(options) {
 	}
 
 	_this.setColor = function(red, green, blue) {
+		console.log('setColor', [red, green, blue]);
 		return _this.write(_wire, 0x10, [red, green, blue]);
 	}
 
