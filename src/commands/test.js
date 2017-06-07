@@ -16,26 +16,37 @@ function NeopixelStrip(options) {
 	}
 
 	_this.setColor = function(red, green, blue) {
-		console.log('setColor', [red, green, blue]);
-		return _this.write(_wire, 0x10, [red, green, blue]);
+		red   = parseInt(red);
+		green = parseInt(green);
+		blue  = parseInt(blue);
+
+		return _this.write(0x10, [red, green, blue]);
 	}
 
 	_this.fadeToColor = function(red, green, blue, steps) {
+		red   = parseInt(red);
+		green = parseInt(green);
+		blue  = parseInt(blue);
+
 		if (steps == undefined)
 			steps = 10;
 
-		return _this.write(_wire, 0x13, [red, green, blue, steps]);
+		return _this.write(0x13, [red, green, blue, steps]);
 	}
 
 	_this.colorWipe = function(red, green, blue, delay) {
+		red   = parseInt(red);
+		green = parseInt(green);
+		blue  = parseInt(blue);
+
 		if (delay == undefined)
 			delay = 100;
 
-		return _this.write(_wire, 0x11, [red, green, blue, delay]);
+		return _this.write(0x11, [red, green, blue, delay]);
 	}
 
 	_this.setStripLength = function(length) {
-		return _this.write(_wire, 0x12, [length]);
+		return _this.write(0x12, [length]);
 	}
 
 	_this.write = function(command, params) {
