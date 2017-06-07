@@ -41,6 +41,11 @@ function write(wire, command, params) {
 
 }
 
+function pause(ms) {
+	return new Promise(function(resolve, reject) {
+		setTimeout(resolve, ms);
+	});
+}
 
 module.exports.handler = function(args) {
 
@@ -61,7 +66,19 @@ module.exports.handler = function(args) {
 			params = [parseInt(args.red), parseInt(args.green), parseInt(args.blue), parseInt(args.wait)];
 		}
 
-		write(wire, 0x11, [128, 0, 0, 255]).then(function() {
+		Promise.resolve().then(function() {
+			return write(wire, 0x10, [0, 0, 0]);
+		})
+		.then(function() {
+			return pause(1000);
+		})
+		.then(function() {
+			return write(wire, 0x10, [128, 128, 128]);
+		})
+		.then(function() {
+			return write(wire, 0x11, [0, 0, 128, 255]);
+		})
+		.then(function() {
 			return write(wire, 0x11, [0, 128, 0, 255]);
 		})
 		.then(function(result) {
