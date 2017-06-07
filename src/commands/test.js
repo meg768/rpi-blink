@@ -28,7 +28,7 @@ function read(wire) {
 	});
 }
 
-function write(wire, command, args) {
+function write(wire, command, params) {
 	return new Promise(function(resolve, reject) {
 		wire.writeBytes(parseInt(command), params, function(error) {
 			if (error)
