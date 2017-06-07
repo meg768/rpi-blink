@@ -134,13 +134,19 @@ module.exports.handler = function(args) {
 
 	try {
 
-		var strip = new NeopixelStrip({device:'/dev/i2c-1', length:4})
+		var strip = new NeopixelStrip({device:'/dev/i2c-1', length:8})
 
 		var promise = Promise.resolve();
 
 		promise.then(function() {
 			return strip.setColor(255, 0, 0);
 
+		})
+		.then(function() {
+			return strip.pause(1000);
+		})
+		.then(function() {
+			return strip.fadeToColor(0, 0, 255);
 		})
 		/*
 
