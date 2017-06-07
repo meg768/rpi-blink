@@ -61,9 +61,9 @@ module.exports.handler = function(args) {
 			params = [parseInt(args.red), parseInt(args.green), parseInt(args.blue), parseInt(args.wait)];
 		}
 
-		write(command, params).then() {
+		write(wire, command, params).then(function() {
 			return read(wire);
-		}
+		})
 		.then(function(result) {
 			console.log(result);
 		})
