@@ -31,7 +31,7 @@ function NeopixelStrip(options) {
 		if (steps == undefined)
 			steps = 10;
 
-		return _this.write(0x13, [red, green, blue, steps]);
+		return _this.write(0x13, [red, green, blue, 10]);
 	}
 
 	_this.colorWipe = function(red, green, blue, delay) {
