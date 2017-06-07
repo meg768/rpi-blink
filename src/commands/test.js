@@ -73,7 +73,7 @@ module.exports.handler = function(args) {
 			return pause(1000);
 		})
 		.then(function() {
-			return write(wire, 0x10, [128, 128, 128]);
+			return write(wire, 0x10, [128, 0, 0]);
 		})
 		.then(function() {
 			return write(wire, 0x11, [0, 0, 128, 255]);
@@ -81,8 +81,26 @@ module.exports.handler = function(args) {
 		.then(function() {
 			return write(wire, 0x11, [0, 128, 0, 255]);
 		})
+		.then(function() {
+			return write(wire, 0x11, [128, 0, 0, 255]);
+		})
+		.then(function() {
+			return pause(1000);
+		})
+		.then(function() {
+			return write(wire, 0x10, [128, 128, 128]);
+		})
+		.then(function() {
+			return pause(1000);
+		})
+		.then(function() {
+			return write(wire, 0x10, [0, 0, 0]);
+		})
 		.then(function(result) {
 			console.log('OK');
+		})
+		.then(function() {
+			return write(wire, 0x10, [128, 128, 128]);
 		})
 		.catch(function(error) {
 			console.log(error);
