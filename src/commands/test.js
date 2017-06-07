@@ -24,8 +24,8 @@ function NeopixelStrip(options) {
 		return this.write(_wire, 0x11, [red, green, blue, delay]);
 	}
 
-	this.setStripLength = function(size) {
-		return this.write(_wire, 0x12, [size]);
+	this.setStripLength = function(length) {
+		return this.write(_wire, 0x12, [length]);
 	}
 
 	this.write = function(command, params) {
@@ -53,8 +53,10 @@ function NeopixelStrip(options) {
 
 		_wire = new I2C(options.address, {device: options.device});
 
-		if (options.length != undefined)
+		if (options.length != undefined) {
+			console.log(this.setStripLength);
 			this.setStripLength(options.length);
+		}
 
 	}
 
