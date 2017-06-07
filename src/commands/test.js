@@ -67,6 +67,9 @@ module.exports.handler = function(args) {
 		}
 
 		Promise.resolve().then(function() {
+			return write(wire, 0x12, [4]);
+		})
+		.then(function() {
 			return write(wire, 0x10, [0, 0, 0]);
 		})
 		.then(function() {
