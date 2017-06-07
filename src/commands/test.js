@@ -8,36 +8,36 @@ function NeopixelStrip(options) {
 	var _this = this;
 	var _wire = undefined;
 
-	this.pause = function(ms) {
+	_this.pause = function(ms) {
 
 		return new Promise(function(resolve, reject) {
 			setTimeout(resolve, ms);
 		});
 	}
 
-	this.setColor = function(red, green, blue) {
-		return this.write(_wire, 0x10, [red, green, blue]);
+	_this.setColor = function(red, green, blue) {
+		return _this.write(_wire, 0x10, [red, green, blue]);
 	}
 
-	this.fadeToColor = function(red, green, blue, steps) {
+	_this.fadeToColor = function(red, green, blue, steps) {
 		if (steps == undefined)
 			steps = 10;
 
-		return this.write(_wire, 0x13, [red, green, blue, steps]);
+		return _this.write(_wire, 0x13, [red, green, blue, steps]);
 	}
 
-	this.colorWipe = function(red, green, blue, delay) {
+	_this.colorWipe = function(red, green, blue, delay) {
 		if (delay == undefined)
 			delay = 100;
 
-		return this.write(_wire, 0x11, [red, green, blue, delay]);
+		return _this.write(_wire, 0x11, [red, green, blue, delay]);
 	}
 
-	this.setStripLength = function(length) {
-		return this.write(_wire, 0x12, [length]);
+	_this.setStripLength = function(length) {
+		return _this.write(_wire, 0x12, [length]);
 	}
 
-	this.write = function(command, params) {
+	_this.write = function(command, params) {
 		return new Promise(function(resolve, reject) {
 			_wire.writeBytes(parseInt(command), params, function(error) {
 				if (error)
@@ -124,8 +124,16 @@ module.exports.handler = function(args) {
 
 		var strip = new NeopixelStrip({device:'/dev/i2c-1', length:4})
 
+		var promise = Promise.resolve();
+
+		promise.then(function() {
+			return strip.setColor(255, 0, 0);
+
+		})
+		/*
+
 		Promise.resolve().then(function() {
-			return strip.setStripLength(4);
+			return strip.setStripLength(8);
 		})
 		.then(function() {
 			return strip.setColor(0, 0, 0);
@@ -145,7 +153,7 @@ module.exports.handler = function(args) {
 		.then(function() {
 			return strip.pause(1000);
 		})
-
+*/
 		.then(function(result) {
 			console.log('OK');
 		})
