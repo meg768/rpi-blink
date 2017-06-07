@@ -65,7 +65,7 @@ module.exports.handler = function(args) {
 			return write(wire, 0x11, [0, 128, 0, 255]);
 		})
 		.then(function(result) {
-			console.log(result);
+			console.log('OK');
 		})
 		.catch(function(error) {
 			console.log(error);
