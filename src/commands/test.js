@@ -30,18 +30,13 @@ function read(wire) {
 
 function write(wire, command, params) {
 	return new Promise(function(resolve, reject) {
-		try {
-			wire.writeBytes(parseInt(command), params, function(error) {
-				if (error)
-					reject(error);
-				else
-					resolve();
-			});
+		wire.writeBytes(parseInt(command), params, function(error) {
+			if (error)
+				reject(error);
+			else
+				resolve();
+		});
 
-		}
-		catch(error) {
-			reject(error);
-		}
 
 	});
 
