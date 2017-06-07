@@ -20,7 +20,7 @@ function NeopixelStrip(options) {
 	this.colorWipe = function(red, green, blue, delay) {
 		if (delay == undefined)
 			delay = 100;
-			
+
 		return this.write(_wire, 0x11, [red, green, blue, delay]);
 	}
 
