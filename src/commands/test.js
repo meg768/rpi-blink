@@ -124,7 +124,7 @@ module.exports.handler = function(args) {
 			console.log('OK');
 		})
 		.catch(function(error) {
-			console.log(error);
+			console.log(error.message);
 		});
 
 
