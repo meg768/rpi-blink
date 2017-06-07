@@ -5,6 +5,7 @@ module.exports.describe = 'Test Wiring Pi';
 
 function NeopixelStrip(options) {
 
+	var _this = this;
 	var _wire = undefined;
 
 	this.pause = function(ms) {
@@ -55,7 +56,7 @@ function NeopixelStrip(options) {
 
 		if (options.length != undefined) {
 			console.log(this.setStripLength);
-			this.setStripLength(options.length);
+			_this.setStripLength(options.length);
 		}
 
 	}
