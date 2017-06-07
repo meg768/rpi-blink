@@ -18,7 +18,7 @@ module.exports.builder = function(args) {
 
 function read(wire) {
 	return new Promise(function(resolve, reject) {
-		wire.read(length, function(error, result) {
+		wire.read(1, function(error, result) {
 			if (error)
 				reject(error);
 			else
