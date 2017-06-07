@@ -14,18 +14,18 @@ function NeopixelStrip(options) {
 	}
 
 	this.setColor = function(red, green, blue) {
-		return write(wire, 0x10, [red, green, blue]);
+		return this.write(_wire, 0x10, [red, green, blue]);
 	}
 
-	this.colorWipe(red, green, blue, delay) {
-		return write(wire, 0x11, [red, green, blue, delay]);
+	this.colorWipe = function(red, green, blue, delay) {
+		return this.write(_wire, 0x11, [red, green, blue, delay]);
 	}
 
-	this.setStripLength(size) {
-		return write(wire, 0x12, [size]);
+	this.setStripLength = function(size) {
+		return this.write(_wire, 0x12, [size]);
 	}
 
-	function write(command, params) {
+	this.write = function(command, params) {
 		return new Promise(function(resolve, reject) {
 			_wire.writeBytes(parseInt(command), params, function(error) {
 				if (error)
@@ -120,7 +120,7 @@ module.exports.handler = function(args) {
 		}
 
 		Promise.resolve().then(function() {
-			return strip.setStripLength(wire, 0x12, [4]);
+			return strip.setStripLength(4);
 		})
 		.then(function() {
 			return strip.setColor(0, 0, 0);
@@ -181,7 +181,7 @@ module.exports.handler = function(args) {
 			console.log('OK');
 		})
 		.catch(function(error) {
-			console.log(error.message);
+			console.log(error);
 		});
 
 
