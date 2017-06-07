@@ -9,6 +9,7 @@ function NeopixelStrip(options) {
 	var _wire = undefined;
 
 	this.pause = function(ms) {
+
 		return new Promise(function(resolve, reject) {
 			setTimeout(resolve, ms);
 		});
@@ -16,6 +17,13 @@ function NeopixelStrip(options) {
 
 	this.setColor = function(red, green, blue) {
 		return this.write(_wire, 0x10, [red, green, blue]);
+	}
+
+	this.fadeToColor = function(red, green, blue, steps) {
+		if (steps == undefined)
+			steps = 10;
+
+		return this.write(_wire, 0x13, [red, green, blue, steps]);
 	}
 
 	this.colorWipe = function(red, green, blue, delay) {
@@ -55,7 +63,6 @@ function NeopixelStrip(options) {
 		_wire = new I2C(options.address, {device: options.device});
 
 		if (options.length != undefined) {
-			console.log(this.setStripLength);
 			_this.setStripLength(options.length);
 		}
 
@@ -117,15 +124,6 @@ module.exports.handler = function(args) {
 
 		var strip = new NeopixelStrip({device:'/dev/i2c-1', length:4})
 
-		if (args.command == 'color') {
-			command = 0x10;
-			params = [parseInt(args.red), parseInt(args.green), parseInt(args.blue)];
-		}
-		if (args.command == 'wipe') {
-			command = 0x11;
-			params = [parseInt(args.red), parseInt(args.green), parseInt(args.blue), parseInt(args.wait)];
-		}
-
 		Promise.resolve().then(function() {
 			return strip.setStripLength(4);
 		})
@@ -136,54 +134,18 @@ module.exports.handler = function(args) {
 			return strip.pause(500);
 		})
 		.then(function() {
-			return strip.setColor(128, 128, 128);
+			return strip.setColor(255, 0, 0);
 		})
 		.then(function() {
-			return strip.pause(500);
+			return strip.pause(1000);
 		})
 		.then(function() {
-			return strip.setColor(0, 0, 0);
+			return strip.fadeToColor(0, 255, 0);
 		})
 		.then(function() {
-			return strip.pause(500);
-		})
-		.then(function() {
-			return strip.setColor(128, 0, 0);
-		})
-		.then(function() {
-			return pause(500);
-		})
-		.then(function() {
-			return strip.setColor(0, 128, 0);
-		})
-		.then(function() {
-			return pause(500);
-		})
-		.then(function() {
-			return strip.setColor(0, 0, 128);
-		})
-		.then(function() {
-			return pause(500);
+			return strip.pause(1000);
 		})
 
-		.then(function() {
-			return strip.colorWipe(128, 0, 0);
-		})
-		.then(function() {
-			return pause(500);
-		})
-		.then(function() {
-			return strip.colorWipe(0, 128, 0);
-		})
-		.then(function() {
-			return pause(500);
-		})
-		.then(function() {
-			return strip.colorWipe(0, 0, 128);
-		})
-		.then(function() {
-			return pause(500);
-		})
 		.then(function(result) {
 			console.log('OK');
 		})
