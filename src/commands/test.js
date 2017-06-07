@@ -16,6 +16,31 @@ module.exports.builder = function(args) {
 
 };
 
+function read(wire) {
+	return new Promise(function(resolve, reject) {
+		wire.read(length, function(error, result) {
+			if (error)
+				reject(error);
+			else
+				resolve(result);
+		});
+
+	});
+}
+
+function write(wire, command, args) {
+	return new Promise(function(resolve, reject) {
+		wire.writeBytes(parseInt(command), params, function(error) {
+			if (error)
+				reject(error);
+			else
+				resolve();
+		});
+
+	});
+
+}
+
 
 module.exports.handler = function(args) {
 
@@ -36,17 +61,15 @@ module.exports.handler = function(args) {
 			params = [parseInt(args.red), parseInt(args.green), parseInt(args.blue), parseInt(args.wait)];
 		}
 
-		wire.writeBytes(parseInt(command), params, function(error) {
-			if (error)
-				console.log(error);
+		write(command, params).then() {
+			return read(wire);
+		}
+		.then(function(result) {
+			console.log(result);
+		})
+		.catch(function(error) {
+			console.log(error);
 		});
-
-		wire.on('data', function(data) {
-			console.log(data);
-		  // result for continuous stream contains data buffer, address, length, timestamp
-		});
-
-		setTimeout(function(){}, 10000);
 
 
 	}
