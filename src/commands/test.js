@@ -48,7 +48,7 @@ function NeopixelStrip(options) {
 	}
 
 	_this.setStripLength = function(length) {
-		return _this.write(0x12, [length]);
+		return _this.write(0x12, [parseInt(length)]);
 	}
 
 	_this.write = function(command, params) {
@@ -94,6 +94,7 @@ module.exports.builder = function(args) {
 	args.option('green', {alias: 'g', describe:'green', default: 255});
 	args.option('blue', {alias: 'b', describe:'blue', default: 255});
 	args.option('wait', {alias: 'w', describe:'Wait', default: 100});
+	args.option('length', {alias: 'l', describe:'Length', default: 8});
 
 	args.wrap(null);
 
@@ -149,7 +150,7 @@ module.exports.handler = function(args) {
 
 		}*/
 		promise.then(function() {
-			return strip.setStripLength(20);
+			return strip.setStripLength(args.length);
 
 		})
 		.then(function() {
