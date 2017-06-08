@@ -140,6 +140,14 @@ module.exports.handler = function(args) {
 
 		var promise = Promise.resolve();
 
+		if (args.command == 'color') {
+			promise.then(function() {
+				return strip.setColor(args.red, args.green, args.blue);
+
+			});
+			return;
+
+		}
 		promise.then(function() {
 			return strip.setColor(128, 0, 0);
 
