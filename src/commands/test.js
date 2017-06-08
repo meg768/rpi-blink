@@ -139,7 +139,7 @@ module.exports.handler = function(args) {
 		var strip = new NeopixelStrip({device:'/dev/i2c-1', length:8})
 
 		var promise = Promise.resolve();
-
+/*
 		if (args.command == 'color') {
 			promise.then(function() {
 				return strip.setColor(args.red, args.green, args.blue);
@@ -147,7 +147,7 @@ module.exports.handler = function(args) {
 			});
 			return;
 
-		}
+		}*/
 		promise.then(function() {
 			return strip.setColor(128, 0, 0);
 
