@@ -149,7 +149,7 @@ module.exports.handler = function(args) {
 
 		}*/
 		promise.then(function() {
-			return strip.setStripLength(8);
+			return strip.setStripLength(20);
 
 		})
 		.then(function() {
