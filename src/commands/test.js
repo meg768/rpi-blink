@@ -26,7 +26,7 @@ function NeopixelStrip(options) {
 	_this.fadeToColor = function(red, green, blue, steps) {
 
 		if (steps == undefined)
-			steps = 10;
+			steps = 100;
 
 		red    = parseInt(red);
 		green  = parseInt(green);
@@ -156,25 +156,25 @@ module.exports.handler = function(args) {
 			return strip.pause(1000);
 		})
 		.then(function() {
-			return strip.fadeToColor(0, 128, 0, 255);
+			return strip.fadeToColor(0, 128, 0);
 		})
 		.then(function() {
 			return strip.pause(1000);
 		})
 		.then(function() {
-			return strip.fadeToColor(0, 0, 128, 255);
+			return strip.fadeToColor(0, 0, 128);
 		})
 		.then(function() {
 			return strip.pause(1000);
 		})
 		.then(function() {
-			return strip.fadeToColor(255, 255, 255, 255);
+			return strip.fadeToColor(255, 255, 255);
 		})
 		.then(function() {
 			return strip.pause(1000);
 		})
 		.then(function() {
-			return strip.fadeToColor(0, 0, 0, 255);
+			return strip.fadeToColor(0, 0, 0);
 		})
 		/*
 
