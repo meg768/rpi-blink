@@ -136,7 +136,7 @@ module.exports.handler = function(args) {
 
 	try {
 
-		var strip = new NeopixelStrip({device:'/dev/i2c-1', length:8})
+		var strip = new NeopixelStrip({device:'/dev/i2c-1', length:50})
 
 		var promise = Promise.resolve();
 /*
