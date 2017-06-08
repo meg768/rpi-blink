@@ -148,7 +148,7 @@ module.exports.handler = function(args) {
 			return;
 
 		}*/
-		.then(function() {
+		promise.then(function() {
 			return strip.setColor(255, 0, 0);
 
 		})
