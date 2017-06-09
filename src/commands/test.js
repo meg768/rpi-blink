@@ -51,6 +51,10 @@ function NeopixelStrip(options) {
 
 		//return _this.write(bytes);
 
+		return _this.write(bytes).then(function() {
+			return _this.read();
+		})
+
 		return new Promise(function(resolve, reject) {
 			console.log('Sending', bytes);
 			_this.write(bytes).then(function() {
