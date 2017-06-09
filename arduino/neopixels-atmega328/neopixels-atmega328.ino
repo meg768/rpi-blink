@@ -31,24 +31,17 @@
 #define CMD_COLOR_WIPE    0x11  // red, green, blue, delay
 #define CMD_SET_LENGTH    0x12  // size
 #define CMD_FADE_IN       0x13
+#define CMD_DEMO          0x14
 
-Adafruit_NeoPixel strip; // = Adafruit_NeoPixel(NEOPIXEL_LENGTH, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
-
+Adafruit_NeoPixel *strip = NULL;
 
 void setup()
 {
-
-    
     pinMode(PIN_LED_1, OUTPUT);
     pinMode(PIN_LED_2, OUTPUT);
 
     blink(PIN_LED_1, 3);
     blink(PIN_LED_2, 3);
-
-
-
-    strip.begin();
-
 
 
     Wire.begin(I2C_ADDRESS);
@@ -76,27 +69,37 @@ void receiveData(int bytes)
     if (Wire.available()) {
         byte command = Wire.read();
         byte reply = 0;
+
+        if (strip == NULL) {
+            reply = 1;
+        }
+        else {
+            switch (command) {
+            
+                case CMD_SET_COLOR: {
+                    reply = cmdSetColor();
+                    break;
+                };
         
-        switch (command) {
-        
-            case CMD_SET_COLOR: {
-                reply = cmdSetColor();
-                break;
+                case CMD_COLOR_WIPE: {
+                    reply = cmdColorWipe();
+                    break;
+                }
+                case CMD_SET_LENGTH: {
+                    reply = cmdSetLength();
+                    break;
+                }
+                case CMD_FADE_IN: {
+                    reply = cmdFadeIn();
+                    break;
+                }
+                case CMD_DEMO: {
+                    reply = cmdDemo();
+                    break;
+                }
             };
-    
-            case CMD_COLOR_WIPE: {
-                reply = cmdColorWipe();
-                break;
-            }
-            case CMD_SET_LENGTH: {
-                reply = cmdSetLength();
-                break;
-            }
-            case CMD_FADE_IN: {
-                reply = cmdFadeIn();
-                break;
-            }
-        };
+        }
+        
 
         if (reply > 0) {
             flush();
@@ -146,19 +149,7 @@ int readByte() {
 }
 
 
-void heartBeat(byte led)
-{
-    static long timeout = millis();
-    static int heartBeat = 1;
-    
-    long ticks = millis();
 
-    if (ticks >= timeout) {
-       digitalWrite(PIN_LED_2, heartBeat == 0 ? LOW : HIGH);
-       heartBeat = !heartBeat;
-       timeout = ticks + 100;
-    }
-}
 
 byte cmdSetLength() {
 
@@ -167,9 +158,16 @@ byte cmdSetLength() {
     if ((length = readByte()) == -1)
         return 1;
 
-    strip.updateType(NEO_GRB + NEO_KHZ800);
-    strip.updateLength(length);
-    strip.setPin(NEOPIXEL_PIN);
+    Adafruit_NeoPixel *newStrip = new Adafruit_NeoPixel(length, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
+
+    if (newStrip == NULL)
+        return 2;
+
+    delete strip;
+    strip = newStrip;
+
+    strip->begin();
+
     
     return 0;
 
@@ -179,7 +177,10 @@ byte cmdSetLength() {
 byte cmdFadeIn() {
 
     int red, green, blue, numSteps;
-    
+
+    if (strip == NULL)
+        return 0;
+        
     if ((red = readByte()) == -1)
         return 1;
 
@@ -192,15 +193,15 @@ byte cmdFadeIn() {
     if ((numSteps = readByte()) == -1)
         return 4;
 
-    uint32_t color = strip.Color(red, green, blue);
+    uint32_t color = strip->Color(red, green, blue);
 
-    int numPixels = strip.numPixels();
+    int numPixels = strip->numPixels();
 
     static uint32_t rgb[255];
         
     // Save pixel colors
     for (int i = 0; i < numPixels; i++) {
-        rgb[i] = strip.getPixelColor(i);
+        rgb[i] = strip->getPixelColor(i);
     }
 
     for (int step = 0; step < numSteps; step++) {
@@ -214,18 +215,18 @@ byte cmdFadeIn() {
             uint8_t pixelGreen = g + (step * (green - g)) / numSteps;
             uint8_t pixelBlue  = b + (step * (blue  - b)) / numSteps;
 
-            strip.setPixelColor(i, pixelRed, pixelGreen, pixelBlue);
+            strip->setPixelColor(i, pixelRed, pixelGreen, pixelBlue);
         }
 
-        strip.show();
+        strip->show();
         delay(1);
     
     }
 
     for (int i = 0; i < numPixels; i++)
-        strip.setPixelColor(i, strip.Color(red, green, blue));
+        strip->setPixelColor(i, strip->Color(red, green, blue));
     
-    strip.show();
+    strip->show();
 
     // Clean up
     //free(rgb);
@@ -236,7 +237,10 @@ byte cmdFadeIn() {
 
 byte cmdSetColor() {
     int red, green, blue;
-    
+
+    if (strip == NULL)
+        return 1;
+        
     if ((red = readByte()) == -1)
         return 1;
 
@@ -246,11 +250,12 @@ byte cmdSetColor() {
     if ((blue = readByte()) == -1)
         return 3;
 
-    for (uint16_t i = 0; i < strip.numPixels(); i++) {
-        strip.setPixelColor(i, red, green, blue);
+
+    for (uint16_t i = 0; i < strip->numPixels(); i++) {
+        strip->setPixelColor(i, red, green, blue);
     }
 
-    strip.show();
+    strip->show();
 
     return 0;
 }
@@ -259,6 +264,9 @@ byte cmdSetColor() {
 byte cmdColorWipe() {
     int red, green, blue, wait;
     
+    if (strip == NULL)
+        return 1;
+
     if ((red = readByte()) == -1)
         return 1;
 
@@ -271,15 +279,40 @@ byte cmdColorWipe() {
     if ((wait = readByte()) == -1)
         return 4;
 
-    for (uint16_t i = 0; i < strip.numPixels(); i++) {
-        strip.setPixelColor(i, red, green, blue);
-        strip.show();
+    for (uint16_t i = 0; i < strip->numPixels(); i++) {
+        strip->setPixelColor(i, red, green, blue);
+        strip->show();
         delay(wait);
     }
 
     return 0;
 }
 
+byte cmdDemo() {
+
+
+    uint32_t color = strip->Color(128, 0, 0);
+
+    for (uint16_t i = 0; i < strip->numPixels(); i++) {
+        strip->setPixelColor(i, 0, 0, 0);
+    }
+    
+    strip->show();
+    
+    for(uint16_t i=0; i<strip->numPixels()+4; i++) {
+        strip->setPixelColor(i  , color); // Draw new pixel
+        strip->setPixelColor(i-4, 0); // Erase pixel a few steps back
+        strip->show();
+        delay(25);
+    }
+
+    for (uint16_t i = 0; i < strip->numPixels(); i++) {
+        strip->setPixelColor(i, 0, 0, 0);
+    }
+
+    strip->show();
+    return 0;
+}
 
 
 
