@@ -71,11 +71,11 @@ void receiveData(int bytes)
         byte reply = 0;
 
         switch (command) {
-        /*
             case CMD_SET_COLOR: {
                 reply = cmdSetColor();
                 break;
             };
+        /*
     
             case CMD_COLOR_WIPE: {
                 reply = cmdColorWipe();
@@ -86,12 +86,12 @@ void receiveData(int bytes)
                 reply = cmdSetLength();
                 break;
             }
-            /*
+
             case CMD_FADE_IN: {
                 reply = cmdFadeIn();
                 break;
             }
-            */
+
             case CMD_DEMO: {
                 reply = cmdDemo();
                 break;
