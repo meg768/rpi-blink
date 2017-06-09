@@ -158,7 +158,7 @@ module.exports.handler = function(args) {
 
 		})
 		.then(function() {
-			return strip.pause(1000);
+			return strip.pause(500);
 		})
 
 		.then(function() {
@@ -166,37 +166,37 @@ module.exports.handler = function(args) {
 
 		})
 		.then(function() {
-			return strip.pause(1000);
+			return strip.pause(500);
 		})
 		.then(function() {
 			return strip.fadeToColor(0, 64, 0);
 		})
 		.then(function() {
-			return strip.pause(1000);
+			return strip.pause(500);
 		})
 		.then(function() {
 			return strip.fadeToColor(0, 0, 64);
 		})
 		.then(function() {
-			return strip.pause(1000);
+			return strip.pause(500);
 		})
 		.then(function() {
 			return strip.fadeToColor(0, 64, 64);
 		})
 		.then(function() {
-			return strip.pause(1000);
+			return strip.pause(500);
 		})
 		.then(function() {
 			return strip.fadeToColor(64, 64, 0);
 		})
 		.then(function() {
-			return strip.pause(1000);
+			return strip.pause(500);
 		})
 		.then(function() {
 			return strip.fadeToColor(64, 64, 64);
 		})
 		.then(function() {
-			return strip.pause(1000);
+			return strip.pause(500);
 		})
 		.then(function() {
 			return strip.fadeToColor(0, 0, 0);
