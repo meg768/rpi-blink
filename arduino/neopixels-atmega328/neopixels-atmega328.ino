@@ -88,7 +88,7 @@ void receiveData(int bytes)
             }
 
             case CMD_FADE_IN: {
-                //reply = cmdFadeIn();
+                reply = cmdFadeIn();
                 break;
             }
 
