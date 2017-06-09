@@ -193,7 +193,7 @@ module.exports.handler = function(args) {
 			return strip.pause(500);
 		})
 		.then(function() {
-			return strip.fadeToColor(8 8, 8);
+			return strip.fadeToColor(8, 8, 8);
 		})
 		.then(function() {
 			return strip.pause(500);
