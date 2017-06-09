@@ -8,6 +8,9 @@ function NeopixelStrip(options) {
 	var _this = this;
 	var _wire = undefined;
 
+	function waitForReply() {
+
+	}
 	_this.pause = function(ms) {
 
 		return new Promise(function(resolve, reject) {
@@ -95,6 +98,9 @@ function NeopixelStrip(options) {
 		_wire = new I2C(options.address, {device: options.device});
 
 
+		_wire.on('data', function(data) {
+			console.log(data);
+		});
 	}
 
 	init();

@@ -19,6 +19,9 @@
 //   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
 //   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
 
+#define ACK               6
+#define NAK               21
+
 #define I2C_ADDRESS       0x26
 
 #define PIN_LED_1         10
@@ -102,6 +105,10 @@ void receiveData(int bytes)
         if (reply > 0) {
             flush();
             blink(PIN_LED_1, reply);
+            Wire.write(NAK);
+        }
+        else {
+            Wire.write(ACK);
         }
     }
 
