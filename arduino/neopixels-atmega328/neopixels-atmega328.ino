@@ -35,7 +35,6 @@
 
 Adafruit_NeoPixel *strip = NULL;
 
-uint32_t currentColor = 0;
 
 void setup()
 {
@@ -160,8 +159,6 @@ byte cmdSetLength() {
     delete strip;
     strip = new Adafruit_NeoPixel(length, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 
-    currentColor = 0;
-
     strip->begin();
 
     
@@ -172,7 +169,13 @@ byte cmdSetLength() {
 
 byte cmdFadeIn() {
 
+    struct RGB {
+        uint8_t red;
+        uint8_t green;
+        uint8_t blue;
+    }
 
+    static rgb[240];
     
     int red, green, blue, numSteps;
 
@@ -193,18 +196,21 @@ byte cmdFadeIn() {
 
 
     int numPixels = strip->numPixels();
-    
-    int currentRed   = (int)(uint8_t)((currentColor & 0x00FF0000) >> 16);
-    int currentGreen = (int)(uint8_t)((currentColor & 0x0000FF00) >> 8);
-    int currentBlue  = (int)(uint8_t)((currentColor & 0X000000FF));
-        
+
+    for (int i = 0; i < numPixels; i++) {
+        uint32_t color = strip->getPixelColor(i);
+        rgb[i].red   = (int)(uint8_t)((color & 0x00FF0000) >> 16);
+        rgb[i].green = (int)(uint8_t)((color & 0x0000FF00) >> 8);
+        rgb[i].blue  = (int)(uint8_t)((color & 0X000000FF));
+    }
+
     for (int step = 0; step < numSteps; step++) {
 
-        uint8_t pixelRed   = currentRed   + (step * (red   - currentRed)) / numSteps; 
-        uint8_t pixelGreen = currentGreen + (step * (green - currentGreen)) / numSteps;
-        uint8_t pixelBlue  = currentBlue  + (step * (blue  - currentBlue)) / numSteps;
-
         for (int i = 0; i < numPixels; i++) {
+            uint8_t pixelRed   = rgb[i].red   + (step * (red   - rgb[i].red))   / numSteps; 
+            uint8_t pixelGreen = rgb[i].green + (step * (green - rgb[i].green)) / numSteps;
+            uint8_t pixelBlue  = rgb[i].blue  + (step * (blue  - rgb[i].blue))  / numSteps;
+    
             strip->setPixelColor(i, pixelRed, pixelGreen, pixelBlue);
         }
 
@@ -213,10 +219,8 @@ byte cmdFadeIn() {
     
     }
 
-    currentColor = strip->Color(red, green, blue);
-
     for (int i = 0; i < numPixels; i++)
-        strip->setPixelColor(i, currentColor);
+        strip->setPixelColor(i, red, green, blue);
 
     
     strip->show();
@@ -241,10 +245,8 @@ byte cmdSetColor() {
     if ((blue = readByte()) == -1)
         return 3;
 
-    currentColor = strip->Color(red, green, blue);
-
     for (uint16_t i = 0; i < strip->numPixels(); i++) {
-        strip->setPixelColor(i, currentColor);
+        strip->setPixelColor(i, red, green, blue);
     }
 
     strip->show();
