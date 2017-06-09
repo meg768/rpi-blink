@@ -54,9 +54,22 @@ void setup()
         strip.setPixelColor(i, strip.Color((byte)0, (byte)0, (byte)64));
     }    
     strip.show();
+
+    Wire.onReceive(receiveData);
+    Wire.onRequest(sendData);
 }
 
-void loop()
+void loop() {
+    delay(100);
+    heartBeat(PIN_LED_2);
+}
+
+void sendData()
+{
+}
+
+
+void receiveData(int bytes)
 {
     
     if (Wire.available()) {
@@ -90,7 +103,7 @@ void loop()
         }
     }
 
-    heartBeat(PIN_LED_2);
+    
 
 }
 
