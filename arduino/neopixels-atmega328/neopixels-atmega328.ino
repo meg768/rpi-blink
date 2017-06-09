@@ -88,7 +88,7 @@ void receiveData(int bytes)
             }
 
             case CMD_FADE_IN: {
-                reply = cmdFadeIn();
+                //reply = cmdFadeIn();
                 break;
             }
 
@@ -169,6 +169,13 @@ byte cmdSetLength() {
 
 byte cmdFadeIn() {
 
+    struct RGB {
+        uint8_t red;
+        uint8_t green;
+        uint8_t blue;
+    };
+    
+    static RGB rgb[240];
     int red, green, blue, numSteps;
 
     if (strip == NULL)
@@ -186,23 +193,26 @@ byte cmdFadeIn() {
     if ((numSteps = readByte()) == -1)
         return 4;
 
-    uint32_t color = strip->Color(red, green, blue);
 
     int numPixels = strip->numPixels();
 
-    static uint32_t rgb[255];
         
     // Save pixel colors
     for (int i = 0; i < numPixels; i++) {
-        rgb[i] = strip->getPixelColor(i);
+        uint32_t color = strip->getPixelColor(i);
+
+        rgb[i].red   = (int)(uint8_t)(color >> 16);
+        rgb[i].green = (int)(uint8_t)(color >> 8);
+        rgb[i].blue  = (int)(uint8_t)(color);
+
     }
 
     for (int step = 0; step < numSteps; step++) {
     
         for (int i = 0; i < numPixels; i++) {
-            int r = (int)(uint8_t)(rgb[i] >> 16);
-            int g = (int)(uint8_t)(rgb[i] >> 8);
-            int b = (int)(uint8_t)(rgb[i]);
+            int r = (int)rgb[i].red;
+            int g = (int)rgb[i].green;
+            int b = (int)rgb[i].blue;
             
             uint8_t pixelRed   = r + (step * (red   - r)) / numSteps; 
             uint8_t pixelGreen = g + (step * (green - g)) / numSteps;
@@ -220,9 +230,6 @@ byte cmdFadeIn() {
         strip->setPixelColor(i, strip->Color(red, green, blue));
     
     strip->show();
-
-    // Clean up
-    //free(rgb);
 
     return 0;
 }
