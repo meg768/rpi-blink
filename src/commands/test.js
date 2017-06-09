@@ -163,14 +163,16 @@ module.exports.handler = function(args) {
 			return strip.setStripLength(args.length);
 
 		})
+		/*
 		.then(function() {
 			return strip.writeByte(0x14);
 
 		})
+		*/
 		.then(function() {
 			return strip.pause(1000);
 		})
-		/*
+
 
 		.then(function() {
 			return strip.setColor(8, 0, 0);
@@ -213,7 +215,7 @@ module.exports.handler = function(args) {
 			return strip.fadeToColor(0, 0, 0);
 		})
 
-*/
+
 		.then(function(result) {
 			console.log('OK');
 		})

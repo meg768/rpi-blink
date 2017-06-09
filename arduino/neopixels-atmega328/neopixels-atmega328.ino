@@ -71,7 +71,7 @@ void receiveData(int bytes)
         byte reply = 0;
 
         switch (command) {
-        
+        /*
             case CMD_SET_COLOR: {
                 reply = cmdSetColor();
                 break;
@@ -81,14 +81,17 @@ void receiveData(int bytes)
                 reply = cmdColorWipe();
                 break;
             }
+          */
             case CMD_SET_LENGTH: {
                 reply = cmdSetLength();
                 break;
             }
+            /*
             case CMD_FADE_IN: {
                 reply = cmdFadeIn();
                 break;
             }
+            */
             case CMD_DEMO: {
                 reply = cmdDemo();
                 break;
@@ -130,7 +133,7 @@ int flush()
 
 int readByte() {
 
-    long timeout = millis() + 100;
+    long timeout = millis() + 200;
     
     for (;;) {
         if (Wire.available())
@@ -152,13 +155,9 @@ byte cmdSetLength() {
     if ((length = readByte()) == -1)
         return 1;
 
-    Adafruit_NeoPixel *newStrip = new Adafruit_NeoPixel(length, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
-
-    if (newStrip == NULL)
-        return 2;
-
     delete strip;
-    strip = newStrip;
+    strip = new Adafruit_NeoPixel(length, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
+
 
     strip->begin();
 
@@ -255,7 +254,7 @@ byte cmdSetColor() {
     return 0;
 }
 
-
+/*
 byte cmdColorWipe() {
     int red, green, blue, wait;
     
@@ -283,7 +282,7 @@ byte cmdColorWipe() {
 
     return 0;
 }
-
+*/
 byte cmdDemo() {
 
 
