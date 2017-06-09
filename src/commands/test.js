@@ -154,10 +154,10 @@ module.exports.handler = function(args) {
 			return strip.write(0x14, []);
 
 		})
-/*
 		.then(function() {
 			return strip.pause(1000);
 		})
+		/*
 
 		.then(function() {
 			return strip.setColor(8, 0, 0);
