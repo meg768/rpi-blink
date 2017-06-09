@@ -184,31 +184,31 @@ module.exports.handler = function(args) {
 			return strip.fadeToColor(0, 8, 0);
 		})
 		.then(function() {
-			return strip.pause(500);
+			return strip.pause(1000);
 		})
 		.then(function() {
 			return strip.fadeToColor(0, 0, 8);
 		})
 		.then(function() {
-			return strip.pause(500);
+			return strip.pause(1000);
 		})
 		.then(function() {
 			return strip.fadeToColor(0, 8, 8);
 		})
 		.then(function() {
-			return strip.pause(500);
+			return strip.pause(1000);
 		})
 		.then(function() {
 			return strip.fadeToColor(8, 8, 0);
 		})
 		.then(function() {
-			return strip.pause(500);
+			return strip.pause(1000);
 		})
 		.then(function() {
 			return strip.fadeToColor(8, 8, 8);
 		})
 		.then(function() {
-			return strip.pause(500);
+			return strip.pause(1000);
 		})
 		.then(function() {
 			return strip.fadeToColor(0, 0, 0);

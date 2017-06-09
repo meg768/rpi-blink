@@ -194,18 +194,17 @@ byte cmdFadeIn() {
 
     int numPixels = strip->numPixels();
     
-    int currentRed   = (int)(uint8_t)(currentColor >> 16);
-    int currentGreen = (int)(uint8_t)(currentColor >> 8);
-    int currentBlue  = (int)(uint8_t)(currentColor);
+    int currentRed   = (int)(uint8_t)((currentColor & 0x00FF0000) >> 16);
+    int currentGreen = (int)(uint8_t)((currentColor & 0x0000FF00) >> 8);
+    int currentBlue  = (int)(uint8_t)((currentColor & 0X000000FF));
         
     for (int step = 0; step < numSteps; step++) {
-    
-        for (int i = 0; i < numPixels; i++) {
-            
-            uint8_t pixelRed   = currentRed   + (step * (red    - currentRed)) / numSteps; 
-            uint8_t pixelGreen = currentGreen + (step * (green - currentGreen)) / numSteps;
-            uint8_t pixelBlue  = currentBlue  + (step * (blue  - currentBlue)) / numSteps;
 
+        uint8_t pixelRed   = currentRed   + (step * (red   - currentRed)) / numSteps; 
+        uint8_t pixelGreen = currentGreen + (step * (green - currentGreen)) / numSteps;
+        uint8_t pixelBlue  = currentBlue  + (step * (blue  - currentBlue)) / numSteps;
+
+        for (int i = 0; i < numPixels; i++) {
             strip->setPixelColor(i, pixelRed, pixelGreen, pixelBlue);
         }
 
@@ -214,10 +213,11 @@ byte cmdFadeIn() {
     
     }
 
-    for (int i = 0; i < numPixels; i++)
-        strip->setPixelColor(i, strip->Color(red, green, blue));
-
     currentColor = strip->Color(red, green, blue);
+
+    for (int i = 0; i < numPixels; i++)
+        strip->setPixelColor(i, currentColor);
+
     
     strip->show();
 
@@ -241,14 +241,14 @@ byte cmdSetColor() {
     if ((blue = readByte()) == -1)
         return 3;
 
+    currentColor = strip->Color(red, green, blue);
 
     for (uint16_t i = 0; i < strip->numPixels(); i++) {
-        strip->setPixelColor(i, red, green, blue);
+        strip->setPixelColor(i, currentColor);
     }
 
     strip->show();
 
-    currentColor = strip->Color(red, green, blue);
 
     return 0;
 }
