@@ -57,6 +57,19 @@ function NeopixelStrip(options) {
 		return _this.write(0x12, [parseInt(length)]);
 	}
 
+	_this.writeByte = function(command) {
+		return new Promise(function(resolve, reject) {
+			_wire.writeByte(parseInt(command), params, function(error) {
+				if (error)
+					reject(error);
+				else
+					resolve();
+			});
+
+
+		});
+
+	}
 	_this.write = function(command, params) {
 		return new Promise(function(resolve, reject) {
 			_wire.writeBytes(parseInt(command), params, function(error) {
@@ -151,7 +164,7 @@ module.exports.handler = function(args) {
 
 		})
 		.then(function() {
-			return strip.write(0x14, []);
+			return strip.writeByte(0x14);
 
 		})
 		.then(function() {
