@@ -194,9 +194,9 @@ byte cmdFadeIn() {
 
     int numPixels = strip->numPixels();
     
-    int currentRed   = (int)(currentColor >> 16);
-    int currentGreen = (int)(currentColor >> 8);
-    int currentBlue  = (int)(currentColor);
+    int currentRed   = (int)(uint8_t)(currentColor >> 16);
+    int currentGreen = (int)(uint8_t)(currentColor >> 8);
+    int currentBlue  = (int)(uint8_t)(currentColor);
         
     for (int step = 0; step < numSteps; step++) {
     
