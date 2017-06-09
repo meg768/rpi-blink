@@ -155,7 +155,7 @@ module.exports.handler = function(args) {
 
 		})
 		.then(function() {
-			return strip.pause(500);
+			return strip.pause(1000);
 		})
 
 		.then(function() {
