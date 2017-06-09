@@ -152,12 +152,13 @@ module.exports.handler = function(args) {
 			return;
 
 		}*/
-
+/*
 		promise.then(function() {
 			return strip.setStripLength(args.length);
 
 		})
-		.then(function() {
+		*/
+		promise.then(function() {
 			return strip.pause(1000);
 		})
 
