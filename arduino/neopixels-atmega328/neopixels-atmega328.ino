@@ -49,11 +49,7 @@ void setup()
 
     strip.begin();
 
-    
-    for (uint16_t i = 0; i < strip.numPixels(); i++) {
-        strip.setPixelColor(i, strip.Color((byte)0, (byte)0, (byte)64));
-    }    
-    strip.show();
+
 
     Wire.begin(I2C_ADDRESS);
     Wire.onReceive(receiveData);
@@ -196,13 +192,11 @@ byte cmdFadeIn() {
     if ((numSteps = readByte()) == -1)
         return 4;
 
+    uint32_t color = strip.Color(red, green, blue);
+
     int numPixels = strip.numPixels();
 
     static uint32_t rgb[255];
-//    uint32_t *rgb = (uint32_t *)malloc(numPixels * sizeof(uint32_t)); 
-
-    if (rgb == 0)
-        return 2;
         
     // Save pixel colors
     for (int i = 0; i < numPixels; i++) {
@@ -220,7 +214,7 @@ byte cmdFadeIn() {
             uint8_t pixelGreen = g + (step * (green - g)) / numSteps;
             uint8_t pixelBlue  = b + (step * (blue  - b)) / numSteps;
 
-            strip.setPixelColor(i, strip.Color(pixelRed, pixelGreen, pixelBlue));
+            strip.setPixelColor(i, pixelRed, pixelGreen, pixelBlue);
         }
 
         strip.show();
@@ -252,10 +246,8 @@ byte cmdSetColor() {
     if ((blue = readByte()) == -1)
         return 3;
 
-    uint32_t color = strip.Color((byte)red, (byte)green, (byte)blue);
-    
     for (uint16_t i = 0; i < strip.numPixels(); i++) {
-        strip.setPixelColor(i, color);
+        strip.setPixelColor(i, red, green, blue);
     }
 
     strip.show();
@@ -279,10 +271,8 @@ byte cmdColorWipe() {
     if ((wait = readByte()) == -1)
         return 4;
 
-    uint32_t color = strip.Color((byte)red, (byte)green, (byte)blue);
-    
     for (uint16_t i = 0; i < strip.numPixels(); i++) {
-        strip.setPixelColor(i, color);
+        strip.setPixelColor(i, red, green, blue);
         strip.show();
         delay(wait);
     }
