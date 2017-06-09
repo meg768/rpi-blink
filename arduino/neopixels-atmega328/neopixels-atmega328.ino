@@ -59,7 +59,7 @@ void loop()
     digitalWrite(PIN_LED_2, state == 0 ? LOW : HIGH);
     state = !state;
 
-    delay(100);
+//    delay(100);
 }
 
 void sendData()
