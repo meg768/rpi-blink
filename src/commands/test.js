@@ -83,7 +83,7 @@ function NeopixelStrip(options) {
 
 	_this.read = function() {
 		return new Promise(function(resolve, reject) {
-			_wire.read(1000, function(error, result) {
+			_wire.read(10, function(error, result) {
 				if (result.length == 0)
 					return _this.read();
 				else {
