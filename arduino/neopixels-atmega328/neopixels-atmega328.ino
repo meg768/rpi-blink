@@ -35,6 +35,8 @@
 
 Adafruit_NeoPixel *strip = NULL;
 
+uint32_t currentColor = 0;
+
 void setup()
 {
     pinMode(PIN_LED_1, OUTPUT);
@@ -158,6 +160,7 @@ byte cmdSetLength() {
     delete strip;
     strip = new Adafruit_NeoPixel(length, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 
+    currentColor = 0;
 
     strip->begin();
 
@@ -169,13 +172,8 @@ byte cmdSetLength() {
 
 byte cmdFadeIn() {
 
-    struct RGB {
-        uint8_t red;
-        uint8_t green;
-        uint8_t blue;
-    };
+
     
-    static RGB rgb[240];
     int red, green, blue, numSteps;
 
     if (strip == NULL)
@@ -195,28 +193,18 @@ byte cmdFadeIn() {
 
 
     int numPixels = strip->numPixels();
-
+    
+    int currentRed   = (int)(currentColor >> 16);
+    int currentGreen = (int)(currentColor >> 8);
+    int currentBlue  = (int)(currentColor);
         
-    // Save pixel colors
-    for (int i = 0; i < numPixels; i++) {
-        uint32_t color = strip->getPixelColor(i);
-
-        rgb[i].red   = (int)(uint8_t)(color >> 16);
-        rgb[i].green = (int)(uint8_t)(color >> 8);
-        rgb[i].blue  = (int)(uint8_t)(color);
-
-    }
-
     for (int step = 0; step < numSteps; step++) {
     
         for (int i = 0; i < numPixels; i++) {
-            int r = (int)rgb[i].red;
-            int g = (int)rgb[i].green;
-            int b = (int)rgb[i].blue;
             
-            uint8_t pixelRed   = r + (step * (red   - r)) / numSteps; 
-            uint8_t pixelGreen = g + (step * (green - g)) / numSteps;
-            uint8_t pixelBlue  = b + (step * (blue  - b)) / numSteps;
+            uint8_t pixelRed   = currentRed   + (step * (red    - currentRed)) / numSteps; 
+            uint8_t pixelGreen = currentGreen + (step * (green - currentGreen)) / numSteps;
+            uint8_t pixelBlue  = currentBlue  + (step * (blue  - currentBlue)) / numSteps;
 
             strip->setPixelColor(i, pixelRed, pixelGreen, pixelBlue);
         }
@@ -228,6 +216,8 @@ byte cmdFadeIn() {
 
     for (int i = 0; i < numPixels; i++)
         strip->setPixelColor(i, strip->Color(red, green, blue));
+
+    currentColor = strip->Color(red, green, blue);
     
     strip->show();
 
@@ -257,6 +247,8 @@ byte cmdSetColor() {
     }
 
     strip->show();
+
+    currentColor = strip->Color(red, green, blue);
 
     return 0;
 }
