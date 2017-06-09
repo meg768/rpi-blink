@@ -150,7 +150,7 @@ module.exports.handler = function(args) {
 			return strip.setStripLength(args.length);
 
 		})
-
+/*
 		.then(function() {
 			return strip.pause(1000);
 		})
@@ -195,29 +195,7 @@ module.exports.handler = function(args) {
 		.then(function() {
 			return strip.fadeToColor(0, 0, 0);
 		})
-		/*
 
-		Promise.resolve().then(function() {
-			return strip.setStripLength(8);
-		})
-		.then(function() {
-			return strip.setColor(0, 0, 0);
-		})
-		.then(function() {
-			return strip.pause(500);
-		})
-		.then(function() {
-			return strip.setColor(255, 0, 0);
-		})
-		.then(function() {
-			return strip.pause(1000);
-		})
-		.then(function() {
-			return strip.fadeToColor(0, 255, 0);
-		})
-		.then(function() {
-			return strip.pause(1000);
-		})
 */
 		.then(function(result) {
 			console.log('OK');
