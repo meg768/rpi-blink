@@ -82,9 +82,6 @@ function NeopixelStrip(options) {
 
 		_wire = new I2C(options.address, {device: options.device});
 
-		if (options.length != undefined) {
-			_this.setStripLength(options.length);
-		}
 
 	}
 

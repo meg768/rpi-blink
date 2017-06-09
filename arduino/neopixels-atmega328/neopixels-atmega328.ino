@@ -24,7 +24,7 @@
 #define PIN_LED_1         10
 #define PIN_LED_2         9
 
-#define NEOPIXEL_LENGTH   8
+//#define NEOPIXEL_LENGTH   8
 #define NEOPIXEL_PIN      4
 
 #define CMD_SET_COLOR     0x10  // red, green, blue
@@ -32,7 +32,7 @@
 #define CMD_SET_LENGTH    0x12  // size
 #define CMD_FADE_IN       0x13
 
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(NEOPIXEL_LENGTH, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip; // = Adafruit_NeoPixel(NEOPIXEL_LENGTH, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 
 
 void setup()
@@ -45,7 +45,7 @@ void setup()
     blink(PIN_LED_1, 3);
     blink(PIN_LED_2, 3);
 
-    Wire.begin(I2C_ADDRESS);
+
 
     strip.begin();
 
@@ -55,13 +55,18 @@ void setup()
     }    
     strip.show();
 
+    Wire.begin(I2C_ADDRESS);
     Wire.onReceive(receiveData);
     Wire.onRequest(sendData);
 }
 
-void loop() {
+void loop() 
+{
+    static int state = 0;
+    digitalWrite(PIN_LED_2, state == 0 ? LOW : HIGH);
+    state = !state;
+
     delay(100);
-    heartBeat(PIN_LED_2);
 }
 
 void sendData()
@@ -166,15 +171,9 @@ byte cmdSetLength() {
     if ((length = readByte()) == -1)
         return 1;
 
+    strip.updateType(NEO_GRB + NEO_KHZ800);
     strip.updateLength(length);
-
-    uint32_t color = strip.Color(0, 0, 0);
-    
-    for (uint16_t i = 0; i < strip.numPixels(); i++) {
-        strip.setPixelColor(i, color);
-    }
-    
-    strip.show();
+    strip.setPin(NEOPIXEL_PIN);
     
     return 0;
 
