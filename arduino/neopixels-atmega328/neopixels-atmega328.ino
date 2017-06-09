@@ -70,36 +70,30 @@ void receiveData(int bytes)
         byte command = Wire.read();
         byte reply = 0;
 
-        if (strip == NULL) {
-            reply = 1;
-        }
-        else {
-            switch (command) {
-            
-                case CMD_SET_COLOR: {
-                    reply = cmdSetColor();
-                    break;
-                };
+        switch (command) {
         
-                case CMD_COLOR_WIPE: {
-                    reply = cmdColorWipe();
-                    break;
-                }
-                case CMD_SET_LENGTH: {
-                    reply = cmdSetLength();
-                    break;
-                }
-                case CMD_FADE_IN: {
-                    reply = cmdFadeIn();
-                    break;
-                }
-                case CMD_DEMO: {
-                    reply = cmdDemo();
-                    break;
-                }
+            case CMD_SET_COLOR: {
+                reply = cmdSetColor();
+                break;
             };
-        }
-        
+    
+            case CMD_COLOR_WIPE: {
+                reply = cmdColorWipe();
+                break;
+            }
+            case CMD_SET_LENGTH: {
+                reply = cmdSetLength();
+                break;
+            }
+            case CMD_FADE_IN: {
+                reply = cmdFadeIn();
+                break;
+            }
+            case CMD_DEMO: {
+                reply = cmdDemo();
+                break;
+            }
+        };
 
         if (reply > 0) {
             flush();
@@ -179,7 +173,7 @@ byte cmdFadeIn() {
     int red, green, blue, numSteps;
 
     if (strip == NULL)
-        return 0;
+        return 10;
         
     if ((red = readByte()) == -1)
         return 1;
@@ -239,7 +233,8 @@ byte cmdSetColor() {
     int red, green, blue;
 
     if (strip == NULL)
-        return 1;
+        return 10;
+
         
     if ((red = readByte()) == -1)
         return 1;
@@ -265,7 +260,8 @@ byte cmdColorWipe() {
     int red, green, blue, wait;
     
     if (strip == NULL)
-        return 1;
+        return 10;
+
 
     if ((red = readByte()) == -1)
         return 1;
@@ -290,6 +286,9 @@ byte cmdColorWipe() {
 
 byte cmdDemo() {
 
+
+    if (strip == NULL)
+        return 10;
 
     uint32_t color = strip->Color(128, 0, 0);
 

@@ -150,6 +150,10 @@ module.exports.handler = function(args) {
 			return strip.setStripLength(args.length);
 
 		})
+		.then(function() {
+			return strip.write(0x14, []);
+
+		})
 /*
 		.then(function() {
 			return strip.pause(1000);
