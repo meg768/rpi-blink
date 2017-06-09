@@ -101,6 +101,7 @@ function NeopixelStrip(options) {
 		if (options.device == undefined)
 			options.device = '/dev/i2c-1';
 
+		console.log('Initiating...');
 		_wire = new I2C(options.address, {device: options.device});
 
 
