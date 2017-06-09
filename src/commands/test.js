@@ -59,7 +59,7 @@ function NeopixelStrip(options) {
 
 	_this.writeByte = function(command) {
 		return new Promise(function(resolve, reject) {
-			_wire.writeByte(parseInt(command), params, function(error) {
+			_wire.writeByte(parseInt(command), function(error) {
 				if (error)
 					reject(error);
 				else
