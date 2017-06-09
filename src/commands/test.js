@@ -20,10 +20,14 @@ function NeopixelStrip(options) {
 		green = parseInt(green);
 		blue  = parseInt(blue);
 
+		console.log('Setting color to', [red, green, blue]);
+
 		return _this.write(0x10, [red, green, blue]);
 	}
 
 	_this.fadeToColor = function(red, green, blue, steps) {
+
+		console.log('Fading to color', [red, green, blue]);
 
 //return _this.setColor(red, )
 		if (steps == undefined)
