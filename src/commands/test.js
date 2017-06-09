@@ -8,9 +8,7 @@ function NeopixelStrip(options) {
 	var _this = this;
 	var _wire = undefined;
 
-	function waitForReply() {
 
-	}
 	_this.pause = function(ms) {
 
 		return new Promise(function(resolve, reject) {
@@ -25,7 +23,7 @@ function NeopixelStrip(options) {
 
 		console.log('Setting color to', [red, green, blue]);
 
-		return _this.write(0x10, [red, green, blue]);
+		return _this.send([0x10, red, green, blue]);
 	}
 
 	_this.fadeToColor = function(red, green, blue, steps) {
@@ -41,27 +39,33 @@ function NeopixelStrip(options) {
 		blue   = parseInt(blue);
 		steps  = parseInt(steps);
 
-		return _this.write(0x13, [red, green, blue, steps]);
+		return _this.send([0x13, red, green, blue, steps]);
 	}
 
-	_this.colorWipe = function(red, green, blue, delay) {
-		red   = parseInt(red);
-		green = parseInt(green);
-		blue  = parseInt(blue);
-
-		if (delay == undefined)
-			delay = 100;
-
-		return _this.write(0x11, [red, green, blue, delay]);
-	}
 
 	_this.setStripLength = function(length) {
-		return _this.write(0x12, [parseInt(length)]);
+		return _this.send([0x12, parseInt(length)]);
 	}
 
-	_this.writeByte = function(command) {
+	_this.send = function(bytes) {
+
 		return new Promise(function(resolve, reject) {
-			_wire.writeByte(parseInt(command), function(error) {
+			_this.write(bytes).then(function() {
+				return _this.read();
+			})
+			.then(function(bytes) {
+				resolve(bytes);
+			})
+			.catch(function(error) {
+				reject();
+			})
+
+		});
+	};
+
+	_this.write = function(bytes) {
+		return new Promise(function(resolve, reject) {
+			_wire.write(bytes, function(error) {
 				if (error)
 					reject(error);
 				else
@@ -72,13 +76,14 @@ function NeopixelStrip(options) {
 		});
 
 	}
-	_this.write = function(command, params) {
+
+	_this.read = function() {
 		return new Promise(function(resolve, reject) {
-			_wire.writeBytes(parseInt(command), params, function(error) {
+			_wire.read(1, function(error, result) {
 				if (error)
 					reject(error);
 				else
-					resolve();
+					resolve(result);
 			});
 
 
@@ -98,9 +103,7 @@ function NeopixelStrip(options) {
 		_wire = new I2C(options.address, {device: options.device});
 
 
-		_wire.on('data', function(data) {
-			console.log(data);
-		});
+
 	}
 
 	init();
@@ -121,38 +124,6 @@ module.exports.builder = function(args) {
 
 
 };
-
-function read(wire) {
-	return new Promise(function(resolve, reject) {
-		wire.read(1, function(error, result) {
-			if (error)
-				reject(error);
-			else
-				resolve(result);
-		});
-
-	});
-}
-
-function write(wire, command, params) {
-	return new Promise(function(resolve, reject) {
-		wire.writeBytes(parseInt(command), params, function(error) {
-			if (error)
-				reject(error);
-			else
-				resolve();
-		});
-
-
-	});
-
-}
-
-function pause(ms) {
-	return new Promise(function(resolve, reject) {
-		setTimeout(resolve, ms);
-	});
-}
 
 module.exports.handler = function(args) {
 
