@@ -82,8 +82,7 @@ function NeopixelStrip(options) {
 	_this.read = function() {
 		return new Promise(function(resolve, reject) {
 			_wire.read(1, function(error, result) {
-				if (result == undefined)
-					console.log('UNDEFINED reult');
+				console.log('RESULT', result);
 				if (error)
 					reject(error);
 				else
