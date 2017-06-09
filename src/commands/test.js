@@ -54,6 +54,7 @@ function NeopixelStrip(options) {
 				return _this.read();
 			})
 			.then(function(bytes) {
+				console.log('Returned', bytes);
 				resolve(bytes);
 			})
 			.catch(function(error) {
