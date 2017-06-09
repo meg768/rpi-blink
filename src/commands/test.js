@@ -59,7 +59,7 @@ function NeopixelStrip(options) {
 				resolve(bytes);
 			})
 			.catch(function(error) {
-				reject();
+				reject(error);
 			})
 
 		});
