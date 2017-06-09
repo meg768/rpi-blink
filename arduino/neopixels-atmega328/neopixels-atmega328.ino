@@ -199,9 +199,9 @@ byte cmdFadeIn() {
 
     for (int i = 0; i < numPixels; i++) {
         uint32_t color = strip->getPixelColor(i);
-        rgb[i].red   = (int)(uint8_t)((color & 0x00FF0000) >> 16);
-        rgb[i].green = (int)(uint8_t)((color & 0x0000FF00) >> 8);
-        rgb[i].blue  = (int)(uint8_t)((color & 0X000000FF));
+        rgb[i].red   = (int)(uint8_t)(color >> 16);
+        rgb[i].green = (int)(uint8_t)(color >> 8);
+        rgb[i].blue  = (int)(uint8_t)(color);
     }
 
     for (int step = 0; step < numSteps; step++) {
@@ -215,7 +215,6 @@ byte cmdFadeIn() {
         }
 
         strip->show();
-        delay(1);
     
     }
 
