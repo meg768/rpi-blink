@@ -25,7 +25,7 @@ function NeopixelStrip(options) {
 
 	_this.fadeToColor = function(red, green, blue, steps) {
 
-return _this.setColor(red, green, blue);
+//return _this.setColor(red, )
 		if (steps == undefined)
 			steps = 128;
 

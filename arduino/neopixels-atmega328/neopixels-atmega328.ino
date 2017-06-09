@@ -199,7 +199,8 @@ byte cmdFadeIn() {
 
     int numPixels = strip.numPixels();
 
-    uint32_t *rgb = (uint32_t *)malloc(numPixels * sizeof(uint32_t)); 
+    static uint32_t rgb[255];
+//    uint32_t *rgb = (uint32_t *)malloc(numPixels * sizeof(uint32_t)); 
 
     if (rgb == 0)
         return 2;
@@ -234,7 +235,7 @@ byte cmdFadeIn() {
     strip.show();
 
     // Clean up
-    free(rgb);
+    //free(rgb);
 
     return 0;
 }
