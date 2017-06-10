@@ -5,13 +5,13 @@ module.exports.describe = 'Test Wiring Pi';
 
 function NeopixelStrip(options) {
 
+	const ACK = 6;
+	const NAK = 21;
+
 	var _this = this;
 	var _wire = undefined;
 
 	_this.wait = function(loop) {
-
-		const ACK = 6;
-		const NAK = 21;
 
 		// Default to make 20 tries
 		if (loop == undefined)
@@ -37,7 +37,6 @@ function NeopixelStrip(options) {
 						return _this.pause(100).then(function() {
 							return _this.wait(loop - 1);
 						});
-
 					}
 					else
 						return Promise.reject(new Error('Timeout'));
@@ -57,33 +56,8 @@ function NeopixelStrip(options) {
 		});
 
 	}
-/*
-	_this.readReply = function() {
-		return new Promise(function(resolve, reject) {
 
-			_this.read(1).then(function(bytes) {
-				console.log('Read bytes', bytes);
 
-				if (bytes.length > 0 && bytes[0] == 6) {
-					return Promise.resolve();
-				}
-				else {
-					console.log('Invalid reply, keep reading...');
-					return Promise.reject(new Error('Invalid reply'));
-				}
-			})
-			.then(function() {
-				resolve();
-			})
-
-			.catch(function(error) {
-				reject(error);
-			});
-
-		});
-
-	}
-*/
 	_this.pause = function(ms) {
 
 		return new Promise(function(resolve, reject) {
@@ -107,7 +81,7 @@ function NeopixelStrip(options) {
 		console.log('Fading to color', [red, green, blue]);
 
 		if (steps == undefined)
-			steps = 128;
+			steps = 32;
 
 		red    = parseInt(red);
 		green  = parseInt(green);
@@ -118,7 +92,7 @@ function NeopixelStrip(options) {
 	}
 
 
-	_this.setStripLength = function(length) {
+	_this.initialize = function(length) {
 		return _this.send([0x12, parseInt(length)]);
 	}
 
@@ -211,7 +185,7 @@ module.exports.handler = function(args) {
 
 
 		promise.then(function() {
-			return strip.setStripLength(args.length);
+			return strip.initialize(args.length);
 
 		})
 		/*
