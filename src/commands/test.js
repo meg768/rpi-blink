@@ -49,7 +49,7 @@ function NeopixelStrip(options) {
 
 	_this.send = function(bytes) {
 
-		return _this.write(bytes);
+//		return _this.write(bytes);
 
 		return _this.write(bytes).then(function() {
 			return _this.read();

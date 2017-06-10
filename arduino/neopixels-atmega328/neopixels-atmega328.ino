@@ -37,7 +37,7 @@
 #define CMD_DEMO          0x14
 
 Adafruit_NeoPixel *strip = NULL;
-
+int status = ACK;
 
 void setup()
 {
@@ -49,8 +49,8 @@ void setup()
 
 
     Wire.begin(I2C_ADDRESS);
-    Wire.onReceive(receiveData);
-    Wire.onRequest(sendData);
+    Wire.onReceive(onReceive);
+    Wire.onRequest(onRequest);
 }
 
 void loop() 
@@ -62,18 +62,21 @@ void loop()
 //    delay(100);
 }
 
-void sendData()
+void onRequest()
 {
+    Wire.write(status);
 }
 
 
-void receiveData(int bytes)
+void onReceive(int bytes)
 {
     
     if (Wire.available()) {
         byte command = Wire.read();
         byte reply = 0;
 
+        status = NAK;
+        
         switch (command) {
             case CMD_SET_COLOR: {
                 reply = cmdSetColor();
@@ -105,11 +108,8 @@ void receiveData(int bytes)
         if (reply > 0) {
             flush();
             blink(PIN_LED_1, reply);
-            Wire.write(NAK);
         }
-        else {
-            Wire.write(ACK);
-        }
+        status = ACK;
     }
 
     
