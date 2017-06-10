@@ -8,12 +8,16 @@ function NeopixelStrip(options) {
 	const ACK = 6;
 	const NAK = 21;
 
+	const CMD_INITIALIZE    = 0x10;
+	const CMD_SET_COLOR     = 0x11;
+	const CMD_FADE_TO_COLOR = 0x12;
+
 	var _this = this;
 	var _wire = undefined;
 
-	_this.wait = function(loop) {
+	_this.waitForReply = function(loop) {
 
-		// Default to make 20 tries
+		// Default to make 25 tries
 		if (loop == undefined)
 			loop = 25;
 
@@ -23,23 +27,21 @@ function NeopixelStrip(options) {
 				return Promise.resolve(bytes.length > 0 && bytes[0] == ACK ? ACK : NAK);
 			})
 			.catch(function(error) {
+				// If read failure, assume we got back NAK
 				return Promise.resolve(NAK);
 			})
 			.then(function(status) {
 				if (status == ACK) {
 					return Promise.resolve();
 				}
-				else if (status == NAK) {
+				else {
 					if (loop > 0) {
 						return _this.pause(100).then(function() {
-							return _this.wait(loop - 1);
+							return _this.waitForReply(loop - 1);
 						});
 					}
 					else
-						return Promise.reject(new Error('Timeout'));
-				}
-				else {
-					return Promise.reject(new Error('Invalid reply'));
+						return Promise.reject(new Error('Device timed out.'));
 				}
 			})
 
@@ -53,7 +55,6 @@ function NeopixelStrip(options) {
 		});
 
 	}
-
 
 	_this.pause = function(ms) {
 
@@ -69,12 +70,11 @@ function NeopixelStrip(options) {
 
 		console.log('Setting color to', [red, green, blue]);
 
-		return _this.send([0x10, red, green, blue]);
+		return _this.send([CMD_SET_COLOR, red, green, blue]);
 	}
 
 	_this.fadeToColor = function(red, green, blue, steps) {
 
-		//return _this.setColor(red, green, blue);
 		console.log('Fading to color', [red, green, blue]);
 
 		if (steps == undefined)
@@ -85,19 +85,19 @@ function NeopixelStrip(options) {
 		blue   = parseInt(blue);
 		steps  = parseInt(steps);
 
-		return _this.send([0x13, red, green, blue, steps]);
+		return _this.send([CMD_FADE_TO_COLOR, red, green, blue, steps]);
 	}
 
 
 	_this.initialize = function(length) {
-		return _this.send([0x12, parseInt(length)]);
+		return _this.send([CMD_INITIALIZE, parseInt(length)]);
 	}
 
 	_this.send = function(bytes) {
 
 		return new Promise(function(resolve, reject) {
 			_this.write(bytes).then(function() {
-				return _this.wait();
+				return _this.waitForReply();
 			})
 			.then(function() {
 				resolve();
@@ -110,9 +110,9 @@ function NeopixelStrip(options) {
 	};
 
 
-	_this.write = function(bytes) {
+	_this.write = function(data) {
 		return new Promise(function(resolve, reject) {
-			_wire.write(bytes, function(error) {
+			_wire.write(data, function(error) {
 				if (error)
 					reject(error);
 				else
@@ -125,7 +125,6 @@ function NeopixelStrip(options) {
 	}
 
 	_this.read = function(bytes) {
-
 		return new Promise(function(resolve, reject) {
 			_wire.read(bytes, function(error, result) {
 				if (error)
@@ -146,11 +145,7 @@ function NeopixelStrip(options) {
 		if (options.device == undefined)
 			options.device = '/dev/i2c-1';
 
-		console.log('Initiating...');
 		_wire = new I2C(options.address, {device: options.device});
-
-
-
 	}
 
 	init();
@@ -186,16 +181,6 @@ module.exports.handler = function(args) {
 			return strip.initialize(args.length);
 
 		})
-		/*
-		.then(function() {
-			return strip.writeByte(0x14);
-
-		})
-		*/
-		.then(function() {
-			return strip.pause(1);
-		})
-
 
 		.then(function() {
 			return strip.setColor(128, 0, 0);

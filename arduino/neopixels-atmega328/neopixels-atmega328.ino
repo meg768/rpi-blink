@@ -27,297 +27,308 @@
 #define PIN_LED_1         10
 #define PIN_LED_2         9
 
-//#define NEOPIXEL_LENGTH   8
 #define NEOPIXEL_PIN      4
 
-#define CMD_SET_COLOR     0x10  // red, green, blue
-#define CMD_COLOR_WIPE    0x11  // red, green, blue, delay
-#define CMD_SET_LENGTH    0x12  // size
-#define CMD_FADE_IN       0x13
+#define CMD_INITIALIZE    0x10  // size
+#define CMD_SET_COLOR     0x11  // red, green, blue
+#define CMD_FADE_TO_COLOR 0x12  // red, green, blue
+#define CMD_WIPE_TO_COLOR 0x13  // red, green, blue, delay
 #define CMD_DEMO          0x14
 
-Adafruit_NeoPixel *strip = NULL;
-int status = ACK;
+
+const int ERR_OK                = 0;
+const int ERR_INVALID_X         = 1;
+const int ERR_INVALID_PARAMETER = 2;
+const int ERR_PARAMETER_MISSING = 3;
+const int ERR_NOT_INITIALIZED   = 4;
+const int ERR_INVALID_COMMAND   = 5;
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class NeopixelStrip {
+
+
+    public:
+        
+        NeopixelStrip(int length) : _strip(length, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800) {
+        };
+
+        void setColor(int red, int green, int blue) {
+        
+            for (int i = 0; i < _strip.numPixels(); i++) {
+                _strip.setPixelColor(i, red, green, blue);
+            }
+        
+            _strip.show();
+        }    
+        
+        void wipeToColor(int red, int green, int blue, int wait) {
+        
+            for (int i = 0; i < _strip.numPixels(); i++) {
+                _strip.setPixelColor(i, red, green, blue);
+                _strip.show();
+                delay(wait);
+            }
+        }
+    
+        void fadeToColor(int red, int green, int blue, int numSteps) {
+        
+            struct RGB {
+                uint8_t red;
+                uint8_t green;
+                uint8_t blue;
+            }
+        
+            static rgb[240];
+            
+            int numPixels = _strip.numPixels();
+        
+            for (int i = 0; i < numPixels; i++) {
+                uint32_t color = _strip.getPixelColor(i);
+                rgb[i].red   = (int)(uint8_t)(color >> 16);
+                rgb[i].green = (int)(uint8_t)(color >> 8);
+                rgb[i].blue  = (int)(uint8_t)(color);
+            }
+        
+            for (int step = 0; step < numSteps; step++) {
+        
+                for (int i = 0; i < numPixels; i++) {
+                    uint8_t pixelRed   = rgb[i].red   + (step * (red   - rgb[i].red))   / numSteps; 
+                    uint8_t pixelGreen = rgb[i].green + (step * (green - rgb[i].green)) / numSteps;
+                    uint8_t pixelBlue  = rgb[i].blue  + (step * (blue  - rgb[i].blue))  / numSteps;
+            
+                    _strip.setPixelColor(i, pixelRed, pixelGreen, pixelBlue);
+                }
+        
+                _strip.show();
+            
+            }
+        
+            for (int i = 0; i < numPixels; i++)
+                _strip.setPixelColor(i, red, green, blue);
+        
+            
+            _strip.show();
+        
+        }
+    
+        
+    private:
+        Adafruit_NeoPixel _strip;
+};
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class App {
+
+    public:
+
+        App() {
+            _strip = NULL;
+            _status = ACK;
+        }
+        
+        void setup() {
+            pinMode(PIN_LED_1, OUTPUT);
+            pinMode(PIN_LED_2, OUTPUT);
+        
+            blink(PIN_LED_1, 3);
+            blink(PIN_LED_2, 3);
+        
+        }
+    
+        void loop() {
+            static int state = 0;
+            digitalWrite(PIN_LED_2, state == 0 ? LOW : HIGH);
+            state = !state;
+            delay(50);
+        };
+
+        int available() {
+            return Wire.available();
+        
+        };
+        
+        int readByte(int &byte) {
+        
+            long timeout = millis() + 200;
+            
+            for (;;) {
+                if (Wire.available()) {
+                    byte = (int)Wire.read();
+                    return true;
+                }
+        
+                if (millis() > timeout)
+                    return false;
+            }
+        
+        };
+        
+        int readRGB(int &red, int &green, int &blue) {
+        
+            return readByte(red) && readByte(green) && readByte(blue);
+            
+        };
+
+        int onCommand(int command) {
+            
+            switch (command) {
+                case CMD_INITIALIZE: {
+                    int length = 0;
+        
+                    if (!readByte(length))
+                        return ERR_INVALID_PARAMETER;
+        
+                    if (length < 0 || length > 240)
+                        return ERR_INVALID_PARAMETER;
+                        
+                    delete _strip;
+                    _strip = new NeopixelStrip(length);
+
+                    break;
+                }
+            
+                case CMD_SET_COLOR: {
+                    if (_strip == NULL)
+                        return ERR_NOT_INITIALIZED;
+                        
+                    int red = 0, green = 0, blue = 0;
+    
+                    if (!readRGB(red, green, blue))
+                        return ERR_INVALID_PARAMETER;
+                    
+                    _strip->setColor(red, green, blue);
+
+                    break;
+                };
+        
+                case CMD_WIPE_TO_COLOR: {
+                    if (_strip == NULL)
+                        return ERR_NOT_INITIALIZED;
+
+                    int red = 0, green = 0, blue = 0, delay = 0;
+    
+                    if (!readRGB(red, green, blue))
+                        return ERR_INVALID_PARAMETER;
+                    
+                    if (!readByte(delay))
+                        return ERR_INVALID_PARAMETER;
+    
+                    _strip->wipeToColor(red, green, blue, delay);
+
+                    break;
+                }
+    
+                case CMD_FADE_TO_COLOR: {
+                    if (_strip == NULL)
+                        return ERR_NOT_INITIALIZED;
+
+                    int red = 0, green = 0, blue = 0, steps = 0;
+    
+                    if (!readRGB(red, green, blue))
+                        return ERR_INVALID_PARAMETER;
+                    
+                    if (!readByte(steps))
+                        return ERR_INVALID_PARAMETER;
+    
+                    _strip->fadeToColor(red, green, blue, steps);
+
+                    break;
+                }
+            };
+
+            return ERR_OK;
+    
+        }
+        
+
+        
+        void onReceive(int bytes) {
+        
+            if (Wire.available()) {
+                int command = 0;
+                int reply = 0;
+                
+                if (readByte(command)) {
+                    _status = NAK;
+                    reply = onCommand(command);
+                    _status = ACK;
+                }
+                else 
+                    reply = ERR_INVALID_COMMAND;
+
+                if (reply > 0)
+                    blink(PIN_LED_1, reply);
+        
+            }
+        
+            
+        
+        }
+
+        void onRequest() {
+            Wire.write(_status);
+        }
+
+        
+        void blink(byte led, byte times)
+        {
+            for (byte i = 0; i < times; i++) {
+                digitalWrite(led, HIGH);
+                delay(200);
+                digitalWrite(led, LOW);
+                delay(100);
+            }
+        }
+        
+
+
+    private:
+    
+        NeopixelStrip *_strip;
+        uint8_t _status;
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+App app;
 
 void setup()
 {
-    pinMode(PIN_LED_1, OUTPUT);
-    pinMode(PIN_LED_2, OUTPUT);
-
-    blink(PIN_LED_1, 3);
-    blink(PIN_LED_2, 3);
-
-
     Wire.begin(I2C_ADDRESS);
     Wire.onReceive(onReceive);
     Wire.onRequest(onRequest);
+
+    
+    app.setup();
 }
+
+void onReceive(int bytes) {
+    app.onReceive(bytes);
+}
+
+void onRequest() {
+    app.onRequest();
+}
+
 
 void loop() 
 {
-    static int state = 0;
-    digitalWrite(PIN_LED_2, state == 0 ? LOW : HIGH);
-    state = !state;
-
-//    delay(100);
-}
-
-void onRequest()
-{
-    Wire.write(status);
-}
-
-
-void onReceive(int bytes)
-{
-    
-    if (Wire.available()) {
-        byte command = Wire.read();
-        byte reply = 0;
-
-        status = NAK;
-        
-        switch (command) {
-            case CMD_SET_COLOR: {
-                reply = cmdSetColor();
-                break;
-            };
-        /*
-    
-            case CMD_COLOR_WIPE: {
-                reply = cmdColorWipe();
-                break;
-            }
-          */
-            case CMD_SET_LENGTH: {
-                reply = cmdSetLength();
-                break;
-            }
-
-            case CMD_FADE_IN: {
-                reply = cmdFadeIn();
-                break;
-            }
-
-            case CMD_DEMO: {
-                reply = cmdDemo();
-                break;
-            }
-        };
-
-        if (reply > 0) {
-            flush();
-            blink(PIN_LED_1, reply);
-        }
-        status = ACK;
-    }
-
-    
-
-}
-
-
-void blink(byte led, byte times)
-{
-    for (byte i = 0; i < times; i++) {
-        digitalWrite(led, HIGH);
-        delay(200);
-        digitalWrite(led, LOW);
-        delay(100);
-    }
-}
-
-
-int flush()
-{
-    while (Wire.available()) {
-        Wire.read();
-        delay(100);
-    }
-
-    return 0;
-}
-
-
-int readByte() {
-
-    long timeout = millis() + 200;
-    
-    for (;;) {
-        if (Wire.available())
-            return (int)Wire.read();
-
-        if (millis() > timeout)
-            return -1;
-    }
-
+    app.loop();
 }
 
 
 
 
-byte cmdSetLength() {
-
-    int length = 0;
-
-    if ((length = readByte()) == -1)
-        return 1;
-
-    delete strip;
-    strip = new Adafruit_NeoPixel(length, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
-
-    strip->begin();
-
-    
-    return 0;
-
-}
 
 
-byte cmdFadeIn() {
-
-    struct RGB {
-        uint8_t red;
-        uint8_t green;
-        uint8_t blue;
-    }
-
-    static rgb[240];
-    
-    int red, green, blue, numSteps;
-
-    if (strip == NULL)
-        return 10;
-        
-    if ((red = readByte()) == -1)
-        return 1;
-
-    if ((green = readByte()) == -1)
-        return 2;
-
-    if ((blue = readByte()) == -1)
-        return 3;
-
-    if ((numSteps = readByte()) == -1)
-        return 4;
 
 
-    int numPixels = strip->numPixels();
 
-    for (int i = 0; i < numPixels; i++) {
-        uint32_t color = strip->getPixelColor(i);
-        rgb[i].red   = (int)(uint8_t)(color >> 16);
-        rgb[i].green = (int)(uint8_t)(color >> 8);
-        rgb[i].blue  = (int)(uint8_t)(color);
-    }
-
-    for (int step = 0; step < numSteps; step++) {
-
-        for (int i = 0; i < numPixels; i++) {
-            uint8_t pixelRed   = rgb[i].red   + (step * (red   - rgb[i].red))   / numSteps; 
-            uint8_t pixelGreen = rgb[i].green + (step * (green - rgb[i].green)) / numSteps;
-            uint8_t pixelBlue  = rgb[i].blue  + (step * (blue  - rgb[i].blue))  / numSteps;
-    
-            strip->setPixelColor(i, pixelRed, pixelGreen, pixelBlue);
-        }
-
-        strip->show();
-    
-    }
-
-    for (int i = 0; i < numPixels; i++)
-        strip->setPixelColor(i, red, green, blue);
-
-    
-    strip->show();
-
-    return 0;
-}
-
-
-byte cmdSetColor() {
-    int red, green, blue;
-
-    if (strip == NULL)
-        return 10;
-
-        
-    if ((red = readByte()) == -1)
-        return 1;
-
-    if ((green = readByte()) == -1)
-        return 2;
-
-    if ((blue = readByte()) == -1)
-        return 3;
-
-    for (uint16_t i = 0; i < strip->numPixels(); i++) {
-        strip->setPixelColor(i, red, green, blue);
-    }
-
-    strip->show();
-
-
-    return 0;
-}
-
-/*
-byte cmdColorWipe() {
-    int red, green, blue, wait;
-    
-    if (strip == NULL)
-        return 10;
-
-
-    if ((red = readByte()) == -1)
-        return 1;
-
-    if ((green = readByte()) == -1)
-        return 2;
-
-    if ((blue = readByte()) == -1)
-        return 3;
-
-    if ((wait = readByte()) == -1)
-        return 4;
-
-    for (uint16_t i = 0; i < strip->numPixels(); i++) {
-        strip->setPixelColor(i, red, green, blue);
-        strip->show();
-        delay(wait);
-    }
-
-    return 0;
-}
-*/
-byte cmdDemo() {
-
-
-    if (strip == NULL)
-        return 10;
-
-    uint32_t color = strip->Color(128, 0, 0);
-
-    for (uint16_t i = 0; i < strip->numPixels(); i++) {
-        strip->setPixelColor(i, 0, 0, 0);
-    }
-    
-    strip->show();
-    
-    for(uint16_t i=0; i<strip->numPixels()+4; i++) {
-        strip->setPixelColor(i  , color); // Draw new pixel
-        strip->setPixelColor(i-4, 0); // Erase pixel a few steps back
-        strip->show();
-        delay(25);
-    }
-
-    for (uint16_t i = 0; i < strip->numPixels(); i++) {
-        strip->setPixelColor(i, 0, 0, 0);
-    }
-
-    strip->show();
-    return 0;
-}
 
 
 
