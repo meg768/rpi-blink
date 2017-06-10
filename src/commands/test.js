@@ -14,7 +14,7 @@ function NeopixelStrip(options) {
 
 		return new Promise(function(resolve, reject) {
 
-			_this.readReply.then(function() {
+			_this.readReply().then(function() {
 				resolve();
 			})
 			.catch(function(error) {
