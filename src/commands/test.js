@@ -23,6 +23,7 @@ function NeopixelStrip(options) {
 				return Promise.resolve(bytes.length > 0 && bytes[0] == ACK ? ACK : NAK);
 			})
 			.catch(function(error) {
+				console.log(error.message);
 				return Promise.resolve(NAK);
 			})
 			.then(function(status) {
@@ -125,6 +126,7 @@ function NeopixelStrip(options) {
 	}
 
 	_this.read = function(bytes) {
+		return Promise.reject(new Error('Error READING'));
 		return new Promise(function(resolve, reject) {
 			_wire.read(bytes, function(error, result) {
 				if (error)
