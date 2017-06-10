@@ -31,14 +31,6 @@ function NeopixelStrip(options) {
 					reject(error);
 				}
 			});
-			})
-			.then(function() {
-				resolve();
-			})
-
-			.catch(function(error) {
-				reject(error);
-			});
 
 		});
 
