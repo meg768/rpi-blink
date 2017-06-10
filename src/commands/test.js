@@ -10,7 +10,7 @@ function NeopixelStrip(options) {
 
 	_this.wait = function(loop) {
 		if (loop == undefined)
-			loop = 10;
+			loop = 100;
 
 		return new Promise(function(resolve, reject) {
 
@@ -19,7 +19,10 @@ function NeopixelStrip(options) {
 			})
 			.catch(function(error) {
 				if (loop > 0) {
-					_this.wait(loop - 1).then(function() {
+					_this.pause(100).then(function() {
+						return _this.wait(loop - 1);
+					})
+					.then(function() {
 						resolve();
 					})
 					.catch(function(error) {
