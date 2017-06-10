@@ -8,20 +8,58 @@ function NeopixelStrip(options) {
 	var _this = this;
 	var _wire = undefined;
 
+	_this.wait = function(loop) {
+		if (loop == undefined)
+			loop = 10;
 
-	_this.wait = function() {
+		return new Promise(function(resolve, reject) {
+
+			_this.readReply.then(function() {
+				resolve();
+			}
+			.catch(function(error) {
+				if (loop > 0) {
+					_this.wait(loop - 1).then(function() {
+						resolve();
+					})
+					.catch(function(error) {
+						reject(error);
+					});
+
+				}
+				else {
+					reject(error);
+				}
+			});
+			})
+			.then(function() {
+				resolve();
+			})
+
+			.catch(function(error) {
+				reject(error);
+			});
+
+		});
+
+	}
+
+	_this.readReply = function() {
 		return new Promise(function(resolve, reject) {
 
 			_this.read(1).then(function(bytes) {
 				console.log('Read bytes', bytes);
 
 				if (bytes.length > 0 && bytes[0] == 6) {
-					return resolve();
+					return Promise.resolve();
 				}
 				else {
 					console.log('Invalid reply, keep reading...');
-					return _this.wait();
+					return Promise.reject(new Error('Invalid reply'));
 				}
+			})
+			.then(function() {
+				resolve();
 			})
 
 			.catch(function(error) {
