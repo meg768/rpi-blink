@@ -29,7 +29,7 @@ function NeopixelStrip(options) {
 				if (status == ACK) {
 					return Promise.resolve();
 				}
-				else if (status == NACK) {
+				else if (status == NAK) {
 					if (loop > 0) {
 						return _this.pause(100).then(function() {
 							return _this.wait(loop - 1);
