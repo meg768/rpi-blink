@@ -21,7 +21,7 @@ function NeopixelStrip(options) {
 				else {
 					return Promise.reject(new Error('Nothing to read!'));
 				}
-			}
+			})
 			.then(function(status) {
 				if (status == 6) {
 					return Promise.resolve();
