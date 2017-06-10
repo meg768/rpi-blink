@@ -14,13 +14,19 @@ function NeopixelStrip(options) {
 
 		return new Promise(function(resolve, reject) {
 
-			_this.read(1).then(function(bytes) {
-				if (bytes.length > 0) {
-					return Promise.resolve(bytes[0]);
-				}
-				else {
-					return Promise.reject(new Error('Nothing to read!'));
-				}
+			Promise.resolve().then(function() {
+				return _this.read(1).then(function(bytes) {
+					if (bytes.length > 0) {
+						return Promise.resolve(bytes[0]);
+					}
+					else {
+						return Promise.reject(new Error('Nothing to read!'));
+					}
+				})
+				.catch(function(error) {
+					return Promise.resolve(21);
+				});
+
 			})
 			.then(function(status) {
 				if (status == 6) {
