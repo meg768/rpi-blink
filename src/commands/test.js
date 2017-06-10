@@ -18,6 +18,10 @@ function NeopixelStrip(options) {
 				if (bytes.length > 0 && bytes[0] == 6) {
 					return resolve();
 				}
+				else {
+					console.log('Invalid reply, keep reading...');
+					return _this.wait();
+				}
 			})
 
 			.catch(function(error) {
