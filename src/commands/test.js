@@ -15,7 +15,7 @@ function NeopixelStrip(options) {
 
 		// Default to make 20 tries
 		if (loop == undefined)
-			loop = 20;
+			loop = 25;
 
 		return new Promise(function(resolve, reject) {
 
@@ -126,6 +126,7 @@ function NeopixelStrip(options) {
 	}
 
 	_this.read = function(bytes) {
+		return Promise.resolve([100]);
 		return Promise.reject(new Error('Error READING'));
 		return new Promise(function(resolve, reject) {
 			_wire.read(bytes, function(error, result) {
