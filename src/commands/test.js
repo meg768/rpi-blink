@@ -16,7 +16,7 @@ function NeopixelStrip(options) {
 
 			_this.readReply.then(function() {
 				resolve();
-			}
+			})
 			.catch(function(error) {
 				if (loop > 0) {
 					_this.wait(loop - 1).then(function() {
