@@ -14,31 +14,44 @@ function NeopixelStrip(options) {
 
 		return new Promise(function(resolve, reject) {
 
-			_this.readReply().then(function() {
+			_this.read(1).then(function(bytes) {
+				if (bytes.length > 0) {
+					return Promise.resolve(bytes[0]);
+				}
+				else {
+					return Promise.reject(new Error('Nothing to read!'));
+				}
+			}
+			.then(function(status) {
+				if (status == 6) {
+					return Promise.resolve();
+				}
+				else if (status == 21) {
+					if (loop > 0) {
+						return _this.pause(100).then(function() {
+							return _this.wait(loop - 1);
+						});
+
+					}
+					else
+						return Promise.reject(new Error('Timeout');
+				}
+				else {
+					return Promise.reject(new Error('Invalid reply'));
+				}
+			})
+
+			.then(function() {
 				resolve();
 			})
 			.catch(function(error) {
-				if (loop > 0) {
-					_this.pause(100).then(function() {
-						return _this.wait(loop - 1);
-					})
-					.then(function() {
-						resolve();
-					})
-					.catch(function(error) {
-						reject(error);
-					});
-
-				}
-				else {
-					reject(error);
-				}
+				reject(error);
 			});
 
 		});
 
 	}
-
+/*
 	_this.readReply = function() {
 		return new Promise(function(resolve, reject) {
 
@@ -64,7 +77,7 @@ function NeopixelStrip(options) {
 		});
 
 	}
-
+*/
 	_this.pause = function(ms) {
 
 		return new Promise(function(resolve, reject) {
