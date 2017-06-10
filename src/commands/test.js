@@ -19,20 +19,17 @@ function NeopixelStrip(options) {
 
 		return new Promise(function(resolve, reject) {
 
-			Promise.resolve().then(function() {
-				return _this.read(1).then(function(bytes) {
-					return Promise.resolve(bytes.length > 0 && bytes[0] == ACK ? ACK : NAK);
-				})
-				.catch(function(error) {
-					return Promise.resolve(NAK);
-				});
-
+			_this.read(1).then(function(bytes) {
+				return Promise.resolve(bytes.length > 0 && bytes[0] == ACK ? ACK : NAK);
+			})
+			.catch(function(error) {
+				return Promise.resolve(NAK);
 			})
 			.then(function(status) {
-				if (status == 6) {
+				if (status == ACK) {
 					return Promise.resolve();
 				}
-				else if (status == 21) {
+				else if (status == NACK) {
 					if (loop > 0) {
 						return _this.pause(100).then(function() {
 							return _this.wait(loop - 1);
