@@ -34,7 +34,7 @@ function NeopixelStrip(options) {
 
 					}
 					else
-						return Promise.reject(new Error('Timeout');
+						return Promise.reject(new Error('Timeout'));
 				}
 				else {
 					return Promise.reject(new Error('Invalid reply'));
