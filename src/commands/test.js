@@ -9,22 +9,22 @@ function NeopixelStrip(options) {
 	var _wire = undefined;
 
 	_this.wait = function(loop) {
+
+		const ACK = 6;
+		const NAK = 21;
+
+		// Default to make 20 tries
 		if (loop == undefined)
-			loop = 100;
+			loop = 20;
 
 		return new Promise(function(resolve, reject) {
 
 			Promise.resolve().then(function() {
 				return _this.read(1).then(function(bytes) {
-					if (bytes.length > 0) {
-						return Promise.resolve(bytes[0]);
-					}
-					else {
-						return Promise.reject(new Error('Nothing to read!'));
-					}
+					return Promise.resolve(bytes.length > 0 && bytes[0] == ACK ? ACK : NAK);
 				})
 				.catch(function(error) {
-					return Promise.resolve(21);
+					return Promise.resolve(NAK);
 				});
 
 			})
