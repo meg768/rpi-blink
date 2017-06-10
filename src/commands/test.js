@@ -9,6 +9,25 @@ function NeopixelStrip(options) {
 	var _wire = undefined;
 
 
+	_this.wait = function() {
+		return new Promise(function(resolve, reject) {
+
+			_this.read(1).then(function(bytes) {
+				console.log('Read bytes', bytes);
+
+				if (bytes.length > 0 && bytes[0] == 6)
+					return resolve();
+				}
+			})
+
+			.catch(function(error) {
+				reject(error);
+			});
+
+		});
+
+	}
+
 	_this.pause = function(ms) {
 
 		return new Promise(function(resolve, reject) {
@@ -49,27 +68,20 @@ function NeopixelStrip(options) {
 
 	_this.send = function(bytes) {
 
-//		return _this.write(bytes);
-
-		return _this.write(bytes).then(function() {
-			return _this.read();
-		})
-
 		return new Promise(function(resolve, reject) {
-			console.log('Sending', bytes);
 			_this.write(bytes).then(function() {
-				return _this.read();
+				return _this.wait();
 			})
-			.then(function(bytes) {
-				console.log('Returned', bytes);
-				resolve(bytes);
+			.then(function() {
+				resolve();
 			})
 			.catch(function(error) {
 				reject(error);
-			})
-
+			});
 		});
+
 	};
+
 
 	_this.write = function(bytes) {
 		return new Promise(function(resolve, reject) {
@@ -85,22 +97,14 @@ function NeopixelStrip(options) {
 
 	}
 
-	_this.read = function() {
+	_this.read = function(bytes) {
 		return new Promise(function(resolve, reject) {
-			_wire.read(1, function(error, result) {
-				if (result.length == 0)
-					return _this.read();
-				else {
-					console.log('RESULT', result);
-					if (error)
-						reject(error);
-					else
-						resolve(result);
-
-				}
+			_wire.read(bytes, function(error, result) {
+				if (error)
+					reject(error)
+				else
+					resolve(result);
 			});
-
-
 		});
 
 	}
