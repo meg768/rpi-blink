@@ -15,7 +15,7 @@ function NeopixelStrip(options) {
 			_this.read(1).then(function(bytes) {
 				console.log('Read bytes', bytes);
 
-				if (bytes.length > 0 && bytes[0] == 6)
+				if (bytes.length > 0 && bytes[0] == 6) {
 					return resolve();
 				}
 			})
