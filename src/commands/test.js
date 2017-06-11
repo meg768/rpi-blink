@@ -223,7 +223,7 @@ module.exports.handler = function(args) {
 		})
 
 		.then(function() {
-			return strip.setColor(args.red, args.green, args.blue);
+			return strip.foo(args.red, args.green, args.blue);
 
 		})
 
@@ -279,9 +279,11 @@ module.exports.handler = function(args) {
 			return strip.pause(1);
 		})
 		*/
+		/*
 		.then(function() {
 			return strip.fadeToColor(255, 255, 255, 255);
 		})
+		*/
 		.then(function() {
 			return strip.setColor(0, 0, 0);
 		})
