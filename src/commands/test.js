@@ -20,7 +20,7 @@ function NeopixelStrip(options) {
 
 		// Default to make 25 tries
 		if (loop == undefined)
-			loop = 50;
+			loop = 100;
 
 		return new Promise(function(resolve, reject) {
 
@@ -79,7 +79,7 @@ function NeopixelStrip(options) {
 		console.log('Wiping to color', [red, green, blue]);
 
 		if (delay == undefined)
-			delay = 32;
+			delay = 1;
 
 		red    = parseInt(red);
 		green  = parseInt(green);
