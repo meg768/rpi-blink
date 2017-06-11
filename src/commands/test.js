@@ -66,7 +66,7 @@ function NeopixelStrip(options) {
 		});
 	}
 
-	_this.foo(red, green, blue) {
+	_this.foo = function(red, green, blue) {
 		var bytes = [];
 
 		console.log('Setting pixels');
