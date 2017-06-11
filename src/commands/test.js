@@ -197,7 +197,7 @@ module.exports.builder = function(args) {
 	args.option('command', {alias: 'c', describe:'Command',  default:'color', choices: ['color', 'wipe']});
 	args.option('red', {alias: 'r', describe:'red', default: 8});
 	args.option('green', {alias: 'g', describe:'green', default: 8});
-	args.option('blue', {alias: 'b', describe:'blue', default: 8});
+	args.option('blue', {alias: 'b', describe:'blue', default: 80});
 	args.option('wait', {alias: 'w', describe:'Wait', default: 100});
 	args.option('length', {alias: 'l', describe:'Length', default: 8});
 
@@ -222,13 +222,14 @@ module.exports.handler = function(args) {
 		})
 
 		.then(function() {
-			return strip.foo(128, 0, 0);
+			return strip.foo(args.red, args.green, args.blue);
 
 		})
+
 		.then(function() {
-			return strip.pause(500);
+			return strip.pause(1000);
 		})
-
+/*
 		.then(function() {
 			return strip.foo(0, 128, 0);
 
@@ -275,10 +276,10 @@ module.exports.handler = function(args) {
 		.then(function() {
 			return strip.pause(1);
 		})
+		*/
 		.then(function() {
 			return strip.fadeToColor(0, 0, 0);
 		})
-
 
 		.then(function(result) {
 			console.log('OK');
