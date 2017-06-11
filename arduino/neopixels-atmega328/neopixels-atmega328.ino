@@ -203,8 +203,8 @@ class App {
 
             _error.blink(2, 250);
 
-             _strip = new NeopixelStrip(10);
-             _strip->setColor(64, 0, 0);            
+             _strip = new NeopixelStrip(20);
+             _strip->setColor(0, 32, 0);            
         }
     
         void loop() {
