@@ -218,7 +218,7 @@ module.exports.handler = function(args) {
 			return strip.pause(1);
 		})
 		.then(function() {
-			return strip.fadeToColor(0, 128, 128);
+			return strip.wipeToColor(0, 128, 128);
 		})
 		.then(function() {
 			return strip.pause(1);
@@ -230,7 +230,7 @@ module.exports.handler = function(args) {
 			return strip.pause(1);
 		})
 		.then(function() {
-			return strip.fadeToColor(128, 128, 128);
+			return strip.wipeToColor(128, 128, 128);
 		})
 		.then(function() {
 			return strip.pause(1);
