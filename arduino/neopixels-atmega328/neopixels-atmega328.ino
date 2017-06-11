@@ -67,7 +67,7 @@ class NeopixelStrip {
         };
 
         int numPixels() {
-            _strip.numPixels();
+            return _strip.numPixels();
         }
         
         void setColor(int red, int green, int blue) {
@@ -261,6 +261,7 @@ class App {
                 }
 
                 case CMD_SET_PIXELS: {
+
                     if (_strip == NULL)
                         return ERR_NOT_INITIALIZED;
 

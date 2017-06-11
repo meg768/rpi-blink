@@ -228,6 +228,7 @@ module.exports.handler = function(args) {
 		})
 
 		.then(function() {
+			console.log('Delay 1000');
 			return strip.pause(1000);
 		})
 /*
