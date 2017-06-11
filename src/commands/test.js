@@ -15,21 +15,22 @@ function NeopixelStrip(options) {
 	const CMD_SET_PIXEL     = 0x14;
 	const CMD_REFRESH       = 0x15;
 
-	var _this = this;
-	var _wire = undefined;
-	var _length = 0;
-	var _debug = 1;
+	var _this          = this;
+	var _wire          = undefined;
+	var _length        = 0;
+	var _debug         = 1;
+	var _timeout       = 5000;
+	var _retryInterval = 100;
 
 	function debug() {
 		if (_debug)
 			console.log.apply(this, arguments);
 	}
 
-	_this.waitForReply = function(loop) {
+	_this.waitForReply = function(datetime) {
 
-		// Default to make 25 tries
-		if (loop == undefined)
-			loop = 100;
+		if (datetime == undefined)
+			datetime = new Date();
 
 		return new Promise(function(resolve, reject) {
 
@@ -45,9 +46,11 @@ function NeopixelStrip(options) {
 					return Promise.resolve();
 				}
 				else {
-					if (loop > 0) {
-						return _this.pause(100).then(function() {
-							return _this.waitForReply(loop - 1);
+					var now = new Date();
+
+					if (now.getTime() - datetime.getTime() < _timeout) {
+						return _this.pause(_retryInterval).then(function() {
+							return _this.waitForReply(datetime);
 						});
 					}
 					else
@@ -171,9 +174,9 @@ function NeopixelStrip(options) {
 			.catch(function(error) {
 				var now = new Date();
 
-				if (now.getTime() - datetime.getTime() < 5000) {
+				if (now.getTime() - datetime.getTime() < _timeout) {
 
-					return _this.pause(100).then(function() {
+					return _this.pause(_retryInterval).then(function() {
 						debug('send() failed, trying to send again...');
 						return _this.send(command, bytes, datetime);
 					});
