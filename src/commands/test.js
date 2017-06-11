@@ -161,7 +161,7 @@ function NeopixelStrip(options) {
 	_this.send = function(command, bytes, loop) {
 
 		if (loop == undefined)
-			loop = 25;
+			loop = 50;
 
 		return new Promise(function(resolve, reject) {
 
