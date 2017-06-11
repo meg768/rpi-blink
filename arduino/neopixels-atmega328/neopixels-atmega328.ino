@@ -49,6 +49,7 @@ class NeopixelStrip {
     public:
         
         NeopixelStrip(int length) : _strip(length, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800) {
+            _strip.begin();
         };
 
         void setColor(int red, int green, int blue) {

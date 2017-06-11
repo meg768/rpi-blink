@@ -11,6 +11,7 @@ function NeopixelStrip(options) {
 	const CMD_INITIALIZE    = 0x10;
 	const CMD_SET_COLOR     = 0x11;
 	const CMD_FADE_TO_COLOR = 0x12;
+	const CMD_WIPE_TO_COLOR = 0x13;
 
 	var _this = this;
 	var _wire = undefined;
@@ -71,6 +72,21 @@ function NeopixelStrip(options) {
 		console.log('Setting color to', [red, green, blue]);
 
 		return _this.send([CMD_SET_COLOR, red, green, blue]);
+	}
+
+	_this.wipeToColor = function(red, green, blue, delay) {
+
+		console.log('Wiping to color', [red, green, blue]);
+
+		if (delay == undefined)
+			delay = 32;
+
+		red    = parseInt(red);
+		green  = parseInt(green);
+		blue   = parseInt(blue);
+		delay  = parseInt(delay);
+
+		return _this.send([CMD_WIPE_TO_COLOR, red, green, blue, delay]);
 	}
 
 	_this.fadeToColor = function(red, green, blue, steps) {
