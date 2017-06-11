@@ -3,7 +3,7 @@
 #include <avr/power.h>
 #endif
 
-#include "Wire.h" // wrapper class for I2C slave routines
+#include "Wire.h"
 
 // IMPORTANT: To reduce NeoPixel burnout risk, add 1000 uF capacitor across
 // pixel power leads, add 300 - 500 Ohm resistor on first pixel's data input
@@ -19,29 +19,26 @@
 //   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
 //   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
 
-#define ACK               6
-#define NAK               21
+const int ACK = 6;
+const int NAK = 21;
 
-#define I2C_ADDRESS       0x26
+const int I2C_ADDRESS = 0x26;
 
-#define PIN_LED_1         10
-#define PIN_LED_2         9
+const int PIN_LED_1 = 10;
+const int PIN_LED_2 = 9;
 
-#define NEOPIXEL_PIN      4
+const int NEOPIXEL_PIN  = 4;
 
-#define CMD_INITIALIZE    0x10  // size
-#define CMD_SET_COLOR     0x11  // red, green, blue
-#define CMD_FADE_TO_COLOR 0x12  // red, green, blue
-#define CMD_WIPE_TO_COLOR 0x13  // red, green, blue, delay
-#define CMD_DEMO          0x14
-
+const int CMD_INITIALIZE    = 0x10;  // size
+const int CMD_SET_COLOR     = 0x11;  // red, green, blue
+const int CMD_FADE_TO_COLOR = 0x12;  // red, green, blue
+const int CMD_WIPE_TO_COLOR = 0x13;  // red, green, blue, delay
 
 const int ERR_OK                = 0;
-const int ERR_INVALID_X         = 1;
-const int ERR_INVALID_PARAMETER = 2;
-const int ERR_PARAMETER_MISSING = 3;
-const int ERR_NOT_INITIALIZED   = 4;
-const int ERR_INVALID_COMMAND   = 5;
+const int ERR_INVALID_PARAMETER = 1;
+const int ERR_PARAMETER_MISSING = 2;
+const int ERR_NOT_INITIALIZED   = 3;
+const int ERR_INVALID_COMMAND   = 4;
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -121,36 +118,84 @@ class NeopixelStrip {
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
+class LedLamp {
+
+    public:
+        
+        LedLamp(int pin = -1) {
+
+            if (pin >= 0)
+                setPin(pin);
+        }
+
+        void setPin(int pin) {
+            _pin = pin;
+            _state = LOW;
+            
+            pinMode(pin, OUTPUT);
+            digitalWrite(pin, _state);
+        }
+
+        void setState(int state) {
+            _state = state ? HIGH : LOW;
+            digitalWrite(_pin, _state);
+        }
+        
+        void toggleState() {
+            setState(_state == LOW ? HIGH : LOW);
+        }
+
+        void blink(int blinks = 1, int wait = 200) {
+            for (int i = 0; i < blinks; i++) {
+                toggleState();
+                delay(wait);
+            }
+        }
+
+    private:
+        int _state;
+        int _pin;
+};
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+static void *_app = NULL;
+
 class App {
 
+    
     public:
 
         App() {
+            _app = (void *)this;
             _strip = NULL;
             _status = ACK;
+
+            _error.setPin(PIN_LED_1);
+            _heartbeat.setPin(PIN_LED_2);
         }
         
         void setup() {
-            pinMode(PIN_LED_1, OUTPUT);
-            pinMode(PIN_LED_2, OUTPUT);
-        
-            blink(PIN_LED_1, 3);
-            blink(PIN_LED_2, 3);
-        
+            Wire.begin(I2C_ADDRESS);
+            Wire.onReceive(App::receive);
+            Wire.onRequest(App::request);            
+
+            _error.blink(2, 250);
         }
     
         void loop() {
-            static int state = 0;
-            digitalWrite(PIN_LED_2, state == 0 ? LOW : HIGH);
-            state = !state;
-            delay(50);
+            _heartbeat.toggleState();
+            delay(100);
         };
 
-        int available() {
-            return Wire.available();
-        
+        static void receive(int bytes) {
+            ((App *)_app)->onReceive(bytes);
         };
         
+        static void request() {
+            ((App *)_app)->onRequest();
+        };
+
         int readByte(int &byte) {
         
             long timeout = millis() + 200;
@@ -180,7 +225,7 @@ class App {
                     int length = 0;
         
                     if (!readByte(length))
-                        return ERR_INVALID_PARAMETER;
+                        return ERR_PARAMETER_MISSING;
         
                     if (length < 0 || length > 240)
                         return ERR_INVALID_PARAMETER;
@@ -245,23 +290,20 @@ class App {
         }
         
 
-        
+
         void onReceive(int bytes) {
         
             if (Wire.available()) {
-                int command = 0;
-                int reply = 0;
+                int command = ERR_INVALID_COMMAND, error = ERR_OK;
                 
                 if (readByte(command)) {
                     _status = NAK;
-                    reply = onCommand(command);
+                    error = onCommand(command);
                     _status = ACK;
                 }
-                else 
-                    reply = ERR_INVALID_COMMAND;
 
-                if (reply > 0)
-                    blink(PIN_LED_1, reply);
+                if (error > 0)
+                    _error.blink(error);
         
             }
         
@@ -273,21 +315,11 @@ class App {
             Wire.write(_status);
         }
 
-        
-        void blink(byte led, byte times)
-        {
-            for (byte i = 0; i < times; i++) {
-                digitalWrite(led, HIGH);
-                delay(200);
-                digitalWrite(led, LOW);
-                delay(100);
-            }
-        }
-        
 
 
     private:
-    
+
+        LedLamp _error, _heartbeat;
         NeopixelStrip *_strip;
         uint8_t _status;
 };
@@ -299,20 +331,7 @@ App app;
 
 void setup()
 {
-    Wire.begin(I2C_ADDRESS);
-    Wire.onReceive(onReceive);
-    Wire.onRequest(onRequest);
-
-    
     app.setup();
-}
-
-void onReceive(int bytes) {
-    app.onReceive(bytes);
-}
-
-void onRequest() {
-    app.onRequest();
 }
 
 
