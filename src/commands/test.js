@@ -12,7 +12,7 @@ function NeopixelStrip(options) {
 	const CMD_SET_COLOR     = 0x11;
 	const CMD_FADE_TO_COLOR = 0x12;
 	const CMD_WIPE_TO_COLOR = 0x13;
-	const CMD_SET_PIXELS    = 0x15;
+	const CMD_SET_PIXELS    = 0x14;
 
 	var _this = this;
 	var _wire = undefined;
@@ -222,7 +222,7 @@ module.exports.handler = function(args) {
 		})
 
 		.then(function() {
-			return strip.setColor(128, 0, 0);
+			return strip.foo(128, 0, 0);
 
 		})
 		.then(function() {
@@ -230,14 +230,14 @@ module.exports.handler = function(args) {
 		})
 
 		.then(function() {
-			return strip.setColor(0, 128, 0);
+			return strip.foo(0, 128, 0);
 
 		})
 		.then(function() {
 			return strip.pause(500);
 		})
 		.then(function() {
-			return strip.setColor(0, 0, 128);
+			return strip.foo(0, 0, 128);
 
 		})
 		.then(function() {
