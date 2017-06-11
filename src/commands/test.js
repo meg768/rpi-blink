@@ -15,22 +15,22 @@ function NeopixelStrip(options) {
 	const CMD_SET_PIXEL     = 0x14;
 	const CMD_REFRESH       = 0x15;
 
-	var _this          = this;
-	var _wire          = undefined;
-	var _length        = 0;
-	var _debug         = 1;
-	var _timeout       = 5000;
-	var _retryInterval = 100;
+	var _this          = this;         // That
+	var _wire          = undefined;    // I2C communication
+	var _length        = 0;            // Length of Neopixels
+	var _debug         = 1;            // Output log messages to console?
+	var _timeout       = 5000;         // Read/write timeout in ms
+	var _retryInterval = 100;          // Milliseconds to wait before retrying read/write
 
 	function debug() {
 		if (_debug)
 			console.log.apply(this, arguments);
 	}
 
-	_this.waitForReply = function(datetime) {
+	_this.waitForReply = function(timestamp) {
 
-		if (datetime == undefined)
-			datetime = new Date();
+		if (timestamp == undefined)
+			timestamp = new Date();
 
 		return new Promise(function(resolve, reject) {
 
@@ -50,7 +50,7 @@ function NeopixelStrip(options) {
 
 					if (now.getTime() - datetime.getTime() < _timeout) {
 						return _this.pause(_retryInterval).then(function() {
-							return _this.waitForReply(datetime);
+							return _this.waitForReply(timestamp);
 						});
 					}
 					else
@@ -161,10 +161,10 @@ function NeopixelStrip(options) {
 		return _this.send(CMD_INITIALIZE, [parseInt(length)]);
 	}
 
-	_this.send = function(command, bytes, datetime) {
+	_this.send = function(command, bytes, timestamp) {
 
-		if (datetime == undefined)
-			datetime = new Date();
+		if (timestamp == undefined)
+			timestamp = new Date();
 
 		return new Promise(function(resolve, reject) {
 
@@ -178,7 +178,7 @@ function NeopixelStrip(options) {
 
 					return _this.pause(_retryInterval).then(function() {
 						debug('send() failed, trying to send again...');
-						return _this.send(command, bytes, datetime);
+						return _this.send(command, bytes, timestamp);
 					});
 				}
 				else {
