@@ -72,7 +72,7 @@ function NeopixelStrip(options) {
 		console.log('Setting pixels');
 		bytes.push(CMD_SET_PIXELS);
 
-		for (int i = 0; i < _length; i++) {
+		for (var i = 0; i < _length; i++) {
 			bytes.push(red);
 			bytes.push(green);
 			bytes.push(blue);
