@@ -158,10 +158,10 @@ function NeopixelStrip(options) {
 		return _this.send(CMD_INITIALIZE, [parseInt(length)]);
 	}
 
-	_this.send = function(command, bytes, loop) {
+	_this.send = function(command, bytes, datetime) {
 
-		if (loop == undefined)
-			loop = 50;
+		if (datetime == undefined)
+			datetime = new Date();
 
 		return new Promise(function(resolve, reject) {
 
@@ -169,10 +169,12 @@ function NeopixelStrip(options) {
 				return _this.waitForReply();
 			})
 			.catch(function(error) {
-				if (loop > 0) {
+				var now = new Date();
+
+				if (now.getTime() - datetime.getTime() > 5000) {
 					return _this.pause(100).then(function() {
 						debug('send() failed, trying to send again...');
-						return _this.send(command, bytes, loop - 1);
+						return _this.send(command, bytes, new Date());
 					});
 				}
 				else {
