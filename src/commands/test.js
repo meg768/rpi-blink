@@ -229,7 +229,7 @@ module.exports.handler = function(args) {
 
 		.then(function() {
 			console.log('Delay 1000');
-			return strip.pause(1000);
+			return strip.pause(5000);
 		})
 /*
 		.then(function() {
@@ -283,7 +283,7 @@ module.exports.handler = function(args) {
 			return strip.fadeToColor(255, 255, 255, 255);
 		})
 		.then(function() {
-			return strip.fadeToColor(0, 0, 0, 255);
+			return strip.setColor(0, 0, 0);
 		})
 
 		.then(function(result) {
