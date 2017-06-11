@@ -82,6 +82,8 @@ function NeopixelStrip(options) {
 
 		}
 
+		console.log('Sending pixels', bytes);
+
 		return _this.send(CMD_SET_PIXELS, bytes);
 
 	}
