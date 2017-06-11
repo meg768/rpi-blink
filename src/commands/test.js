@@ -73,7 +73,7 @@ function NeopixelStrip(options) {
 		green = parseInt(green);
 		blue  = parseInt(blue);
 
-		console.log('Setting pixels');
+		console.log('Setting pixels', _length);
 		bytes.push(CMD_SET_PIXELS);
 
 		for (var i = 0; i < _length; i++) {
@@ -222,7 +222,7 @@ module.exports.handler = function(args) {
 		})
 
 		.then(function() {
-			return strip.setColor(args.red, args.green, args.blue);
+			return strip.foo(args.red, args.green, args.blue);
 
 		})
 

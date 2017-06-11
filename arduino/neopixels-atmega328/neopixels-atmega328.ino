@@ -45,6 +45,16 @@ const int ERR_INVALID_COMMAND   = 4;
 const int ERR_OUT_OF_MEMORY     = 5;
 
 
+typedef struct RGB {
+    uint8_t red;
+    uint8_t green;
+    uint8_t blue;
+};
+
+static RGB rgb[240];
+
+//static RGB rgb[240];
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class NeopixelStrip {
@@ -69,11 +79,11 @@ class NeopixelStrip {
             _strip.show();
         }    
 
-        void setPixels(uint32_t *pixels) {
-            
-            for (int i = 0; i < _strip.numPixels(); i++) {
-                _strip.setPixelColor(i, *pixels++);
-            }
+        void setPixelColor(int i, int red, int green, int blue) {            
+          _strip.setPixelColor(i, rgb->red, rgb->green, rgb->blue);
+        }
+
+        void show() {
             _strip.show();
         }
 
@@ -88,13 +98,6 @@ class NeopixelStrip {
     
         void fadeToColor(int red, int green, int blue, int numSteps) {
         
-            struct RGB {
-                uint8_t red;
-                uint8_t green;
-                uint8_t blue;
-            }
-        
-            static rgb[240];
             
             int numPixels = _strip.numPixels();
         
@@ -261,28 +264,18 @@ class App {
                     if (_strip == NULL)
                         return ERR_NOT_INITIALIZED;
 
-                    int error = ERR_OK;
                     int red, green, blue;
                     int numPixels = _strip->numPixels();
-                   uint32_t *pixels = (uint32_t *)malloc(numPixels * sizeof(uint32_t));
-                    //static uint32_t pixels[240]; //= (uint32_t *)malloc(numPixels * sizeof(uint32_t));
-        
-                    if (pixels == NULL)
-                        return ERR_OUT_OF_MEMORY;
                         
                     for (int i = 0; i < numPixels; i++) {
                         if (!readRGB(red, green, blue)) {
-                            error = ERR_PARAMETER_MISSING;
-                            break;
+                            return ERR_PARAMETER_MISSING;
                         }
 
-                        pixels[i] = ((uint8_t)red << 16) || ((uint8_t)green << 8) || (uint8_t)blue;
+                        _strip->setPixelColor(i, red, green, blue);
                     }
-                    
-                    _strip->setPixels(pixels);
-                    free(pixels);
 
-                    return error;
+                    _strip->show();
                     break;
                 };
 
