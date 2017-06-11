@@ -3,6 +3,9 @@
 #include <avr/power.h>
 #endif
 
+#define NO_GLOBAL_INSTANCES 1
+#define NO_GLOBAL_INSTANCES 1
+
 #include "Wire.h"
 
 // IMPORTANT: To reduce NeoPixel burnout risk, add 1000 uF capacitor across
@@ -34,7 +37,8 @@ const int CMD_INITIALIZE    = 0x10;  // size
 const int CMD_SET_COLOR     = 0x11;  // red, green, blue
 const int CMD_FADE_TO_COLOR = 0x12;  // red, green, blue
 const int CMD_WIPE_TO_COLOR = 0x13;  // red, green, blue, delay
-const int CMD_SET_PIXELS    = 0x14;  // array of red, green, blue
+const int CMD_SET_PIXEL     = 0x14;  // 
+const int CMD_REFRESH       = 0x15;  // 
 
 
 const int ERR_OK                = 0;
@@ -43,7 +47,6 @@ const int ERR_PARAMETER_MISSING = 2;
 const int ERR_NOT_INITIALIZED   = 3;
 const int ERR_INVALID_COMMAND   = 4;
 const int ERR_OUT_OF_MEMORY     = 5;
-
 
 typedef struct RGB {
     uint8_t red;
@@ -220,26 +223,42 @@ class App {
             ((App *)_app)->onRequest();
         };
 
-        int readByte(int &byte) {
-        
-            long timeout = millis() + 200;
+        int waitForAvailableBytes(int bytes) 
+        {
+            long timeout = millis() + 300;
             
             for (;;) {
-                if (Wire.available()) {
-                    byte = (int)Wire.read();
+                if (Wire.available() >= bytes) {
                     return true;
                 }
-        
+
+                delay(100);
+                
                 if (millis() > timeout)
                     return false;
             }
-        
+        }
+
+        int readByte(int &data) {
+
+            if (!waitForAvailableBytes(1))
+                return false;
+
+            data = Wire.read();
+
+            return true;
         };
         
         int readRGB(int &red, int &green, int &blue) {
-        
-            return readByte(red) && readByte(green) && readByte(blue);
-            
+
+            if (!waitForAvailableBytes(3))
+                return false;
+
+            red = Wire.read();
+            blue = Wire.read();
+            green = Wire.read();
+
+            return true;            
         };
 
         int onCommand(int command) {
@@ -264,21 +283,27 @@ class App {
                     break;
                 }
 
-                case CMD_SET_PIXELS: {
+                case CMD_SET_PIXEL: {
 
                     if (_strip == NULL)
                         return ERR_NOT_INITIALIZED;
 
-                    int red, green, blue;
-                    int numPixels = _strip->numPixels();
-                        
-                    for (int i = 0; i < numPixels; i++) {
-                        if (!readRGB(red, green, blue)) {
-                            return ERR_PARAMETER_MISSING;
-                        }
+                    int red = 0, green = 0, blue = 0, index = 0;
+    
+                    if (!readByte(index))
+                        return ERR_INVALID_PARAMETER;
 
-                        _strip->setPixelColor(i, red, green, blue);
-                    }
+                    if (!readRGB(red, green, blue))
+                        return ERR_INVALID_PARAMETER;
+
+                    _strip->setPixelColor(index, red, green, blue);
+                    break;
+                };
+
+                case CMD_REFRESH: {
+
+                    if (_strip == NULL)
+                        return ERR_NOT_INITIALIZED;
 
                     _strip->show();
                     break;
@@ -346,7 +371,7 @@ class App {
 
         void onReceive(int bytes) {
         
-            if (Wire.available()) {
+            while (Wire.available()) {
                 int command = ERR_INVALID_COMMAND, error = ERR_OK;
                 
                 if (readByte(command)) {

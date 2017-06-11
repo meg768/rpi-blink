@@ -12,7 +12,8 @@ function NeopixelStrip(options) {
 	const CMD_SET_COLOR     = 0x11;
 	const CMD_FADE_TO_COLOR = 0x12;
 	const CMD_WIPE_TO_COLOR = 0x13;
-	const CMD_SET_PIXELS    = 0x14;
+	const CMD_SET_PIXEL     = 0x14;
+	const CMD_REFRESH       = 0x15;
 
 	var _this = this;
 	var _wire = undefined;
@@ -66,6 +67,37 @@ function NeopixelStrip(options) {
 		});
 	}
 
+
+
+	_this.foo = function(red, green, blue) {
+
+		red   = parseInt(red);
+		green = parseInt(green);
+		blue  = parseInt(blue);
+
+		return new Promise(function(resolve, reject) {
+			var promise = Promise.resolve();
+
+			for (var i = 0; i < _length; i++) {
+				promise = promise.then(function() {
+					return _this.setPixel(CMD_SET_PIXEL, [i, red, green, blue]);
+				});
+			}
+
+			promise.then(function() {
+				return _this.send(CMD_REFRESH, []);
+			})
+			.then(function() {
+				resolve();
+			})
+			.catch(function(error) {
+				reject(error);
+			})
+
+		});
+
+	}
+
 	_this.foo = function(red, green, blue) {
 		var bytes = [];
 
@@ -82,7 +114,25 @@ function NeopixelStrip(options) {
 
 		}
 
-		console.log('Sending pixels');
+		return _this.send(CMD_SET_PIXELS, bytes);
+
+	}
+
+	_this.foo = function(red, green, blue) {
+		var bytes = [];
+
+		red   = parseInt(red);
+		green = parseInt(green);
+		blue  = parseInt(blue);
+
+		console.log('Setting pixels', _length);
+
+		for (var i = 0; i < _length; i++) {
+			bytes.push(red);
+			bytes.push(green);
+			bytes.push(blue);
+
+		}
 
 		return _this.send(CMD_SET_PIXELS, bytes);
 
