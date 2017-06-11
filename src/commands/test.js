@@ -76,14 +76,22 @@ function NeopixelStrip(options) {
 		blue  = parseInt(blue);
 
 		return new Promise(function(resolve, reject) {
-			var promise = Promise.resolve();
+
+			var packets = [];
 
 			for (var i = 0; i < _length; i++) {
+				packets.push([i, red, green, blue]);
+			}
+
+			var promise = Promise.resolve();
+
+			packets.forEach(function(packet) {
 				promise = promise.then(function() {
 					console.log([i, red, green, blue]);
 					return _this.send(CMD_SET_PIXEL, [i, red, green, blue]);
 				});
-			}
+
+			});
 
 			promise.then(function() {
 				return _this.send(CMD_REFRESH, []);
