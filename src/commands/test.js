@@ -27,7 +27,6 @@ function NeopixelStrip(options) {
 				return Promise.resolve(bytes.length > 0 && bytes[0] == ACK ? ACK : NAK);
 			})
 			.catch(function(error) {
-				console.log('Raad error, trying again...');
 				// If read failure, assume we got back NAK
 				return Promise.resolve(NAK);
 			})
