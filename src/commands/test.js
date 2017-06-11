@@ -152,7 +152,10 @@ function NeopixelStrip(options) {
 		return _this.send(CMD_INITIALIZE, [parseInt(length)]);
 	}
 
-	_this.send = function(command, bytes) {
+	_this.send = function(command, bytes, retry) {
+
+		if (retry == undefined)
+			retry = 10;
 
 		return new Promise(function(resolve, reject) {
 			_this.write(command, bytes).then(function() {
@@ -162,6 +165,17 @@ function NeopixelStrip(options) {
 				resolve();
 			})
 			.catch(function(error) {
+				if (retry > 0) {
+					console.log('Retrying to send data');
+					return _this.send(command, bytes, retry - 1);
+				}
+				else {
+					return Promise.reject(error);
+
+				}
+			})
+			.catch(function(error) {
+				console.log('Write failed');
 				reject(error);
 			});
 		});
@@ -169,11 +183,16 @@ function NeopixelStrip(options) {
 	};
 
 
+
+
 	_this.write = function(command, data) {
 		return new Promise(function(resolve, reject) {
 			_wire.writeBytes(command, data, function(error) {
-				if (error)
+				if (error) {
+					_this.pause(100)
 					reject(error);
+
+				}
 				else
 					resolve();
 			});

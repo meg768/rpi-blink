@@ -27,9 +27,9 @@ const int NAK = 21;
 
 const int I2C_ADDRESS = 0x26;
 
-const int PIN_LED_1 = 10;
-const int PIN_LED_2 = 9;
-const int PIN_LED_BUSY = 11;
+const int PIN_LED_HEARTBEAT = 9;
+const int PIN_LED_ERROR     = 10;
+const int PIN_LED_BUSY      = 11;
 
 const int NEOPIXEL_PIN  = 4;
 
@@ -194,8 +194,8 @@ class App {
             _strip = NULL;
             _status = ACK;
 
-            _error.setPin(PIN_LED_1);
-            _heartbeat.setPin(PIN_LED_2);
+            _error.setPin(PIN_LED_ERROR);
+            _heartbeat.setPin(PIN_LED_HEARTBEAT);
             _busy.setPin(PIN_LED_BUSY);
         }
         
@@ -211,8 +211,13 @@ class App {
         }
     
         void loop() {
-            _heartbeat.toggleState();
-            delay(100);
+            static uint32_t counter = 0;
+
+            counter++;
+
+            if ((counter % 1000) == 0)
+                _heartbeat.toggleState();
+    
         };
 
         static void receive(int bytes) {
