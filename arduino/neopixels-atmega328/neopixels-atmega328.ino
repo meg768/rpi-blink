@@ -181,6 +181,9 @@ class App {
             Wire.onRequest(App::request);            
 
             _error.blink(2, 250);
+
+             _strip = new NeopixelStrip(10);
+             _strip->setColor(64, 0, 0);            
         }
     
         void loop() {
