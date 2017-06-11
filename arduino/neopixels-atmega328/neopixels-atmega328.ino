@@ -26,6 +26,7 @@ const int I2C_ADDRESS = 0x26;
 
 const int PIN_LED_1 = 10;
 const int PIN_LED_2 = 9;
+const int PIN_LED_BUSY = 11;
 
 const int NEOPIXEL_PIN  = 4;
 
@@ -189,6 +190,7 @@ class App {
 
             _error.setPin(PIN_LED_1);
             _heartbeat.setPin(PIN_LED_2);
+            _busy.setPin(PIN_LED_BUSY);
         }
         
         void setup() {
@@ -259,23 +261,28 @@ class App {
                     if (_strip == NULL)
                         return ERR_NOT_INITIALIZED;
 
+                    int error = ERR_OK;
                     int red, green, blue;
                     int numPixels = _strip->numPixels();
-                    uint32_t *pixels = (uint32_t *)malloc(numPixels * sizeof(uint32_t));
-
+                   uint32_t *pixels = (uint32_t *)malloc(numPixels * sizeof(uint32_t));
+                    //static uint32_t pixels[240]; //= (uint32_t *)malloc(numPixels * sizeof(uint32_t));
+        
                     if (pixels == NULL)
                         return ERR_OUT_OF_MEMORY;
                         
                     for (int i = 0; i < numPixels; i++) {
-                        if (!readRGB(red, green, blue))
+                        if (!readRGB(red, green, blue)) {
+                            error = ERR_PARAMETER_MISSING;
                             break;
+                        }
 
                         pixels[i] = ((uint8_t)red << 16) || ((uint8_t)green << 8) || (uint8_t)blue;
                     }
                     
                     _strip->setPixels(pixels);
                     free(pixels);
-                    
+
+                    return error;
                     break;
                 };
 
@@ -341,12 +348,19 @@ class App {
                 
                 if (readByte(command)) {
                     _status = NAK;
+
+                    _busy.setState(HIGH);
                     error = onCommand(command);
+                    _busy.setState(LOW);
+
                     _status = ACK;
+                
                 }
 
-                if (error > 0)
+                if (error > 0) {
+                    Wire.flush();
                     _error.blink(error);
+                }
         
             }
         
@@ -362,7 +376,7 @@ class App {
 
     private:
 
-        LedLamp _error, _heartbeat;
+        LedLamp _error, _heartbeat, _busy;
         NeopixelStrip *_strip;
         uint8_t _status;
 };

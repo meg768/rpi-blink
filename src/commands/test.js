@@ -222,20 +222,26 @@ module.exports.handler = function(args) {
 		})
 
 		.then(function() {
-			return strip.foo(128, 0, 0);
+			return strip.setColor(128, 0, 0);
 
 		})
 		.then(function() {
-			return strip.pause(1);
+			return strip.pause(500);
 		})
 
 		.then(function() {
-			return strip.foo(0, 128, 0);
+			return strip.setColor(0, 128, 0);
 
 		})
 		.then(function() {
-			return strip.foo(0, 0, 128);
+			return strip.pause(500);
+		})
+		.then(function() {
+			return strip.setColor(0, 0, 128);
 
+		})
+		.then(function() {
+			return strip.pause(500);
 		})
 
 
