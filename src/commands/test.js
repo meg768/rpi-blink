@@ -170,7 +170,7 @@ function NeopixelStrip(options) {
 			})
 			.catch(function(error) {
 				if (loop > 0) {
-					return _this.pause(100).then(function() {
+					return _this.pause(1000).then(function() {
 						debug('send() failed, trying to send again...');
 						return _this.send(command, bytes, loop - 1);
 					});
