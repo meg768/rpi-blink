@@ -94,7 +94,7 @@ function NeopixelStrip(options) {
 		console.log('Fading to color', [red, green, blue]);
 
 		if (steps == undefined)
-			steps = 32;
+			steps = 10;
 
 		red    = parseInt(red);
 		green  = parseInt(green);
