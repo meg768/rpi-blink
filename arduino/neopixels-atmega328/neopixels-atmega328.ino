@@ -326,6 +326,10 @@ class App {
 
                     break;
                 }
+
+                default: {
+                    return ERR_INVALID_COMMAND;
+                }
             };
 
             return ERR_OK;
