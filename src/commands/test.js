@@ -19,6 +19,10 @@ function NeopixelStrip(options) {
 	var _wire = undefined;
 	var _length = 0;
 
+	function debug() {
+		console.log.apply(this, arguments);
+	}
+
 	_this.waitForReply = function(loop) {
 
 		// Default to make 25 tries
@@ -158,13 +162,15 @@ function NeopixelStrip(options) {
 			loop = 10;
 
 		return new Promise(function(resolve, reject) {
+
+			debug('Sending', command, bytes);
 			_this.write(command, bytes).then(function() {
 				return _this.waitForReply();
 			})
 			.catch(function(error) {
 				if (loop > 0) {
 					return _this.pause(100).then(function() {
-						console.log('send() failed, trying again...');
+						debug('send() failed, trying again...');
 						return _this.send(command, bytes, loop - 1);
 					});
 				}
