@@ -189,11 +189,8 @@ function NeopixelStrip(options) {
 	_this.write = function(command, data) {
 		return new Promise(function(resolve, reject) {
 			_wire.writeBytes(command, data, function(error) {
-				if (error) {
-					_this.pause(100)
+				if (error)
 					reject(error);
-
-				}
 				else
 					resolve();
 			});
