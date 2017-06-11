@@ -164,6 +164,7 @@ function NeopixelStrip(options) {
 			.catch(function(error) {
 				if (loop > 0) {
 					return _this.pause(100).then(function() {
+						console.log('send() failed, trying again...');
 						return _this.send(command, bytes, loop - 1);
 					});
 				}
