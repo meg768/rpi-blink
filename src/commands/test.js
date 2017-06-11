@@ -171,10 +171,11 @@ function NeopixelStrip(options) {
 			.catch(function(error) {
 				var now = new Date();
 
-				if (now.getTime() - datetime.getTime() > 5000) {
+				if (now.getTime() - datetime.getTime() < 5000) {
+
 					return _this.pause(100).then(function() {
 						debug('send() failed, trying to send again...');
-						return _this.send(command, bytes, new Date());
+						return _this.send(command, bytes, datetime);
 					});
 				}
 				else {
