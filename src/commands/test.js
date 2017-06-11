@@ -18,7 +18,7 @@ function NeopixelStrip(options) {
 	var _this = this;
 	var _wire = undefined;
 	var _length = 0;
-	var _debug = 0;
+	var _debug = 1;
 
 	function debug() {
 		if (_debug)
@@ -161,7 +161,7 @@ function NeopixelStrip(options) {
 	_this.send = function(command, bytes, loop) {
 
 		if (loop == undefined)
-			loop = 10;
+			loop = 25;
 
 		return new Promise(function(resolve, reject) {
 
@@ -170,7 +170,7 @@ function NeopixelStrip(options) {
 			})
 			.catch(function(error) {
 				if (loop > 0) {
-					return _this.pause(1000).then(function() {
+					return _this.pause(100).then(function() {
 						debug('send() failed, trying to send again...');
 						return _this.send(command, bytes, loop - 1);
 					});
