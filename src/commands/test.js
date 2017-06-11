@@ -222,7 +222,7 @@ module.exports.handler = function(args) {
 		})
 
 		.then(function() {
-			return strip.foo(args.red, args.green, args.blue);
+			return strip.setColor(args.red, args.green, args.blue);
 
 		})
 
