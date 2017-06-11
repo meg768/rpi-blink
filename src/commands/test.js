@@ -87,8 +87,8 @@ function NeopixelStrip(options) {
 
 			packets.forEach(function(packet) {
 				promise = promise.then(function() {
-					console.log([i, red, green, blue]);
-					return _this.send(CMD_SET_PIXEL, [i, red, green, blue]);
+					console.log(packet);
+					return _this.send(CMD_SET_PIXEL, packet);
 				});
 
 			});
