@@ -18,9 +18,11 @@ function NeopixelStrip(options) {
 	var _this = this;
 	var _wire = undefined;
 	var _length = 0;
+	var _debug = 0;
 
 	function debug() {
-		console.log.apply(this, arguments);
+		if (_debug)
+			console.log.apply(this, arguments);
 	}
 
 	_this.waitForReply = function(loop) {
@@ -163,14 +165,13 @@ function NeopixelStrip(options) {
 
 		return new Promise(function(resolve, reject) {
 
-			debug('Sending', command, bytes);
 			_this.write(command, bytes).then(function() {
 				return _this.waitForReply();
 			})
 			.catch(function(error) {
 				if (loop > 0) {
 					return _this.pause(100).then(function() {
-						debug('send() failed, trying again...');
+						debug('send() failed, trying to send again...');
 						return _this.send(command, bytes, loop - 1);
 					});
 				}
