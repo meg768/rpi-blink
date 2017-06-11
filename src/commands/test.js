@@ -80,6 +80,7 @@ function NeopixelStrip(options) {
 
 			for (var i = 0; i < _length; i++) {
 				promise = promise.then(function() {
+					console.log([i, red, green, blue]);
 					return _this.send(CMD_SET_PIXEL, [i, red, green, blue]);
 				});
 			}
