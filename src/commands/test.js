@@ -152,30 +152,30 @@ function NeopixelStrip(options) {
 		return _this.send(CMD_INITIALIZE, [parseInt(length)]);
 	}
 
-	_this.send = function(command, bytes, retry) {
+	_this.send = function(command, bytes, loop) {
 
-		if (retry == undefined)
+		if (loop == undefined)
 			retry = 10;
 
 		return new Promise(function(resolve, reject) {
 			_this.write(command, bytes).then(function() {
 				return _this.waitForReply();
 			})
+			.catch(function(error) {
+				if (loop > 0) {
+					return _this.pause(100).then(function() {
+						return _this.send(command, bytes, loop - 1);
+					});
+				}
+				else {
+					return Promise.reject(new Error('Device timed out. Could not write to device'));
+
+				}
+			})
 			.then(function() {
 				resolve();
 			})
 			.catch(function(error) {
-				if (retry > 0) {
-					console.log('Retrying to send data');
-					return _this.send(command, bytes, retry - 1);
-				}
-				else {
-					return Promise.reject(error);
-
-				}
-			})
-			.catch(function(error) {
-				console.log('Write failed');
 				reject(error);
 			});
 		});
