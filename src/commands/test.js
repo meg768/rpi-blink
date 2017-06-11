@@ -12,7 +12,7 @@ function NeopixelStrip(options) {
 	const CMD_SET_COLOR     = 0x11;
 	const CMD_FADE_TO_COLOR = 0x12;
 	const CMD_WIPE_TO_COLOR = 0x13;
-	const CMD_SET_PIXELS    = 0x15;
+	const CMD_SET_PIXELS    = 0x14;
 
 	var _this = this;
 	var _wire = undefined;
