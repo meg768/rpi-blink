@@ -20,7 +20,7 @@ function NeopixelStrip(options) {
 
 		// Default to make 25 tries
 		if (loop == undefined)
-			loop = 25;
+			loop = 50;
 
 		return new Promise(function(resolve, reject) {
 
