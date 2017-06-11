@@ -134,7 +134,7 @@ function NeopixelStrip(options) {
 	_this.send = function(command, bytes) {
 
 		return new Promise(function(resolve, reject) {
-			_this.writeBytes(command, bytes).then(function() {
+			_this.write(command, bytes).then(function() {
 				return _this.waitForReply();
 			})
 			.then(function() {
@@ -148,9 +148,9 @@ function NeopixelStrip(options) {
 	};
 
 
-	_this.write = function(data) {
+	_this.write = function(command, data) {
 		return new Promise(function(resolve, reject) {
-			_wire.write(data, function(error) {
+			_wire.writeBytes(command, data, function(error) {
 				if (error)
 					reject(error);
 				else
