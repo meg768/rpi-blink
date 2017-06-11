@@ -74,7 +74,6 @@ function NeopixelStrip(options) {
 		blue  = parseInt(blue);
 
 		console.log('Setting pixels', _length);
-		bytes.push(CMD_SET_PIXELS);
 
 		for (var i = 0; i < _length; i++) {
 			bytes.push(red);
@@ -83,7 +82,7 @@ function NeopixelStrip(options) {
 
 		}
 
-		return _this.send(bytes);
+		return _this.send(CMD_SET_PIXELS, bytes);
 
 	}
 	_this.setColor = function(red, green, blue) {
@@ -93,7 +92,7 @@ function NeopixelStrip(options) {
 
 		console.log('Setting color to', [red, green, blue]);
 
-		return _this.send([CMD_SET_COLOR, red, green, blue]);
+		return _this.send(CMD_SET_COLOR, [red, green, blue]);
 	}
 
 	_this.wipeToColor = function(red, green, blue, delay) {
@@ -108,7 +107,7 @@ function NeopixelStrip(options) {
 		blue   = parseInt(blue);
 		delay  = parseInt(delay);
 
-		return _this.send([CMD_WIPE_TO_COLOR, red, green, blue, delay]);
+		return _this.send(CMD_WIPE_TO_COLOR, [red, green, blue, delay]);
 	}
 
 	_this.fadeToColor = function(red, green, blue, steps) {
@@ -123,19 +122,19 @@ function NeopixelStrip(options) {
 		blue   = parseInt(blue);
 		steps  = parseInt(steps);
 
-		return _this.send([CMD_FADE_TO_COLOR, red, green, blue, steps]);
+		return _this.send(CMD_FADE_TO_COLOR, [red, green, blue, steps]);
 	}
 
 
 	_this.initialize = function(length) {
 		_length = length;
-		return _this.send([CMD_INITIALIZE, parseInt(length)]);
+		return _this.send(CMD_INITIALIZE, [parseInt(length)]);
 	}
 
-	_this.send = function(bytes) {
+	_this.send = function(command, bytes) {
 
 		return new Promise(function(resolve, reject) {
-			_this.write(bytes).then(function() {
+			_this.writeBytes(command, bytes).then(function() {
 				return _this.waitForReply();
 			})
 			.then(function() {
@@ -222,7 +221,7 @@ module.exports.handler = function(args) {
 		})
 
 		.then(function() {
-			return strip.foo(args.red, args.green, args.blue);
+			return strip.setColor(args.red, args.green, args.blue);
 
 		})
 
