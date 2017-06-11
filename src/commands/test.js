@@ -48,7 +48,7 @@ function NeopixelStrip(options) {
 				else {
 					var now = new Date();
 
-					if (now.getTime() - datetime.getTime() < _timeout) {
+					if (now.getTime() - timeout.getTime() < _timeout) {
 						return _this.pause(_retryInterval).then(function() {
 							return _this.waitForReply(timestamp);
 						});
@@ -174,7 +174,7 @@ function NeopixelStrip(options) {
 			.catch(function(error) {
 				var now = new Date();
 
-				if (now.getTime() - datetime.getTime() < _timeout) {
+				if (now.getTime() - timeout.getTime() < _timeout) {
 
 					return _this.pause(_retryInterval).then(function() {
 						debug('send() failed, trying to send again...');
