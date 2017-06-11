@@ -80,7 +80,7 @@ class NeopixelStrip {
         }    
 
         void setPixelColor(int i, int red, int green, int blue) {            
-          _strip.setPixelColor(i, rgb->red, rgb->green, rgb->blue);
+            _strip.setPixelColor(i, red, green, blue);
         }
 
         void show() {
@@ -253,6 +253,10 @@ class App {
         
                     if (length < 0 || length > 240)
                         return ERR_INVALID_PARAMETER;
+
+                    if (_strip != NULL) {
+                        _strip->setColor(0, 0, 0);
+                    }                   
                         
                     delete _strip;
                     _strip = new NeopixelStrip(length);
@@ -281,6 +285,7 @@ class App {
                 };
 
                 case CMD_SET_COLOR: {
+
                     if (_strip == NULL)
                         return ERR_NOT_INITIALIZED;
                         

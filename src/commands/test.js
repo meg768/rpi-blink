@@ -231,49 +231,49 @@ module.exports.handler = function(args) {
 			console.log('Delay 1000');
 			return strip.pause(5000);
 		})
-/*
+
 		.then(function() {
 			return strip.foo(0, 128, 0);
 
 		})
 		.then(function() {
-			return strip.pause(500);
+			return strip.pause(1);
 		})
 		.then(function() {
 			return strip.foo(0, 0, 128);
 
 		})
 		.then(function() {
-			return strip.pause(500);
+			return strip.pause(1);
 		})
 
 
 		.then(function() {
-			return strip.fadeToColor(0, 128, 0);
+			return strip.foo(0, 128, 0);
 		})
 		.then(function() {
 			return strip.pause(1);
 		})
 		.then(function() {
-			return strip.fadeToColor(0, 0, 128);
+			return strip.foo(0, 0, 128);
 		})
 		.then(function() {
 			return strip.pause(1);
 		})
 		.then(function() {
-			return strip.wipeToColor(0, 128, 128);
+			return strip.foo(0, 128, 128);
 		})
 		.then(function() {
 			return strip.pause(1);
 		})
 		.then(function() {
-			return strip.fadeToColor(128, 128, 0);
+			return strip.foo(128, 128, 0);
 		})
 		.then(function() {
 			return strip.pause(1);
 		})
 		.then(function() {
-			return strip.wipeToColor(128, 128, 128);
+			return strip.foo(128, 0, 128);
 		})
 		.then(function() {
 			return strip.pause(1);
