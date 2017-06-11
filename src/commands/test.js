@@ -12,9 +12,11 @@ function NeopixelStrip(options) {
 	const CMD_SET_COLOR     = 0x11;
 	const CMD_FADE_TO_COLOR = 0x12;
 	const CMD_WIPE_TO_COLOR = 0x13;
+	const CMD_SET_PIXELS    = 0x14;
 
 	var _this = this;
 	var _wire = undefined;
+	var _length = 0;
 
 	_this.waitForReply = function(loop) {
 
@@ -64,6 +66,22 @@ function NeopixelStrip(options) {
 		});
 	}
 
+	_this.foo(red, green, blue) {
+		var bytes = [];
+
+		console.log('Setting pixels');
+		bytes.push(CMD_SET_PIXELS);
+
+		for (int i = 0; i < _length; i++) {
+			bytes.push(red);
+			bytes.push(green);
+			bytes.push(blue);
+
+		}
+
+		return _this.send(bytes);
+
+	}
 	_this.setColor = function(red, green, blue) {
 		red   = parseInt(red);
 		green = parseInt(green);
@@ -106,6 +124,7 @@ function NeopixelStrip(options) {
 
 
 	_this.initialize = function(length) {
+		_length = length;
 		return _this.send([CMD_INITIALIZE, parseInt(length)]);
 	}
 
@@ -199,12 +218,23 @@ module.exports.handler = function(args) {
 		})
 
 		.then(function() {
-			return strip.setColor(128, 0, 0);
+			return strip.foo(128, 0, 0);
 
 		})
 		.then(function() {
 			return strip.pause(1);
 		})
+
+		.then(function() {
+			return strip.foo(0, 128, 0);
+
+		})
+		.then(function() {
+			return strip.foo(0, 0, 128);
+
+		})
+
+
 		.then(function() {
 			return strip.fadeToColor(0, 128, 0);
 		})

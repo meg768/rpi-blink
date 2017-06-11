@@ -33,12 +33,15 @@ const int CMD_INITIALIZE    = 0x10;  // size
 const int CMD_SET_COLOR     = 0x11;  // red, green, blue
 const int CMD_FADE_TO_COLOR = 0x12;  // red, green, blue
 const int CMD_WIPE_TO_COLOR = 0x13;  // red, green, blue, delay
+const int CMD_SET_PIXELS    = 0x14;  // array of red, green, blue
+
 
 const int ERR_OK                = 0;
 const int ERR_INVALID_PARAMETER = 1;
 const int ERR_PARAMETER_MISSING = 2;
 const int ERR_NOT_INITIALIZED   = 3;
 const int ERR_INVALID_COMMAND   = 4;
+const int ERR_OUT_OF_MEMORY     = 5;
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,6 +55,10 @@ class NeopixelStrip {
             _strip.begin();
         };
 
+        int numPixels() {
+            _strip.numPixels();
+        }
+        
         void setColor(int red, int green, int blue) {
         
             for (int i = 0; i < _strip.numPixels(); i++) {
@@ -60,7 +67,15 @@ class NeopixelStrip {
         
             _strip.show();
         }    
-        
+
+        void setPixels(uint32_t *pixels) {
+            
+            for (int i = 0; i < _strip.numPixels(); i++) {
+                _strip.setPixelColor(i, *pixels++);
+            }
+            _strip.show();
+        }
+
         void wipeToColor(int red, int green, int blue, int wait) {
         
             for (int i = 0; i < _strip.numPixels(); i++) {
@@ -239,7 +254,31 @@ class App {
 
                     break;
                 }
-            
+
+                case CMD_SET_PIXELS: {
+                    if (_strip == NULL)
+                        return ERR_NOT_INITIALIZED;
+
+                    int red, green, blue;
+                    int numPixels = _strip->numPixels();
+                    uint32_t *pixels = (uint32_t *)malloc(numPixels * sizeof(uint32_t));
+
+                    if (pixels == NULL)
+                        return ERR_OUT_OF_MEMORY;
+                        
+                    for (int i = 0; i < numPixels; i++) {
+                        if (!readRGB(red, green, blue))
+                            break;
+
+                        pixels[i] = ((uint8_t)red << 16) || ((uint8_t)green << 8) || (uint8_t)blue;
+                    }
+                    
+                    _strip->setPixels(pixels);
+                    free(pixels);
+                    
+                    break;
+                };
+
                 case CMD_SET_COLOR: {
                     if (_strip == NULL)
                         return ERR_NOT_INITIALIZED;
