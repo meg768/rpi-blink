@@ -98,45 +98,6 @@ function NeopixelStrip(options) {
 
 	}
 
-	_this.foo = function(red, green, blue) {
-		var bytes = [];
-
-		red   = parseInt(red);
-		green = parseInt(green);
-		blue  = parseInt(blue);
-
-		console.log('Setting pixels', _length);
-
-		for (var i = 0; i < _length; i++) {
-			bytes.push(red);
-			bytes.push(green);
-			bytes.push(blue);
-
-		}
-
-		return _this.send(CMD_SET_PIXELS, bytes);
-
-	}
-
-	_this.foo = function(red, green, blue) {
-		var bytes = [];
-
-		red   = parseInt(red);
-		green = parseInt(green);
-		blue  = parseInt(blue);
-
-		console.log('Setting pixels', _length);
-
-		for (var i = 0; i < _length; i++) {
-			bytes.push(red);
-			bytes.push(green);
-			bytes.push(blue);
-
-		}
-
-		return _this.send(CMD_SET_PIXELS, bytes);
-
-	}
 	_this.setColor = function(red, green, blue) {
 		red   = parseInt(red);
 		green = parseInt(green);
