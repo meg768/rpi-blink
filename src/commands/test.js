@@ -69,6 +69,10 @@ function NeopixelStrip(options) {
 	_this.foo = function(red, green, blue) {
 		var bytes = [];
 
+		red   = parseInt(red);
+		green = parseInt(green);
+		blue  = parseInt(blue);
+
 		console.log('Setting pixels');
 		bytes.push(CMD_SET_PIXELS);
 
