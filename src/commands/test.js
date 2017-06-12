@@ -272,60 +272,14 @@ module.exports.handler = function(args) {
 		})
 
 		.then(function() {
-			return strip.foo(args.red, args.green, args.blue);
+			return strip.setColor(args.red, args.green, args.blue);
 
 		})
 
 		.then(function() {
-			return strip.pause(1);
+			return strip.pause(10000);
 		})
 
-		.then(function() {
-			return strip.foo(0, 128, 0);
-
-		})
-		.then(function() {
-			return strip.pause(1);
-		})
-		.then(function() {
-			return strip.foo(0, 0, 128);
-
-		})
-		.then(function() {
-			return strip.pause(1);
-		})
-
-
-		.then(function() {
-			return strip.foo(0, 128, 0);
-		})
-		.then(function() {
-			return strip.pause(1);
-		})
-		.then(function() {
-			return strip.foo(0, 0, 128);
-		})
-		.then(function() {
-			return strip.pause(1);
-		})
-		.then(function() {
-			return strip.foo(0, 128, 128);
-		})
-		.then(function() {
-			return strip.pause(1);
-		})
-		.then(function() {
-			return strip.foo(128, 128, 0);
-		})
-		.then(function() {
-			return strip.pause(1);
-		})
-		.then(function() {
-			return strip.foo(128, 0, 128);
-		})
-		.then(function() {
-			return strip.pause(1);
-		})
 
 		/*
 		.then(function() {

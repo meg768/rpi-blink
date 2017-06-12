@@ -3,8 +3,7 @@
 #include <avr/power.h>
 #endif
 
-#define NO_GLOBAL_INSTANCES 1
-#define NO_GLOBAL_INSTANCES 1
+
 
 #include "Wire.h"
 
@@ -25,13 +24,11 @@
 const int ACK = 6;
 const int NAK = 21;
 
-const int I2C_ADDRESS = 0x26;
-
 const int PIN_LED_HEARTBEAT = 9;
 const int PIN_LED_ERROR     = 10;
 const int PIN_LED_BUSY      = 11;
 
-const int NEOPIXEL_PIN  = 4;
+const int NEOPIXEL_PIN      = 4;
 
 const int CMD_INITIALIZE    = 0x10;  // size
 const int CMD_SET_COLOR     = 0x11;  // red, green, blue
@@ -39,7 +36,6 @@ const int CMD_FADE_TO_COLOR = 0x12;  // red, green, blue
 const int CMD_WIPE_TO_COLOR = 0x13;  // red, green, blue, delay
 const int CMD_SET_PIXEL     = 0x14;  // 
 const int CMD_REFRESH       = 0x15;  // 
-
 
 const int ERR_OK                = 0;
 const int ERR_INVALID_PARAMETER = 1;
@@ -54,9 +50,9 @@ typedef struct RGB {
     uint8_t blue;
 };
 
+// Global buffer to hold RGB values
 static RGB rgb[240];
 
-//static RGB rgb[240];
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -189,24 +185,26 @@ class App {
     
     public:
 
-        App() {
+        App(int address, int stripLength) {
             _app = (void *)this;
             _strip = NULL;
             _status = ACK;
-
+            _address = address;
+            _stripLength = stripLength;
+            
             _error.setPin(PIN_LED_ERROR);
             _heartbeat.setPin(PIN_LED_HEARTBEAT);
             _busy.setPin(PIN_LED_BUSY);
         }
         
         void setup() {
-            Wire.begin(I2C_ADDRESS);
+            Wire.begin(_address);
             Wire.onReceive(App::receive);
             Wire.onRequest(App::request);            
 
             _error.blink(2, 250);
 
-             _strip = new NeopixelStrip(20);
+             _strip = new NeopixelStrip(8);
              _strip->setColor(0, 32, 0);            
         }
     
@@ -412,12 +410,15 @@ class App {
         LedLamp _error, _heartbeat, _busy;
         NeopixelStrip *_strip;
         uint8_t _status;
+        uint8_t _address;
+        uint8_t _stripLength;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-App app;
+// Define a strip at the specified address and with a default length
+App app(0x26, 8);
 
 void setup()
 {
