@@ -61,7 +61,7 @@ class NeopixelStrip {
 
     public:
         
-        NeopixelStrip(int length) : _strip(length, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800) {
+        NeopixelStrip(int length) : _strip(length, NEOPIXEL_PIN, NEO_BRG + NEO_KHZ800) {
             _strip.begin();
         };
 
@@ -193,7 +193,7 @@ class App {
             _stripLength = stripLength;
             
             _error.setPin(PIN_LED_ERROR);
-            _heartbeat.setPin(PIN_LED_HEARTBEAT);
+            _heartbeat.setPin(LED_BUILTIN);
             _busy.setPin(PIN_LED_BUSY);
         }
         
