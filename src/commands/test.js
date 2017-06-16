@@ -278,9 +278,9 @@ module.exports.handler = function(args) {
 			if (args.command == 'set')
 				return strip.setColor(args.red, args.green, args.blue);
 			if (args.command == 'fade')
-				return strip.setColor(args.red, args.green, args.blue);
+				return strip.fadeToColor(args.red, args.green, args.blue);
 			if (args.command == 'wipe')
-				return strip.setColor(args.red, args.green, args.blue);
+				return strip.wipeToColor(args.red, args.green, args.blue);
 
 			return Promise.resolve();
 		})
