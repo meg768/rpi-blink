@@ -24,10 +24,6 @@
 const int ACK = 6;
 const int NAK = 21;
 
-const int PIN_LED_HEARTBEAT = PB5;
-const int PIN_LED_ERROR     = 10;
-const int PIN_LED_BUSY      = 11;
-
 const int NEOPIXEL_PIN      = 4;
 
 const int CMD_INITIALIZE    = 0x10;  // size
@@ -192,9 +188,11 @@ class App {
             _address = address;
             _stripLength = stripLength;
 
-            _error.setPin(PIN_LED_ERROR);
-            _heartbeat.setPin(LED_BUILTIN);
-            _busy.setPin(PIN_LED_BUSY);
+            _heartbeat.setPin(13);
+            _busy.setPin(12);
+            _error.setPin(11);
+            _extra1.setPin(10);
+            _extra2.setPin(9);
         }
 
         void setup() {
@@ -204,8 +202,8 @@ class App {
 
             _error.blink(2, 250);
 
-             _strip = new NeopixelStrip(8);
-             _strip->setColor(0, 32, 0);
+             _strip = new NeopixelStrip(4);
+             _strip->setColor(0, 0, 32);
         }
 
         void loop() {
@@ -213,8 +211,9 @@ class App {
 
             counter++;
 
-            if ((counter % 1000) == 0)
+            if ((counter % 1000) == 0) {
                 _heartbeat.toggleState();
+            }
 
         };
 
@@ -408,6 +407,7 @@ class App {
     private:
 
         LedLamp _error, _heartbeat, _busy;
+        LedLamp _extra1, _extra2;
         NeopixelStrip *_strip;
         uint8_t _status;
         uint8_t _address;
