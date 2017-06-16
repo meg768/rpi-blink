@@ -249,7 +249,7 @@ module.exports.builder = function(args) {
 	args.option('green', {alias: 'g', describe:'green', default: 0});
 	args.option('blue', {alias: 'b', describe:'blue', default: 0});
 	args.option('pause', {alias: 'p', describe:'Pause', default: 100});
-	args.option('length', {alias: 'l', describe:'Length', default: 8});
+	args.option('length', {alias: 'l', describe:'Length', default: undefined});
 
 	args.wrap(null);
 
@@ -267,7 +267,10 @@ module.exports.handler = function(args) {
 
 
 		promise.then(function() {
-			return strip.initialize(args.length);
+			if (args.length != undefined)
+				return strip.initialize(args.length);
+
+			return Promise.resolve();
 
 		})
 
