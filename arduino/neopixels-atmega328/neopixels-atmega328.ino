@@ -56,8 +56,8 @@ class App {
 
         void setup() {
             Wire.begin(_address);
-            Wire.onReceive(App::receive);
-            Wire.onRequest(App::request);
+            //Wire.onReceive(App::receive);
+            //Wire.onRequest(App::request);
 
             _error.blink(2, 250);
 
@@ -73,6 +73,8 @@ class App {
             if ((counter % 1000) == 0) {
                 _heartbeat.toggleState();
             }
+
+            onReceive(0);
 
         };
 
@@ -243,6 +245,7 @@ class App {
                     _busy.setState(LOW);
 
                     _status = ACK;
+                    Wire.write(_status);
 
                 }
 
