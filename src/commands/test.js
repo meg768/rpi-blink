@@ -244,7 +244,7 @@ function NeopixelStrip(options) {
 
 module.exports.builder = function(args) {
 
-	args.option('command', {alias: 'c', describe:'Command',  default:'color', choices: ['set', 'wipe', 'fade']});
+	args.option('command', {alias: 'c', describe:'Command',  default:'color', choices: ['set', 'wipe', 'fade', 'demo']});
 	args.option('red', {alias: 'r', describe:'red', default: 64});
 	args.option('green', {alias: 'g', describe:'green', default: 0});
 	args.option('blue', {alias: 'b', describe:'blue', default: 0});
@@ -265,6 +265,34 @@ module.exports.handler = function(args) {
 		var promise = Promise.resolve();
 
 
+		function demo() {
+
+			return new Promise(function(resolve, reject) {
+
+				Promise.resolve().then(function() {
+					return strip.fadeToColor(128, 0, 0);
+
+				})
+				.then(function() {
+					return strip.fadeToColor(0, 128, 0);
+
+				})
+				.then(function() {
+					return strip.fadeToColor(0, 0, 128);
+
+				})
+				.then(function() {
+					return strip.fadeToColor(0, 0, 0);
+
+				})
+				.then(function() {
+					resolve();
+				})
+				.catch(function(error) {
+					reject(error);
+				});
+			});
+		};
 
 		promise.then(function() {
 			if (args.length != undefined)
@@ -282,7 +310,7 @@ module.exports.handler = function(args) {
 			if (args.command == 'wipe')
 				return strip.wipeToColor(args.red, args.green, args.blue);
 
-			return Promise.resolve();
+			return demo();
 		})
 /*
 		.then(function() {

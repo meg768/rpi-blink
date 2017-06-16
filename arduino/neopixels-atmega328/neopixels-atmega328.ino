@@ -1,30 +1,19 @@
+/*
 #include <Adafruit_NeoPixel.h>
 #ifdef __AVR__
 #include <avr/power.h>
 #endif
+*/
+
+#include <Wire.h>
 
 
+#include "neopixel-strip.h"
+#include "blinker.h"
 
-#include "Wire.h"
-
-// IMPORTANT: To reduce NeoPixel burnout risk, add 1000 uF capacitor across
-// pixel power leads, add 300 - 500 Ohm resistor on first pixel's data input
-// and minimize distance between Arduino and first pixel.  Avoid connecting
-// on a live circuit...if you must, connect GND first.
-
-// Parameter 1 = number of pixels in strip
-// Parameter 2 = Arduino pin number (most are valid)
-// Parameter 3 = pixel type flags, add together as needed:
-//   NEO_KHZ800  800 KHz bitstream (most NeoPixel products w/WS2812 LEDs)
-//   NEO_KHZ400  400 KHz (classic 'v1' (not v2) FLORA pixels, WS2811 drivers)
-//   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
-//   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
-//   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
 
 const int ACK = 6;
 const int NAK = 21;
-
-const int NEOPIXEL_PIN      = 4;
 
 const int CMD_INITIALIZE    = 0x10;  // size
 const int CMD_SET_COLOR     = 0x11;  // red, green, blue
@@ -40,154 +29,24 @@ const int ERR_NOT_INITIALIZED   = 3;
 const int ERR_INVALID_COMMAND   = 4;
 const int ERR_OUT_OF_MEMORY     = 5;
 
-typedef struct RGB {
-    uint8_t red;
-    uint8_t green;
-    uint8_t blue;
-};
-
-// Global buffer to hold RGB values
-static RGB rgb[240];
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-
-class NeopixelStrip {
-
-
-    public:
-
-        NeopixelStrip(int length) : _strip(length, NEOPIXEL_PIN, NEO_BRG + NEO_KHZ800) {
-            _strip.begin();
-        };
-
-        int numPixels() {
-            return _strip.numPixels();
-        }
-
-        void setColor(int red, int green, int blue) {
-
-            for (int i = 0; i < _strip.numPixels(); i++) {
-                _strip.setPixelColor(i, red, green, blue);
-            }
-
-            _strip.show();
-        }
-
-        void setPixelColor(int i, int red, int green, int blue) {
-            _strip.setPixelColor(i, red, green, blue);
-        }
-
-        void show() {
-            _strip.show();
-        }
-
-        void wipeToColor(int red, int green, int blue, int wait) {
-
-            for (int i = 0; i < _strip.numPixels(); i++) {
-                _strip.setPixelColor(i, red, green, blue);
-                _strip.show();
-                delay(wait);
-            }
-        }
-
-        void fadeToColor(int red, int green, int blue, int numSteps) {
-
-
-            int numPixels = _strip.numPixels();
-
-            for (int i = 0; i < numPixels; i++) {
-                uint32_t color = _strip.getPixelColor(i);
-                rgb[i].red   = (int)(uint8_t)(color >> 16);
-                rgb[i].green = (int)(uint8_t)(color >> 8);
-                rgb[i].blue  = (int)(uint8_t)(color);
-            }
-
-            for (int step = 0; step < numSteps; step++) {
-
-                for (int i = 0; i < numPixels; i++) {
-                    uint8_t pixelRed   = rgb[i].red   + (step * (red   - rgb[i].red))   / numSteps;
-                    uint8_t pixelGreen = rgb[i].green + (step * (green - rgb[i].green)) / numSteps;
-                    uint8_t pixelBlue  = rgb[i].blue  + (step * (blue  - rgb[i].blue))  / numSteps;
-
-                    _strip.setPixelColor(i, pixelRed, pixelGreen, pixelBlue);
-                }
-
-                _strip.show();
-
-            }
-
-            for (int i = 0; i < numPixels; i++)
-                _strip.setPixelColor(i, red, green, blue);
-
-
-            _strip.show();
-
-        }
-
-
-    private:
-        Adafruit_NeoPixel _strip;
-};
-
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-
-class LedLamp {
-
-    public:
-
-        LedLamp(int pin = -1) {
-
-            if (pin >= 0)
-                setPin(pin);
-        }
-
-        void setPin(int pin) {
-            _pin = pin;
-            _state = LOW;
-
-            pinMode(pin, OUTPUT);
-            digitalWrite(pin, _state);
-        }
-
-        void setState(int state) {
-            _state = state ? HIGH : LOW;
-            digitalWrite(_pin, _state);
-        }
-
-        void toggleState() {
-            setState(_state == LOW ? HIGH : LOW);
-        }
-
-        void blink(int blinks = 1, int wait = 200) {
-            for (int i = 0; i < blinks; i++) {
-                toggleState();
-                delay(wait);
-            }
-        }
-
-    private:
-        int _state;
-        int _pin;
-};
-
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-
 static void *_app = NULL;
+
+
 
 class App {
 
 
     public:
 
-        App(int address, int stripLength) {
+        App(int address, int neopixelPin, int stripLength) {
             _app = (void *)this;
+            
             _strip = NULL;
             _status = ACK;
             _address = address;
             _stripLength = stripLength;
-
+            _neopixelPin = neopixelPin;
+            
             _heartbeat.setPin(13);
             _busy.setPin(12);
             _error.setPin(11);
@@ -202,8 +61,8 @@ class App {
 
             _error.blink(2, 250);
 
-             _strip = new NeopixelStrip(4);
-             _strip->setColor(0, 0, 32);
+             _strip = new NeopixelStrip(_neopixelPin, _stripLength);
+             _strip->setColor(0, 0, 255);
         }
 
         void loop() {
@@ -280,7 +139,7 @@ class App {
                     }
 
                     delete _strip;
-                    _strip = new NeopixelStrip(length);
+                    _strip = new NeopixelStrip(_neopixelPin, length);
 
                     break;
                 }
@@ -406,19 +265,15 @@ class App {
 
     private:
 
-        LedLamp _error, _heartbeat, _busy;
-        LedLamp _extra1, _extra2;
         NeopixelStrip *_strip;
-        uint8_t _status;
-        uint8_t _address;
-        uint8_t _stripLength;
+        Blinker _error, _heartbeat, _busy, _extra1, _extra2;        
+        uint8_t _status, _address, _neopixelPin, _stripLength;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
 // Define a strip at the specified address and with a default length
-App app(0x26, 10);
+App app(0x26, 4, 20);
 
 void setup()
 {
