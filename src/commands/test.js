@@ -244,11 +244,11 @@ function NeopixelStrip(options) {
 
 module.exports.builder = function(args) {
 
-	args.option('command', {alias: 'c', describe:'Command',  default:'color', choices: ['color', 'wipe']});
-	args.option('red', {alias: 'r', describe:'red', default: 8});
-	args.option('green', {alias: 'g', describe:'green', default: 8});
-	args.option('blue', {alias: 'b', describe:'blue', default: 80});
-	args.option('wait', {alias: 'w', describe:'Wait', default: 100});
+	args.option('command', {alias: 'c', describe:'Command',  default:'color', choices: ['set', 'wipe', 'fade']});
+	args.option('red', {alias: 'r', describe:'red', default: 64});
+	args.option('green', {alias: 'g', describe:'green', default: 0});
+	args.option('blue', {alias: 'b', describe:'blue', default: 0});
+	args.option('pause', {alias: 'p', describe:'Pause', default: 100});
 	args.option('length', {alias: 'l', describe:'Length', default: 8});
 
 	args.wrap(null);
@@ -272,24 +272,25 @@ module.exports.handler = function(args) {
 		})
 
 		.then(function() {
-			return strip.setColor(args.red, args.green, args.blue);
+			if (args.command == 'set')
+				return strip.setColor(args.red, args.green, args.blue);
+			if (args.command == 'fade')
+				return strip.setColor(args.red, args.green, args.blue);
+			if (args.command == 'wipe')
+				return strip.setColor(args.red, args.green, args.blue);
 
+			return Promise.resolve();
 		})
-
+/*
 		.then(function() {
-			return strip.pause(10000);
+			return strip.pause(args.pause);
 		})
 
 
-		/*
-		.then(function() {
-			return strip.fadeToColor(255, 255, 255, 255);
-		})
-		*/
 		.then(function() {
 			return strip.setColor(0, 0, 0);
 		})
-
+*/
 		.then(function(result) {
 			console.log('OK');
 		})
