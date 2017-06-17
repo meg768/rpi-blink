@@ -35,7 +35,6 @@ function NeopixelStrip(options) {
 		return new Promise(function(resolve, reject) {
 
 			_this.read(1).then(function(bytes) {
-				console.log('Got reply', bytes);
 				return Promise.resolve(bytes.length > 0 && bytes[0] == ACK ? ACK : NAK);
 			})
 			.catch(function(error) {
@@ -272,19 +271,28 @@ module.exports.handler = function(args) {
 			return new Promise(function(resolve, reject) {
 
 				Promise.resolve().then(function() {
-					return strip.fadeToColor(128, 0, 0);
+					return strip.setColor(128, 0, 0);
 
 				})
 				.then(function() {
-					return strip.fadeToColor(0, 128, 0);
+					return strip.pause(500);
+				});
+				.then(function() {
+					return strip.setColor(0, 128, 0);
 
 				})
 				.then(function() {
-					return strip.fadeToColor(0, 0, 128);
+					return strip.pause(500);
+				});
+				.then(function() {
+					return strip.setColor(0, 0, 128);
 
 				})
 				.then(function() {
-					return strip.fadeToColor(0, 0, 0);
+					return strip.pause(500);
+				});
+				.then(function() {
+					return strip.setColor(0, 0, 0);
 
 				})
 				.then(function() {
