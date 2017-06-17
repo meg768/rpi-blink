@@ -222,7 +222,7 @@ function NeopixelStrip(options) {
 				else {
 					console.log('Got bytes', result);
 					resolve(result);
-					
+
 				}
 			});
 		});
@@ -274,28 +274,28 @@ module.exports.handler = function(args) {
 			return new Promise(function(resolve, reject) {
 
 				Promise.resolve().then(function() {
-					return strip.setColor(128, 0, 0);
+					return strip.fadeToColor(128, 0, 0);
 
 				})
 				.then(function() {
 					return strip.pause(500);
 				})
 				.then(function() {
-					return strip.setColor(0, 128, 0);
+					return strip.fadeToColor(0, 128, 0);
 
 				})
 				.then(function() {
 					return strip.pause(500);
 				})
 				.then(function() {
-					return strip.setColor(0, 0, 128);
+					return strip.fadeToColor(0, 0, 128);
 
 				})
 				.then(function() {
 					return strip.pause(500);
 				})
 				.then(function() {
-					return strip.setColor(0, 0, 0);
+					return strip.fadeToColor(0, 0, 0);
 
 				})
 				.then(function() {

@@ -39,30 +39,30 @@ class App {
                 _heartbeat.toggleState();
             } 
 
-            while (TinyWireS.available()) {
+            if (_status != 0) {
+               TinyWireS.send(_status);
+               _status = 0;
+            }
+
+            else if (TinyWireS.available()) {
                 int command = -1, error = ERR_INVALID_COMMAND;
 
                 if (readByte(command)) {
-                    _status = NAK;
-
-                    TinyWireS.send(NAK);
                     error = onCommand(command);
-
-                    _status = ACK;
-                    TinyWireS.send(ACK);
-
                 }
 
                 if (error > 0) {
+                    _status = NAK;
                     _error.blink(error);
-                    delay(500);
                 }
-
-                delay(10);
+                else {
+                    _status = ACK;
+                }
+                
 
             }
 
-            delay(10);
+            delay(1);
 
         };
 
