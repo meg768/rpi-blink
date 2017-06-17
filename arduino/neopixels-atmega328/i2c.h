@@ -1,33 +1,33 @@
 
-class Memory {
+class I2C {
 
     public:
-        Memory() {
-            _bytes = NULL;
-        }
+        I2C(int address) {
+        };
 
-        ~Memory() {
-            free();
-        }
+        ~I2C() {
+        };
 
-        void free() {
-            if (_bytes != NULL)
-                ::free(_bytes);
+		void begin(int address) {
+			Wire.begin(_address);
+            Wire.onReceive(App::receive);
+            Wire.onRequest(App::request);
 
-            _bytes = NULL;
-        }
+		}
+		int available() {
 
-        void *alloc(int size) {
-            void *bytes = ::malloc(size);
+		};
 
-            if (bytes == NULL)
-                return NULL;
+		int read() {
 
-            free();
+		};
 
-            return _bytes = bytes;
-        }
+		void write(int8_t byte) {
+
+		};
+
+
 
     private:
-        void *_bytes;
+
 };

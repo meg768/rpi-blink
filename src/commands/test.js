@@ -201,6 +201,7 @@ function NeopixelStrip(options) {
 
 	_this.write = function(command, data) {
 		return new Promise(function(resolve, reject) {
+			console.log('Writing bytes', command, data);
 			_wire.writeBytes(command, data, function(error) {
 				if (error)
 					reject(error);

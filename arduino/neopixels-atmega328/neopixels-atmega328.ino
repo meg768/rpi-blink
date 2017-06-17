@@ -1,5 +1,9 @@
-#include <Wire.h>
 
+#ifdef __AVR_ATtiny85__
+#include <TinyWireS.h>
+#else
+#include <Wire.h>
+#endif
 
 #include "neopixel-strip.h"
 #include "blinker.h"
@@ -24,21 +28,94 @@ const int ERR_OUT_OF_MEMORY     = 5;
 
 static void *_app = NULL;
 
-class IO {
+
+#ifdef __AVR_ATtiny85__
+
+class App {
+
 
     public:
-        virtual void begin(int address) = 0;
-        virtual int available() = 0;
-        virtual int read() = 0;
-        virtual void write(uint8_t byte) = 0;
+
+        App(int address, int neopixelPin, int stripLength) {
+            _app = (void *)this;
+
+            _strip = NULL;
+            _status = ACK;
+            _address = address;
+            _stripLength = stripLength;
+            _neopixelPin = neopixelPin;
+
+            _heartbeat.setPin(3);
+            _error.setPin(4);
+          
+        }
+
+        void setup() {
+            TinyWireS.begin(_address);
+
+
+            _heartbeat.blink(2, 250);
+            _error.blink(2, 250);
+
+             _strip = new NeopixelStrip(_stripLength, _neopixelPin);
+             _strip->setColor(0, 0, 4);
+        }
 
         
+        void loop() {
+            static uint32_t counter = 0;
+
+            counter++;
+
+            if ((counter % 1000) == 0) {
+                _heartbeat.toggleState();
+            }
+
+            if (TinyWireS.available()) {
+                int command = -1, error = ERR_INVALID_COMMAND;
+
+                if (readByte(command)) {
+                    _status = NAK;
+
+                    error = onCommand(command);
+
+                    _status = ACK;
+
+                }
+
+                if (error > 0) {
+                    _error.blink(error);
+//                    flush();
+                }
+
+                TinyWrireS.send(ACK):
+
+            }
+
+        };
+
+        int flush()
+        {
+            long timeout = millis() + 300;
+
+            for (;;) {
+                if (!TinyWireS.available()) {
+                    break;
+                }
+
+                TinyWireS.receive();
+                delay(100);
+
+            }
+        }
+
+
         int waitForAvailableBytes(int bytes)
         {
             long timeout = millis() + 300;
 
             for (;;) {
-                if (available() >= bytes) {
+                if (TinyWireS.available() >= bytes) {
                     return true;
                 }
 
@@ -49,13 +126,12 @@ class IO {
             }
         }
 
-
         int readByte(int &data) {
 
             if (!waitForAvailableBytes(1))
                 return false;
 
-            data = read();
+            data = TinyWireS.receive();
 
             return true;
         };
@@ -65,36 +141,130 @@ class IO {
             if (!waitForAvailableBytes(3))
                 return false;
 
-            red = read();
-            blue = read();
-            green = read();
+            red = TinyWireS.receive();
+            blue = TinyWireS.receive();
+            green = TinyWireS.receive();
 
             return true;
         };
+
+        int onCommand(int command) {
+
+            switch (command) {
+                case CMD_INITIALIZE: {
+                    int length = 0;
+
+                    if (!readByte(length))
+                        return ERR_PARAMETER_MISSING;
+
+                    if (length < 0 || length > 240)
+                        return ERR_INVALID_PARAMETER;
+
+                    if (_strip != NULL) {
+                        _strip->setColor(0, 0, 0);
+                    }
+
+                    delete _strip;
+                    _strip = new NeopixelStrip(length, _neopixelPin);
+
+                    break;
+                }
+
+                case CMD_SET_PIXEL: {
+
+                    if (_strip == NULL)
+                        return ERR_NOT_INITIALIZED;
+
+                    int red = 0, green = 0, blue = 0, index = 0;
+
+                    if (!readByte(index))
+                        return ERR_INVALID_PARAMETER;
+
+                    if (!readRGB(red, green, blue))
+                        return ERR_INVALID_PARAMETER;
+
+                    _strip->setPixelColor(index, red, green, blue);
+                    break;
+                };
+
+                case CMD_REFRESH: {
+
+                    if (_strip == NULL)
+                        return ERR_NOT_INITIALIZED;
+
+                    _strip->show();
+                    break;
+                };
+
+                case CMD_SET_COLOR: {
+
+                    if (_strip == NULL)
+                        return ERR_NOT_INITIALIZED;
+
+                    int red = 0, green = 0, blue = 0;
+
+                    if (!readRGB(red, green, blue))
+                        return ERR_INVALID_PARAMETER;
+
+                    _strip->setColor(red, green, blue);
+
+                    break;
+                };
+
+                case CMD_WIPE_TO_COLOR: {
+                    if (_strip == NULL)
+                        return ERR_NOT_INITIALIZED;
+
+                    int red = 0, green = 0, blue = 0, delay = 0;
+
+                    if (!readRGB(red, green, blue))
+                        return ERR_INVALID_PARAMETER;
+
+                    if (!readByte(delay))
+                        return ERR_INVALID_PARAMETER;
+
+                    _strip->wipeToColor(red, green, blue, delay);
+
+                    break;
+                }
+
+                case CMD_FADE_TO_COLOR: {
+                    if (_strip == NULL)
+                        return ERR_NOT_INITIALIZED;
+
+                    int red = 0, green = 0, blue = 0, steps = 0;
+
+                    if (!readRGB(red, green, blue))
+                        return ERR_INVALID_PARAMETER;
+
+                    if (!readByte(steps))
+                        return ERR_INVALID_PARAMETER;
+
+                    _strip->fadeToColor(red, green, blue, steps);
+
+                    break;
+                }
+
+                default: {
+                    return ERR_INVALID_COMMAND;
+                }
+            };
+
+            return ERR_OK;
+
+        }
+
+
+
+
+    private:
+
+        NeopixelStrip *_strip;
+        Blinker _heartbeat, _error;
+        uint8_t _status, _address, _neopixelPin, _stripLength;
 };
 
-
-class WireIO : public IO {
-
-    public:
-        virtual void begin(int address) {
-            Wire.begin(address);
-        };
-
-        virtual int available() {
-            return Wire.available();
-        };
-
-        virtual int read() {
-            return Wire.read();
-        };
-
-        virtual void write(uint8_t byte) {
-            Wire.write(byte);
-        };
-
-};
-
+#else
 
 class App {
 
@@ -103,18 +273,19 @@ class App {
 
         App(int address, int neopixelPin, int stripLength) {
             _app = (void *)this;
-            
+
             _strip = NULL;
             _status = ACK;
             _address = address;
             _stripLength = stripLength;
             _neopixelPin = neopixelPin;
-            
+
             _heartbeat.setPin(13);
             _busy.setPin(12);
             _error.setPin(11);
             _extra1.setPin(10);
             _extra2.setPin(9);
+          
         }
 
         void setup() {
@@ -331,14 +502,22 @@ class App {
 
         // WireIO io;
         NeopixelStrip *_strip;
-        Blinker _error, _heartbeat, _busy, _extra1, _extra2;        
+        Blinker _error, _heartbeat, _busy, _extra1, _extra2;
         uint8_t _status, _address, _neopixelPin, _stripLength;
 };
+#endif
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// Define a strip at the specified address and with a default length
+
+#ifdef __AVR_ATtiny85__
+App app(0x26, 1, 4);
+#else
 App app(0x26, 4, 20);
+
+#endif
+
+
 
 void setup()
 {
