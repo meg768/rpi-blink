@@ -82,14 +82,14 @@ class App {
         }
 
 
-        int waitForAvailableBytes(int bytes)
+        int waitForAvailableByte()
         {
             for (int i = 0; i < 10; i++) {
-                if (TinyWireS.available() >= bytes) {
+                if (TinyWireS.available()) {
                     return true;
                 }
 
-                delay(100);
+                delay(10);
             }
             
             return false;
@@ -97,7 +97,7 @@ class App {
 
         int readByte(int &data) {
 
-            if (!waitForAvailableBytes(1))
+            if (!waitForAvailableByte())
                 return false;
 
             data = TinyWireS.receive();
@@ -106,15 +106,7 @@ class App {
         };
 
         int readRGB(int &red, int &green, int &blue) {
-
-
-            if (!readByte(red))
-                return false;
-            if (!readByte(green))
-                return false;
-            if (!readByte(blue))
-                return false;
-            return true;
+            return readByte(red) && readByte(green) && readByte(blue);
         };
 
         int onCommand(int command) {
