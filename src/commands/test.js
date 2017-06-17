@@ -35,6 +35,7 @@ function NeopixelStrip(options) {
 		return new Promise(function(resolve, reject) {
 
 			_this.read(1).then(function(bytes) {
+				console.log('Got reply', bytes);
 				return Promise.resolve(bytes.length > 0 && bytes[0] == ACK ? ACK : NAK);
 			})
 			.catch(function(error) {
