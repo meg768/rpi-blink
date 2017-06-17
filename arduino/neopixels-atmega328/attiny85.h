@@ -1,4 +1,7 @@
 
+#include "io.h"
+#include "indicators.h"
+
 class App {
 
     
@@ -8,22 +11,17 @@ class App {
             _app = (void *)this;
 
             _strip = NULL;
-            _status = ACK;
+            _status = ERR_OK;
             _address = address;
             _stripLength = stripLength;
             _neopixelPin = neopixelPin;
 
-            _heartbeat.setPin(3);
-            _error.setPin(4);
 
         }
 
         void setup() {
-            TinyWireS.begin(_address);
-
-
-            _heartbeat.blink(2, 250);
-            _error.blink(2, 250);
+            io.begin(_address);
+            indicators.begin();
 
              _strip = new NeopixelStrip(_stripLength, _neopixelPin);
              _strip->setColor(0, 0, 4);
@@ -36,29 +34,30 @@ class App {
             counter++;
 
             if ((counter % 100) == 0) {
-                _heartbeat.toggleState();
+                indicators.heartbeat();
             } 
 
-            if (_status != 0) {
-               TinyWireS.send(_status);
-               _status = 0;
+            if (_status != ERR_OK) {
+               io.write(_status == 0 ? ACK : NAK);
+
+                indicators.error(_status);
+                
+               _status = ERR_OK;
             }
 
-            else if (TinyWireS.available()) {
-                int command = -1, error = ERR_INVALID_COMMAND;
-
-                if (readByte(command)) {
-                    error = onCommand(command);
-                }
-
-                if (error > 0) {
-                    _status = NAK;
-                    _error.blink(error);
+            else if (io.available()) {
+                indicators.busy(true);
+                
+                int command = -1;
+                
+                if (io.readByte(command)) {
+                    _status = onCommand(command);
                 }
                 else {
-                    _status = ACK;
+                    _status = ERR_INVALID_COMMAND;
                 }
                 
+                indicators.busy(false);
 
             }
 
@@ -66,48 +65,6 @@ class App {
 
         };
 
-        int flush()
-        {
-            long timeout = millis() + 300;
-
-            for (;;) {
-                if (!TinyWireS.available()) {
-                    break;
-                }
-
-                TinyWireS.receive();
-                delay(100);
-
-            }
-        }
-
-
-        int waitForAvailableByte()
-        {
-            for (int i = 0; i < 10; i++) {
-                if (TinyWireS.available()) {
-                    return true;
-                }
-
-                delay(10);
-            }
-            
-            return false;
-        }
-
-        int readByte(int &data) {
-
-            if (!waitForAvailableByte())
-                return false;
-
-            data = TinyWireS.receive();
-
-            return true;
-        };
-
-        int readRGB(int &red, int &green, int &blue) {
-            return readByte(red) && readByte(green) && readByte(blue);
-        };
 
         int onCommand(int command) {
 
@@ -115,7 +72,7 @@ class App {
                 case CMD_INITIALIZE: {
                     int length = 0;
 
-                    if (!readByte(length))
+                    if (!io.readByte(length))
                         return ERR_PARAMETER_MISSING;
 
                     if (length < 0 || length > 240)
@@ -138,10 +95,10 @@ class App {
 
                     int red = 0, green = 0, blue = 0, index = 0;
 
-                    if (!readByte(index))
+                    if (!io.readByte(index))
                         return ERR_INVALID_PARAMETER;
 
-                    if (!readRGB(red, green, blue))
+                    if (!io.readRGB(red, green, blue))
                         return ERR_INVALID_PARAMETER;
 
                     _strip->setPixelColor(index, red, green, blue);
@@ -166,7 +123,7 @@ class App {
 
                     int red = 0, green = 0, blue = 0;
 
-                    if (!readRGB(red, green, blue))
+                    if (!io.readRGB(red, green, blue))
                       return ERR_INVALID_PARAMETER;
 
                     //_strip->setColor(128, 128, 0);
@@ -181,10 +138,10 @@ class App {
 
                     int red = 0, green = 0, blue = 0, delay = 0;
 
-                    if (!readRGB(red, green, blue))
+                    if (!io.readRGB(red, green, blue))
                         return ERR_INVALID_PARAMETER;
 
-                    if (!readByte(delay))
+                    if (!io.readByte(delay))
                         return ERR_INVALID_PARAMETER;
 
                     _strip->wipeToColor(red, green, blue, delay);
@@ -198,10 +155,10 @@ class App {
 
                     int red = 0, green = 0, blue = 0, steps = 0;
 
-                    if (!readRGB(red, green, blue))
+                    if (!io.readRGB(red, green, blue))
                         return ERR_INVALID_PARAMETER;
 
-                    if (!readByte(steps))
+                    if (!io.readByte(steps))
                         return ERR_INVALID_PARAMETER;
 
                     _strip->fadeToColor(red, green, blue, steps);
@@ -223,7 +180,8 @@ class App {
 
     private:
 
+        IO io;
         NeopixelStrip *_strip;
-        Blinker _heartbeat, _error;
+        Indicators indicators;
         uint8_t _status, _address, _neopixelPin, _stripLength;
 };

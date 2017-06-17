@@ -1,21 +1,26 @@
 
+#ifndef __BLINKER_H
+#define __BLINKER_H
 
 class Blinker {
 
     public:
 
-        Blinker(int pin = -1) {
-
-            if (pin >= 0)
-                setPin(pin);
+        Blinker(int pin = -1, int state = LOW) {
+            setPin(pin, state);
         }
 
-        void setPin(int pin) {
-            _pin = pin;
-            _state = LOW;
+        virtual ~Blinker() {
+        };
 
-            pinMode(pin, OUTPUT);
-            digitalWrite(pin, _state);
+        void setPin(int pin, int state = LOW) {
+            _pin = pin;
+            _state = state ? HIGH : LOW;
+ 
+            if (_pin >= 0) {
+                pinMode(pin, OUTPUT);
+                digitalWrite(pin, _state);
+            }
         }
 
         int getState() {
@@ -24,7 +29,9 @@ class Blinker {
         
         void setState(int state) {
             _state = state ? HIGH : LOW;
-            digitalWrite(_pin, _state);
+ 
+            if (_pin >= 0)
+                digitalWrite(_pin, _state);
         }
 
         void toggleState() {
@@ -42,3 +49,6 @@ class Blinker {
         int _state;
         int _pin;
 };
+
+#endif
+

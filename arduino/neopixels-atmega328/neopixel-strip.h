@@ -34,7 +34,10 @@ class NeopixelStrip : public Adafruit_NeoPixel {
             begin();
         };
 
- 
+
+        virtual ~NeopixelStrip() {
+        };
+
         void setColor(int red, int green, int blue) {
 
             int count = numPixels();

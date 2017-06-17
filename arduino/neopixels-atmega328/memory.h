@@ -6,7 +6,7 @@ class Memory {
             _bytes = NULL;
         }
 
-        ~Memory() {
+        virtual ~Memory() {
             free();
         }
 
