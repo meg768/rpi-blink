@@ -281,21 +281,21 @@ module.exports.handler = function(args) {
 					return strip.pause(500);
 				})
 				.then(function() {
-					return strip.fadeToColor(0, 128, 0);
+					return strip.setColor(0, 128, 0);
 
 				})
 				.then(function() {
 					return strip.pause(500);
 				})
 				.then(function() {
-					return strip.fadeToColor(0, 0, 128);
+					return strip.setColor(0, 0, 128);
 
 				})
 				.then(function() {
 					return strip.pause(500);
 				})
 				.then(function() {
-					return strip.fadeToColor(0, 0, 0);
+					return strip.setColor(0, 0, 0);
 
 				})
 				.then(function() {
