@@ -169,6 +169,7 @@ function NeopixelStrip(options) {
 		return new Promise(function(resolve, reject) {
 
 			_this.write(command, bytes).then(function() {
+				return Promise.resolve();
 				return _this.waitForReply();
 			})
 			.catch(function(error) {

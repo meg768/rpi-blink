@@ -9,8 +9,8 @@
 #include "blinker.h"
 
 
-const int ACK = 6;
-const int NAK = 21;
+const uint8_t ACK = 6;
+const uint8_t NAK = 21;
 
 const int CMD_INITIALIZE    = 0x10;  // size
 const int CMD_SET_COLOR     = 0x11;  // red, green, blue
@@ -24,7 +24,6 @@ const int ERR_INVALID_PARAMETER = 1;
 const int ERR_PARAMETER_MISSING = 2;
 const int ERR_NOT_INITIALIZED   = 3;
 const int ERR_INVALID_COMMAND   = 4;
-const int ERR_OUT_OF_MEMORY     = 5;
 
 static void *_app = NULL;
 
@@ -71,24 +70,24 @@ class App {
                 _heartbeat.toggleState();
             }
 
-            if (TinyWireS.available()) {
+            while (TinyWireS.available()) {
                 int command = -1, error = ERR_INVALID_COMMAND;
 
                 if (readByte(command)) {
                     _status = NAK;
 
+                    TinyWireS.send(NAK);
                     error = onCommand(command);
 
                     _status = ACK;
+                    TinyWireS.send(ACK);
 
                 }
 
                 if (error > 0) {
-                    _error.blink(error);
-//                    flush();
+                    _error.blink(2);
                 }
 
-                TinyWrireS.send(ACK):
 
             }
 
