@@ -1,7 +1,7 @@
 
 class App {
 
-    
+
     public:
 
         App(int address, int neopixelPin, int stripLength) {
@@ -13,86 +13,59 @@ class App {
             _stripLength = stripLength;
             _neopixelPin = neopixelPin;
 
-            _heartbeat.setPin(3);
-            _error.setPin(4);
+            _heartbeat.setPin(13);
+            _busy.setPin(12);
+            _error.setPin(11);
+            _extra1.setPin(10);
+            _extra2.setPin(9);
 
         }
 
         void setup() {
-            TinyWireS.begin(_address);
+            Wire.begin(_address);
+            Wire.onReceive(App::receive);
+            Wire.onRequest(App::request);
 
-
-            _heartbeat.blink(2, 250);
             _error.blink(2, 250);
 
              _strip = new NeopixelStrip(_stripLength, _neopixelPin);
-             _strip->setColor(0, 0, 4);
+             _strip->setColor(0, 0, 255);
         }
-
 
         void loop() {
             static uint32_t counter = 0;
 
             counter++;
 
-            if ((counter % 100) == 0) {
+            if ((counter % 1000) == 0) {
                 _heartbeat.toggleState();
-            } 
-
-            while (TinyWireS.available()) {
-                int command = -1, error = ERR_INVALID_COMMAND;
-
-                if (readByte(command)) {
-                    _status = NAK;
-
-                    TinyWireS.send(NAK);
-                    error = onCommand(command);
-
-                    _status = ACK;
-                    TinyWireS.send(ACK);
-
-                }
-
-                if (error > 0) {
-                    _error.blink(error);
-                    delay(500);
-                }
-
-                delay(10);
-
             }
 
-            delay(10);
 
         };
 
-        int flush()
+        static void receive(int bytes) {
+            ((App *)_app)->onReceive(bytes);
+        };
+
+        static void request() {
+            ((App *)_app)->onRequest();
+        };
+
+        int waitForAvailableBytes(int bytes)
         {
             long timeout = millis() + 300;
 
             for (;;) {
-                if (!TinyWireS.available()) {
-                    break;
-                }
-
-                TinyWireS.receive();
-                delay(100);
-
-            }
-        }
-
-
-        int waitForAvailableBytes(int bytes)
-        {
-            for (int i = 0; i < 10; i++) {
-                if (TinyWireS.available() >= bytes) {
+                if (Wire.available() >= bytes) {
                     return true;
                 }
 
                 delay(100);
+
+                if (millis() > timeout)
+                    return false;
             }
-            
-            return false;
         }
 
         int readByte(int &data) {
@@ -100,20 +73,20 @@ class App {
             if (!waitForAvailableBytes(1))
                 return false;
 
-            data = TinyWireS.receive();
+            data = Wire.read();
 
             return true;
         };
 
         int readRGB(int &red, int &green, int &blue) {
 
+            if (!waitForAvailableBytes(3))
+                return false;
 
-            if (!readByte(red))
-                return false;
-            if (!readByte(green))
-                return false;
-            if (!readByte(blue))
-                return false;
+            red = Wire.read();
+            blue = Wire.read();
+            green = Wire.read();
+
             return true;
         };
 
@@ -167,17 +140,14 @@ class App {
 
                 case CMD_SET_COLOR: {
 
-
                     if (_strip == NULL)
                         return ERR_NOT_INITIALIZED;
-
 
                     int red = 0, green = 0, blue = 0;
 
                     if (!readRGB(red, green, blue))
-                      return ERR_INVALID_PARAMETER;
+                        return ERR_INVALID_PARAMETER;
 
-                    //_strip->setColor(128, 128, 0);
                     _strip->setColor(red, green, blue);
 
                     break;
@@ -228,10 +198,43 @@ class App {
 
 
 
+        void onReceive(int bytes) {
+
+            while (Wire.available()) {
+                int command = ERR_INVALID_COMMAND, error = ERR_OK;
+
+                if (readByte(command)) {
+                    _status = NAK;
+
+                    _busy.setState(HIGH);
+                    error = onCommand(command);
+                    _busy.setState(LOW);
+
+                    _status = ACK;
+
+                }
+
+                if (error > 0) {
+                    Wire.flush();
+                    _error.blink(error);
+                }
+
+            }
+
+
+
+        }
+
+        void onRequest() {
+            Wire.write(_status);
+        }
+
+
 
     private:
 
+        // WireIO io;
         NeopixelStrip *_strip;
-        Blinker _heartbeat, _error;
+        Blinker _error, _heartbeat, _busy, _extra1, _extra2;
         uint8_t _status, _address, _neopixelPin, _stripLength;
 };
