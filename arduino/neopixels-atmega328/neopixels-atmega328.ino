@@ -1,10 +1,3 @@
-/*
-#include <Adafruit_NeoPixel.h>
-#ifdef __AVR__
-#include <avr/power.h>
-#endif
-*/
-
 #include <Wire.h>
 
 
@@ -31,6 +24,76 @@ const int ERR_OUT_OF_MEMORY     = 5;
 
 static void *_app = NULL;
 
+class IO {
+
+    public:
+        virtual void begin(int address) = 0;
+        virtual int available() = 0;
+        virtual int read() = 0;
+        virtual void write(uint8_t byte) = 0;
+
+        
+        int waitForAvailableBytes(int bytes)
+        {
+            long timeout = millis() + 300;
+
+            for (;;) {
+                if (available() >= bytes) {
+                    return true;
+                }
+
+                delay(100);
+
+                if (millis() > timeout)
+                    return false;
+            }
+        }
+
+
+        int readByte(int &data) {
+
+            if (!waitForAvailableBytes(1))
+                return false;
+
+            data = read();
+
+            return true;
+        };
+
+        int readRGB(int &red, int &green, int &blue) {
+
+            if (!waitForAvailableBytes(3))
+                return false;
+
+            red = read();
+            blue = read();
+            green = read();
+
+            return true;
+        };
+};
+
+
+class WireIO : public IO {
+
+    public:
+        virtual void begin(int address) {
+            Wire.begin(address);
+        };
+
+        virtual int available() {
+            return Wire.available();
+        };
+
+        virtual int read() {
+            return Wire.read();
+        };
+
+        virtual void write(uint8_t byte) {
+            Wire.write(byte);
+        };
+
+};
 
 
 class App {
@@ -56,12 +119,12 @@ class App {
 
         void setup() {
             Wire.begin(_address);
-            //Wire.onReceive(App::receive);
-            //Wire.onRequest(App::request);
+            Wire.onReceive(App::receive);
+            Wire.onRequest(App::request);
 
             _error.blink(2, 250);
 
-             _strip = new NeopixelStrip(_neopixelPin, _stripLength);
+             _strip = new NeopixelStrip(_stripLength, _neopixelPin);
              _strip->setColor(0, 0, 255);
         }
 
@@ -74,7 +137,6 @@ class App {
                 _heartbeat.toggleState();
             }
 
-            onReceive(0);
 
         };
 
@@ -141,7 +203,7 @@ class App {
                     }
 
                     delete _strip;
-                    _strip = new NeopixelStrip(_neopixelPin, length);
+                    _strip = new NeopixelStrip(length, _neopixelPin);
 
                     break;
                 }
@@ -245,7 +307,6 @@ class App {
                     _busy.setState(LOW);
 
                     _status = ACK;
-                    Wire.write(_status);
 
                 }
 
@@ -268,6 +329,7 @@ class App {
 
     private:
 
+        // WireIO io;
         NeopixelStrip *_strip;
         Blinker _error, _heartbeat, _busy, _extra1, _extra2;        
         uint8_t _status, _address, _neopixelPin, _stripLength;

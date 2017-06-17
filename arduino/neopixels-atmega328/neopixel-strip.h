@@ -17,13 +17,9 @@
 //   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
 //   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
 
-
-
 #include "memory.h"
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////
-
-class NeopixelStrip {
+class NeopixelStrip : public Adafruit_NeoPixel {
 
     private:
         typedef struct RGB {
@@ -34,52 +30,45 @@ class NeopixelStrip {
 
     public:
 
-        NeopixelStrip(int pin, int length) : _strip(length, pin, NEO_BRG + NEO_KHZ800) {
-            _strip.begin();
+        NeopixelStrip(int length, int pin) : Adafruit_NeoPixel(length, pin, NEO_BRG + NEO_KHZ800) {
+            begin();
         };
 
-        int numPixels() {
-            return _strip.numPixels();
-        }
-
+ 
         void setColor(int red, int green, int blue) {
 
-            for (int i = 0; i < _strip.numPixels(); i++) {
-                _strip.setPixelColor(i, red, green, blue);
+            int count = numPixels();
+
+            for (int i = 0; i < count; i++) {
+                setPixelColor(i, red, green, blue);
             }
 
-            _strip.show();
-        }
-
-        void setPixelColor(int i, int red, int green, int blue) {
-            _strip.setPixelColor(i, red, green, blue);
-        }
-
-        void show() {
-            _strip.show();
+            show();
         }
 
         void wipeToColor(int red, int green, int blue, int wait) {
 
-            for (int i = 0; i < _strip.numPixels(); i++) {
-                _strip.setPixelColor(i, red, green, blue);
-                _strip.show();
+            int count = numPixels();
+            
+            for (int i = 0; i < count; i++) {
+                setPixelColor(i, red, green, blue);
+                show();
                 delay(wait);
             }
         }
 
         void fadeToColor(int red, int green, int blue, int numSteps) {
 
-            int numPixels = _strip.numPixels();
+            int count = numPixels();
 
             Memory memory;
-            RGB *rgb = memory.alloc(numPixels * sizeof(RGB));
+            RGB *rgb = memory.alloc(count * sizeof(RGB));
 
             if (rgb == NULL)
                 return setColor(red, green, blue);
 
-            for (int i = 0; i < numPixels; i++) {
-                uint32_t color = _strip.getPixelColor(i);
+            for (int i = 0; i < count; i++) {
+                uint32_t color = getPixelColor(i);
                 rgb[i].red   = (int)(uint8_t)(color >> 16);
                 rgb[i].green = (int)(uint8_t)(color >> 8);
                 rgb[i].blue  = (int)(uint8_t)(color);
@@ -87,27 +76,21 @@ class NeopixelStrip {
 
             for (int step = 0; step < numSteps; step++) {
 
-                for (int i = 0; i < numPixels; i++) {
+                for (int i = 0; i < count; i++) {
                     uint8_t pixelRed   = rgb[i].red   + (step * (red   - rgb[i].red))   / numSteps;
                     uint8_t pixelGreen = rgb[i].green + (step * (green - rgb[i].green)) / numSteps;
                     uint8_t pixelBlue  = rgb[i].blue  + (step * (blue  - rgb[i].blue))  / numSteps;
 
-                    _strip.setPixelColor(i, pixelRed, pixelGreen, pixelBlue);
+                    setPixelColor(i, pixelRed, pixelGreen, pixelBlue);
                 }
 
-                _strip.show();
+                show();
 
             }
 
-            for (int i = 0; i < numPixels; i++)
-                _strip.setPixelColor(i, red, green, blue);
-
-
-            _strip.show();
+            setColor(red, green, blue);
 
         }
 
-
-    private:
-        Adafruit_NeoPixel _strip;
 };
+

@@ -18,6 +18,10 @@ class Blinker {
             digitalWrite(pin, _state);
         }
 
+        int getState() {
+            return _state;
+        }
+        
         void setState(int state) {
             _state = state ? HIGH : LOW;
             digitalWrite(_pin, _state);
