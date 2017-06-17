@@ -219,8 +219,11 @@ function NeopixelStrip(options) {
 			_wire.read(bytes, function(error, result) {
 				if (error)
 					reject(error)
-				else
+				else {
+					console.log('Got bytes', result);
 					resolve(result);
+					
+				}
 			});
 		});
 
