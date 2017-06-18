@@ -5,16 +5,14 @@
 #ifdef __AVR_ATtiny85__
 const int APP_I2C_ADDRESS  = 0x26;
 const int APP_NEOPIXEL_PIN = 1;
-const int APP_STRIP_LENGTH = 4;
+const int APP_STRIP_LENGTH = 8;
 #else
 const int APP_I2C_ADDRESS  = 0x26;
 const int APP_NEOPIXEL_PIN = 4;
 const int APP_STRIP_LENGTH = 20;
 #endif
 
-
 class App;
-
 
 const int ACK = 6;
 const int NAK = 21;
@@ -32,9 +30,6 @@ const int ERR_PARAMETER_MISSING = 2;
 const int ERR_NOT_INITIALIZED   = 3;
 const int ERR_INVALID_COMMAND   = 4;
 
-
-
-class App;
 
 static App *_app = NULL;
 
@@ -204,8 +199,8 @@ class App : public IO {
 };
 
 
-
 static App app(APP_STRIP_LENGTH, APP_NEOPIXEL_PIN);
+
 
 void setup()
 {

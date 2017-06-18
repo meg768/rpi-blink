@@ -1,4 +1,3 @@
-#include <Adafruit_NeoPixel.h>
 #ifdef __AVR__
 #include <avr/power.h>
 #endif
@@ -17,6 +16,8 @@
 //   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
 //   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
 
+
+#include <Adafruit_NeoPixel.h>
 #include "memory.h"
 
 

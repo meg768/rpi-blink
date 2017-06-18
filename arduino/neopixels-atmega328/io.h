@@ -2,7 +2,7 @@
 #define __IO_H
 
 #ifdef __AVR_ATtiny85__
-#include <TinyWireS.h>
+#include "./libraries/TinyWireS/TinyWireS.h"
 #else
 #include <Wire.h>
 #endif
