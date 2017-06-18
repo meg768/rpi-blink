@@ -10,7 +10,7 @@ class Blinker {
             setPin(pin, state);
         }
 
-        virtual ~Blinker() {
+        ~Blinker() {
         };
 
         void setPin(int pin, int state = LOW) {

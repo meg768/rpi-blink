@@ -8,46 +8,67 @@
 #endif
 
 
+
+
 class IO {
 
     public:
-        IO() {
-        };
 
-        virtual ~IO() {
-        };
 
+         
 #ifdef __AVR_ATtiny85__
-		inline void begin(int address) {
+		static inline void begin(int address) {
 			TinyWireS.begin(address);
-		}
-		inline int read() {
+		};
+      
+
+        static void onReceive( void (*function)(uint8_t) ) {
+            TinyWireS.onReceive(function);
+        };
+        
+        static void onRequest(  void (*function)()) {
+            TinyWireS.onRequest(function);            
+        };
+		
+		static inline int read() {
 			return TinyWireS.receive();
 		};
-		inline void write(uint8_t byte) {
+      
+		static inline void write(uint8_t byte) {
 			TinyWireS.send(byte);
-		}
-		inline int available() {
+		};
+      
+		static inline int available() {
 			return TinyWireS.available();
-		}
+		};
+
+        static void idle() {
+            TinyWireS_stop_check();
+        }
+
 
 #else
-		inline void begin(int address) {
+		static inline void begin(int address) {
 			Wire.begin(address);
+            Wire.onReceive(IO::receive);
+            Wire.onRequest(IO::request);            
 		}
-		inline int read() {
+		static inline int read() {
 			return Wire.read();
 		};
-		inline void write(uint8_t byte) {
+		static inline void write(uint8_t byte) {
 			Wire.write(byte);
 		}
-		inline int available() {
+		static inline int available() {
 			return Wire.available();
 		}
 
+       static void idle() {
+       }
+
 #endif
 
-        int waitForAvailableByte()
+        static int waitForAvailableByte()
         {
             for (int i = 0; i < 10; i++) {
                 if (available()) {
@@ -60,7 +81,7 @@ class IO {
             return false;
         }
 
-        int readByte(int &data) {
+        static int readByte(int &data) {
 
             if (!waitForAvailableByte())
                 return false;
@@ -70,7 +91,7 @@ class IO {
             return true;
         };
 
-        int readRGB(int &red, int &green, int &blue) {
+        static int readRGB(int &red, int &green, int &blue) {
             return readByte(red) && readByte(green) && readByte(blue);
         };
 
@@ -79,4 +100,3 @@ class IO {
 };
 
 #endif
-

@@ -32,7 +32,6 @@ class NeopixelStrip : public Adafruit_NeoPixel {
     public:
 
         NeopixelStrip(int length, int pin) : Adafruit_NeoPixel(length, pin, NEO_GRB + NEO_KHZ800) {
-            begin();
         };
 
 

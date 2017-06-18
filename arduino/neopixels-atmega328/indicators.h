@@ -20,8 +20,9 @@ class Indicators {
 
         }
 
-        virtual ~Indicators() {
+        ~Indicators() {
         }
+
 
         inline begin() {
             _heartbeat.blink(2, 100);
@@ -48,4 +49,3 @@ class Indicators {
 };
 
 #endif
-

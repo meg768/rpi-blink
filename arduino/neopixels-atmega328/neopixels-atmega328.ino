@@ -34,40 +34,42 @@ const int ERR_INVALID_COMMAND   = 4;
 
 
 
+class App;
 
-class App {
+static App *_app = 0;
+
+
+class App : public IO {
 
     public:
 
-        App() {
+        App() : _strip(APP_STRIP_LENGTH, APP_NEOPIXEL_PIN) {
 
-            _strip = NULL;
+            _app = this;
             _status = ACK;
             _loop = 0;
-
-
         }
 
         void setup() {
+            io.onReceive(App::onReceiveService);
+            io.onRequest(App::onRequestService);
             io.begin(APP_I2C_ADDRESS);
+            
             indicators.begin();
+            _strip.begin();
 
-
-            if (APP_STRIP_LENGTH > 0) {
-                _strip = new NeopixelStrip(APP_STRIP_LENGTH, APP_NEOPIXEL_PIN);
-                _strip->setColor(0, 0, 4);
-            }
+            _strip.setColor(0, 0, 4);
         }
 
+        static void onReceiveService() {
+            _app->onReceive();
+        }
 
-        void loop() {
-            _loop++;
+        static void onRequestService() {
+            _app->onRequest();
+        }
 
-            if ((_loop % 100) == 0) {
-                indicators.heartbeat();
-            } 
-
-
+        void onReceive() {
             if (io.available()) {
                 indicators.busy(true);
                 _status = NAK;
@@ -80,11 +82,22 @@ class App {
                 _status = ACK;
                 indicators.busy(false);
             }
-            else {
-                indicators.busy(true);
-                io.write(_status);
-                indicators.busy(false);
-            }
+        }
+
+        void onRequest() {
+            io.write(_status);
+        }
+
+
+
+        void loop() {
+            io.idle();
+            
+            _loop++;
+
+            if ((_loop % 100) == 0) {
+                indicators.heartbeat();
+            } 
 
 
             delay(1);
@@ -103,20 +116,14 @@ class App {
                     if (length < 0 || length > 240)
                         return ERR_INVALID_PARAMETER;
 
-                    if (_strip != NULL) {
-                        _strip->setColor(0, 0, 0);
-                    }
 
-                    delete _strip;
-                    _strip = new NeopixelStrip(length, APP_NEOPIXEL_PIN);
+                    _strip.updateLength(length);
 
                     break;
                 }
 
                 case CMD_SET_PIXEL: {
 
-                    if (_strip == NULL)
-                        return ERR_NOT_INITIALIZED;
 
                     int red = 0, green = 0, blue = 0, index = 0;
 
@@ -126,24 +133,18 @@ class App {
                     if (!io.readRGB(red, green, blue))
                         return ERR_INVALID_PARAMETER;
 
-                    _strip->setPixelColor(index, red, green, blue);
+                    _strip.setPixelColor(index, red, green, blue);
                     break;
                 };
 
                 case CMD_REFRESH: {
 
-                    if (_strip == NULL)
-                        return ERR_NOT_INITIALIZED;
 
-                    _strip->show();
+                    _strip.show();
                     break;
                 };
 
                 case CMD_SET_COLOR: {
-
-
-                    if (_strip == NULL)
-                        return ERR_NOT_INITIALIZED;
 
 
                     int red = 0, green = 0, blue = 0;
@@ -151,41 +152,37 @@ class App {
                     if (!io.readRGB(red, green, blue))
                       return ERR_INVALID_PARAMETER;
 
-                    _strip->setColor(red, green, blue);
+                    _strip.setColor(red, green, blue);
 
                     break;
                 };
 
                 case CMD_WIPE_TO_COLOR: {
-                    if (_strip == NULL)
-                        return ERR_NOT_INITIALIZED;
 
                     int red = 0, green = 0, blue = 0, delay = 0;
 
-                    if (!io.readRGB(red, green, blue))
+                    if (!readRGB(red, green, blue))
                         return ERR_INVALID_PARAMETER;
 
-                    if (!io.readByte(delay))
+                    if (!readByte(delay))
                         return ERR_INVALID_PARAMETER;
 
-                    _strip->wipeToColor(red, green, blue, delay);
+                    _strip.wipeToColor(red, green, blue, delay);
 
                     break;
                 }
 
                 case CMD_FADE_TO_COLOR: {
-                    if (_strip == NULL)
-                        return ERR_NOT_INITIALIZED;
 
                     int red = 0, green = 0, blue = 0, steps = 0;
 
-                    if (!io.readRGB(red, green, blue))
+                    if (!readRGB(red, green, blue))
                         return ERR_INVALID_PARAMETER;
 
-                    if (!io.readByte(steps))
+                    if (!readByte(steps))
                         return ERR_INVALID_PARAMETER;
 
-                    _strip->fadeToColor(red, green, blue, steps);
+                    _strip.fadeToColor(red, green, blue, steps);
 
                     break;
                 }
@@ -201,11 +198,10 @@ class App {
 
 
     private:
-
         IO io;
-        NeopixelStrip *_strip;
+        NeopixelStrip _strip;
         Indicators indicators;
-        int _status;
+        volatile int _status;
         uint32_t _loop;
 };
 
