@@ -5,7 +5,7 @@
 #ifdef __AVR_ATtiny85__
 const int APP_I2C_ADDRESS  = 0x26;
 const int APP_NEOPIXEL_PIN = 1;
-const int APP_STRIP_LENGTH = 8;
+const int APP_STRIP_LENGTH = 0;
 #else
 const int APP_I2C_ADDRESS  = 0x26;
 const int APP_NEOPIXEL_PIN = 4;
@@ -15,6 +15,8 @@ const int APP_STRIP_LENGTH = 20;
 
 class App;
 
+
+const uint8_t NUL = 0;
 const uint8_t ACK = 6;
 const uint8_t NAK = 21;
 
@@ -42,7 +44,7 @@ class App {
             _app = this;
 
             _strip = NULL;
-            _status = ERR_OK;
+            _status = NUL;
             _loop = 0;
 
 
@@ -52,8 +54,10 @@ class App {
             io.begin(APP_I2C_ADDRESS);
             indicators.begin();
 
-             _strip = new NeopixelStrip(APP_STRIP_LENGTH, APP_NEOPIXEL_PIN);
-             _strip->setColor(0, 0, 4);
+            if (APP_STRIP_LENGTH > 0) {
+                _strip = new NeopixelStrip(APP_STRIP_LENGTH, APP_NEOPIXEL_PIN);
+                _strip->setColor(0, 0, 4);
+            }
         }
 
 
@@ -64,31 +68,36 @@ class App {
                 indicators.heartbeat();
             } 
 
-            if (_status != ERR_OK) {
-               io.write(_status == 0 ? ACK : NAK);
+            if (_status != NUL) {
+               io.write(_status);
 
-               indicators.error(_status);
-                
-               _status = ERR_OK;
+               _status = NUL;
+
+               delay(10);
             }
 
             else if (io.available()) {
                 indicators.busy(true);
                 
-                int command = -1;
-                
-                if (io.readByte(command)) {
-                    _status = onCommand(command);
+                uint8_t command = 0;
+                int error = ERR_INVALID_PARAMETER;
+
+                if (io.readByte(command))
+                    error = onCommand(command);
+
+                if (error != ERR_OK) {
+                    indicators.error(error);
+                    _status = NAK;
                 }
                 else {
-                    _status = ERR_INVALID_PARAMETER;
+                    _status = ACK;
                 }
                 
                 indicators.busy(false);
 
+                delay(1);
             }
 
-            delay(1);
 
         };
 
@@ -97,7 +106,7 @@ class App {
 
             switch (command) {
                 case CMD_INITIALIZE: {
-                    int length = 0;
+                    uint8_t length = 0;
 
                     if (!io.readByte(length))
                         return ERR_PARAMETER_MISSING;
@@ -120,7 +129,7 @@ class App {
                     if (_strip == NULL)
                         return ERR_NOT_INITIALIZED;
 
-                    int red = 0, green = 0, blue = 0, index = 0;
+                    uint8_t red = 0, green = 0, blue = 0, index = 0;
 
                     if (!io.readByte(index))
                         return ERR_INVALID_PARAMETER;
@@ -148,12 +157,11 @@ class App {
                         return ERR_NOT_INITIALIZED;
 
 
-                    int red = 0, green = 0, blue = 0;
+                    uint8_t red = 0, green = 0, blue = 0;
 
                     if (!io.readRGB(red, green, blue))
                       return ERR_INVALID_PARAMETER;
 
-                    //_strip->setColor(128, 128, 0);
                     _strip->setColor(red, green, blue);
 
                     break;
@@ -163,7 +171,7 @@ class App {
                     if (_strip == NULL)
                         return ERR_NOT_INITIALIZED;
 
-                    int red = 0, green = 0, blue = 0, delay = 0;
+                    uint8_t red = 0, green = 0, blue = 0, delay = 0;
 
                     if (!io.readRGB(red, green, blue))
                         return ERR_INVALID_PARAMETER;
@@ -180,7 +188,7 @@ class App {
                     if (_strip == NULL)
                         return ERR_NOT_INITIALIZED;
 
-                    int red = 0, green = 0, blue = 0, steps = 0;
+                    uint8_t red = 0, green = 0, blue = 0, steps = 0;
 
                     if (!io.readRGB(red, green, blue))
                         return ERR_INVALID_PARAMETER;

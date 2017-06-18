@@ -60,7 +60,7 @@ class IO {
             return false;
         }
 
-        int readByte(int &data) {
+        int readByte(uint8_t &data) {
 
             if (!waitForAvailableByte())
                 return false;
@@ -70,7 +70,7 @@ class IO {
             return true;
         };
 
-        int readRGB(int &red, int &green, int &blue) {
+        int readRGB(uint8_t &red, uint8_t &green, uint8_t &blue) {
             return readByte(red) && readByte(green) && readByte(blue);
         };
 

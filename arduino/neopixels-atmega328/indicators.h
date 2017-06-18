@@ -7,15 +7,15 @@ class Indicators {
 
     public:
         Indicators() {
-			#ifndef __AVR_ATtiny85__
+            #ifdef __AVR_ATtiny85__
 				_heartbeat.setPin(3);
 				_error.setPin(4);
-			#else
+            #else
 				_heartbeat.setPin(13);
 	            _busy.setPin(12);
 	            _error.setPin(11);
 
-			#endif
+            #endif
 
         }
 

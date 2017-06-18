@@ -217,8 +217,11 @@ function NeopixelStrip(options) {
 	_this.read = function(bytes) {
 		return new Promise(function(resolve, reject) {
 			_wire.read(bytes, function(error, result) {
-				if (error)
+				if (error) {
+					console.log(error.message);
 					reject(error)
+
+				}
 				else {
 					console.log('Got bytes', result);
 					resolve(result);
