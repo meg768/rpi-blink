@@ -9,7 +9,8 @@ class Indicators {
         Indicators() {
             #ifdef __AVR_ATtiny85__
 				_heartbeat.setPin(3);
-				_error.setPin(4);
+				//_error.setPin(-1);
+                _busy.setPin(4);
             #else
 				_heartbeat.setPin(13);
 	            _busy.setPin(12);
@@ -23,9 +24,9 @@ class Indicators {
         }
 
         inline begin() {
-            _heartbeat.blink(2, 250);
-            _error.blink(2, 250);
-            _busy.blink(2, 250);
+            _heartbeat.blink(2, 100);
+            _error.blink(2, 100);
+            _busy.blink(2, 100);
         }
 
 		inline void busy(int state) {

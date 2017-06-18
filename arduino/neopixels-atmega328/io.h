@@ -21,7 +21,7 @@ class IO {
 		inline void begin(int address) {
 			TinyWireS.begin(address);
 		}
-		inline uint8_t read() {
+		inline int read() {
 			return TinyWireS.receive();
 		};
 		inline void write(uint8_t byte) {
@@ -35,7 +35,7 @@ class IO {
 		inline void begin(int address) {
 			Wire.begin(address);
 		}
-		inline uint8_t read() {
+		inline int read() {
 			return Wire.read();
 		};
 		inline void write(uint8_t byte) {
@@ -60,7 +60,7 @@ class IO {
             return false;
         }
 
-        int readByte(uint8_t &data) {
+        int readByte(int &data) {
 
             if (!waitForAvailableByte())
                 return false;
@@ -70,7 +70,7 @@ class IO {
             return true;
         };
 
-        int readRGB(uint8_t &red, uint8_t &green, uint8_t &blue) {
+        int readRGB(int &red, int &green, int &blue) {
             return readByte(red) && readByte(green) && readByte(blue);
         };
 

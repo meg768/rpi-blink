@@ -8,7 +8,6 @@ class App {
     public:
 
         App(int address, int neopixelPin, int stripLength) {
-            _app = (void *)this;
 
             _strip = NULL;
             _status = ERR_OK;
@@ -48,7 +47,7 @@ class App {
             else if (io.available()) {
                 indicators.busy(true);
                 
-                int command = -1;
+                uint8_t command = 0;
                 
                 if (io.readByte(command)) {
                     _status = onCommand(command);
@@ -70,7 +69,7 @@ class App {
 
             switch (command) {
                 case CMD_INITIALIZE: {
-                    int length = 0;
+                    uint8_t length = 0;
 
                     if (!io.readByte(length))
                         return ERR_PARAMETER_MISSING;
@@ -93,7 +92,7 @@ class App {
                     if (_strip == NULL)
                         return ERR_NOT_INITIALIZED;
 
-                    int red = 0, green = 0, blue = 0, index = 0;
+                    uint8_t red = 0, green = 0, blue = 0, index = 0;
 
                     if (!io.readByte(index))
                         return ERR_INVALID_PARAMETER;
@@ -121,7 +120,7 @@ class App {
                         return ERR_NOT_INITIALIZED;
 
 
-                    int red = 0, green = 0, blue = 0;
+                    uint8_t red = 0, green = 0, blue = 0;
 
                     if (!io.readRGB(red, green, blue))
                       return ERR_INVALID_PARAMETER;
@@ -136,7 +135,7 @@ class App {
                     if (_strip == NULL)
                         return ERR_NOT_INITIALIZED;
 
-                    int red = 0, green = 0, blue = 0, delay = 0;
+                    uint8_t red = 0, green = 0, blue = 0, delay = 0;
 
                     if (!io.readRGB(red, green, blue))
                         return ERR_INVALID_PARAMETER;
@@ -153,7 +152,7 @@ class App {
                     if (_strip == NULL)
                         return ERR_NOT_INITIALIZED;
 
-                    int red = 0, green = 0, blue = 0, steps = 0;
+                    uint8_t red = 0, green = 0, blue = 0, steps = 0;
 
                     if (!io.readRGB(red, green, blue))
                         return ERR_INVALID_PARAMETER;

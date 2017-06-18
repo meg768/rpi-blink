@@ -19,6 +19,7 @@
 
 #include "memory.h"
 
+
 class NeopixelStrip : public Adafruit_NeoPixel {
 
     private:

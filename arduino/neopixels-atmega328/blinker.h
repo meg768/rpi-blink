@@ -35,12 +35,17 @@ class Blinker {
         }
 
         void toggleState() {
-            setState(_state == LOW ? HIGH : LOW);
+            setState(!_state);
         }
 
         void blink(int blinks = 1, int wait = 200) {
+
+            setState(LOW);
+            
             for (int i = 0; i < blinks; i++) {
-                toggleState();
+                setState(HIGH);
+                delay(wait);
+                setState(LOW);
                 delay(wait);
             }
         }

@@ -5,7 +5,7 @@
 #ifdef __AVR_ATtiny85__
 const int APP_I2C_ADDRESS  = 0x26;
 const int APP_NEOPIXEL_PIN = 1;
-const int APP_STRIP_LENGTH = 0;
+const int APP_STRIP_LENGTH = 4;
 #else
 const int APP_I2C_ADDRESS  = 0x26;
 const int APP_NEOPIXEL_PIN = 4;
@@ -16,9 +16,8 @@ const int APP_STRIP_LENGTH = 20;
 class App;
 
 
-const uint8_t NUL = 0;
-const uint8_t ACK = 6;
-const uint8_t NAK = 21;
+const int ACK = 6;
+const int NAK = 21;
 
 const int CMD_INITIALIZE    = 0x10;  // size
 const int CMD_SET_COLOR     = 0x11;  // red, green, blue
@@ -33,7 +32,7 @@ const int ERR_PARAMETER_MISSING = 2;
 const int ERR_NOT_INITIALIZED   = 3;
 const int ERR_INVALID_COMMAND   = 4;
 
-static App *_app = NULL;
+
 
 
 class App {
@@ -41,10 +40,9 @@ class App {
     public:
 
         App() {
-            _app = this;
 
             _strip = NULL;
-            _status = NUL;
+            _status = ACK;
             _loop = 0;
 
 
@@ -53,6 +51,7 @@ class App {
         void setup() {
             io.begin(APP_I2C_ADDRESS);
             indicators.begin();
+
 
             if (APP_STRIP_LENGTH > 0) {
                 _strip = new NeopixelStrip(APP_STRIP_LENGTH, APP_NEOPIXEL_PIN);
@@ -68,37 +67,27 @@ class App {
                 indicators.heartbeat();
             } 
 
-            if (_status != NUL) {
-               io.write(_status);
 
-               _status = NUL;
-
-               delay(10);
-            }
-
-            else if (io.available()) {
+            if (io.available()) {
                 indicators.busy(true);
-                
-                uint8_t command = 0;
-                int error = ERR_INVALID_PARAMETER;
+                _status = NAK;
+
+                int command = 0, error = ERR_INVALID_PARAMETER;
 
                 if (io.readByte(command))
                     error = onCommand(command);
 
-                if (error != ERR_OK) {
-                    indicators.error(error);
-                    _status = NAK;
-                }
-                else {
-                    _status = ACK;
-                }
-                
+                _status = ACK;
                 indicators.busy(false);
-
-                delay(1);
+            }
+            else {
+                indicators.busy(true);
+                io.write(_status);
+                indicators.busy(false);
             }
 
 
+            delay(1);
         };
 
 
@@ -106,7 +95,7 @@ class App {
 
             switch (command) {
                 case CMD_INITIALIZE: {
-                    uint8_t length = 0;
+                    int length = 0;
 
                     if (!io.readByte(length))
                         return ERR_PARAMETER_MISSING;
@@ -129,7 +118,7 @@ class App {
                     if (_strip == NULL)
                         return ERR_NOT_INITIALIZED;
 
-                    uint8_t red = 0, green = 0, blue = 0, index = 0;
+                    int red = 0, green = 0, blue = 0, index = 0;
 
                     if (!io.readByte(index))
                         return ERR_INVALID_PARAMETER;
@@ -157,7 +146,7 @@ class App {
                         return ERR_NOT_INITIALIZED;
 
 
-                    uint8_t red = 0, green = 0, blue = 0;
+                    int red = 0, green = 0, blue = 0;
 
                     if (!io.readRGB(red, green, blue))
                       return ERR_INVALID_PARAMETER;
@@ -171,7 +160,7 @@ class App {
                     if (_strip == NULL)
                         return ERR_NOT_INITIALIZED;
 
-                    uint8_t red = 0, green = 0, blue = 0, delay = 0;
+                    int red = 0, green = 0, blue = 0, delay = 0;
 
                     if (!io.readRGB(red, green, blue))
                         return ERR_INVALID_PARAMETER;
@@ -188,7 +177,7 @@ class App {
                     if (_strip == NULL)
                         return ERR_NOT_INITIALIZED;
 
-                    uint8_t red = 0, green = 0, blue = 0, steps = 0;
+                    int red = 0, green = 0, blue = 0, steps = 0;
 
                     if (!io.readRGB(red, green, blue))
                         return ERR_INVALID_PARAMETER;
@@ -216,21 +205,22 @@ class App {
         IO io;
         NeopixelStrip *_strip;
         Indicators indicators;
-        uint8_t _status;
+        int _status;
         uint32_t _loop;
 };
 
 
 
+static App app ; //= new App();
+//APP_I2C_ADDRESS, APP_NEOPIXEL_PIN, APP_STRIP_LENGTH);
 
 void setup()
 {
-    _app = new App();
-    _app->setup();
+    app.setup();
 }
 
 
 void loop()
 {
-    _app->loop();
+    app.loop();
 }
