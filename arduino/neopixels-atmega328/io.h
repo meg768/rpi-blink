@@ -50,9 +50,17 @@ class IO {
 #else
 		static inline void begin(int address) {
 			Wire.begin(address);
-            Wire.onReceive(IO::receive);
-            Wire.onRequest(IO::request);            
 		}
+
+
+        static void onReceive( void (*function)(uint8_t) ) {
+            Wire.onReceive(function);
+        };
+        
+        static void onRequest(  void (*function)()) {
+            Wire.onRequest(function);            
+        };
+               
 		static inline int read() {
 			return Wire.read();
 		};

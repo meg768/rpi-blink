@@ -36,14 +36,14 @@ const int ERR_INVALID_COMMAND   = 4;
 
 class App;
 
-static App *_app = 0;
+static App *_app = NULL;
 
 
 class App : public IO {
 
     public:
 
-        App() : _strip(APP_STRIP_LENGTH, APP_NEOPIXEL_PIN) {
+        App(int length, int pin) : _strip(length, pin) {
 
             _app = this;
             _status = ACK;
@@ -56,8 +56,8 @@ class App : public IO {
             io.begin(APP_I2C_ADDRESS);
             
             indicators.begin();
+            
             _strip.begin();
-
             _strip.setColor(0, 0, 4);
         }
 
@@ -89,18 +89,16 @@ class App : public IO {
         }
 
 
-
         void loop() {
             io.idle();
             
             _loop++;
 
-            if ((_loop % 100) == 0) {
+            if ((_loop % 1000) == 0) {
                 indicators.heartbeat();
             } 
 
 
-            delay(1);
         };
 
 
@@ -207,8 +205,7 @@ class App : public IO {
 
 
 
-static App app ; //= new App();
-//APP_I2C_ADDRESS, APP_NEOPIXEL_PIN, APP_STRIP_LENGTH);
+static App app(APP_STRIP_LENGTH, APP_NEOPIXEL_PIN);
 
 void setup()
 {
