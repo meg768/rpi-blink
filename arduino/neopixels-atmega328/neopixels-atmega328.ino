@@ -108,7 +108,8 @@ class App : public IO {
 
                     if (length < 0 || length > 240)
                         return ERR_INVALID_PARAMETER;
-
+                    
+                    _strip.setColor(0, 0, 0);
 
                     _strip.updateLength(length);
 
