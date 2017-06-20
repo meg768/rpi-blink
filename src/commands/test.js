@@ -276,29 +276,61 @@ module.exports.handler = function(args) {
 
 			return new Promise(function(resolve, reject) {
 
+				var pause = 1000;
+				var fade  = 64;
+				var max   = 255;
+
 				Promise.resolve().then(function() {
-					return strip.fadeToColor(128, 0, 0);
+					return strip.fadeToColor(max, 0, 0, fade);
 
 				})
 				.then(function() {
-					return strip.pause(500);
+					return strip.pause(pause);
 				})
 				.then(function() {
-					return strip.fadeToColor(0, 128, 0);
+					return strip.fadeToColor(0, max, 0, fade);
 
 				})
 				.then(function() {
-					return strip.pause(500);
+					return strip.pause(pause);
 				})
 				.then(function() {
-					return strip.fadeToColor(0, 0, 128);
+					return strip.fadeToColor(0, 0, max, fade);
 
 				})
 				.then(function() {
-					return strip.pause(500);
+					return strip.pause(pause);
 				})
 				.then(function() {
-					return strip.fadeToColor(0, 0, 0);
+					return strip.fadeToColor(max, max, 0, fade);
+
+				})
+				.then(function() {
+					return strip.pause(pause);
+				})
+				.then(function() {
+					return strip.fadeToColor(0, max, max, fade);
+
+				})
+				.then(function() {
+					return strip.pause(pause);
+				})
+				.then(function() {
+					return strip.fadeToColor(max, 0, max, fade);
+
+				})
+				.then(function() {
+					return strip.pause(pause);
+				})
+				.then(function() {
+					return strip.fadeToColor(max, max, max, fade);
+
+				})
+				.then(function() {
+					return strip.pause(pause);
+				})
+				.then(function() {
+					return strip.fadeToColor(0, 0, 0, fade);
 
 				})
 				.then(function() {
