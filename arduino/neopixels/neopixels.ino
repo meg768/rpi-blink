@@ -1,5 +1,5 @@
 #include "neopixel-strip.h"
-#include "io.h"
+#include "i2c.h"
 #include "indicators.h"
 
 #ifdef __AVR_ATtiny85__
@@ -34,7 +34,7 @@ const int ERR_INVALID_COMMAND   = 4;
 static App *_app = NULL;
 
 
-class App : public IO {
+class App {
 
     public:
 
@@ -155,10 +155,10 @@ class App : public IO {
 
                     int red = 0, green = 0, blue = 0, delay = 0;
 
-                    if (!readRGB(red, green, blue))
+                    if (!io.readRGB(red, green, blue))
                         return ERR_INVALID_PARAMETER;
 
-                    if (!readByte(delay))
+                    if (!io.readByte(delay))
                         return ERR_INVALID_PARAMETER;
 
                     _strip.wipeToColor(red, green, blue, delay);
@@ -170,10 +170,10 @@ class App : public IO {
 
                     int red = 0, green = 0, blue = 0, steps = 0;
 
-                    if (!readRGB(red, green, blue))
+                    if (!io.readRGB(red, green, blue))
                         return ERR_INVALID_PARAMETER;
 
-                    if (!readByte(steps))
+                    if (!io.readByte(steps))
                         return ERR_INVALID_PARAMETER;
 
                     _strip.fadeToColor(red, green, blue, steps);
@@ -192,7 +192,7 @@ class App : public IO {
 
 
     private:
-        IO io;
+        I2C io;
         NeopixelStrip _strip;
         Indicators indicators;
         volatile int _status;

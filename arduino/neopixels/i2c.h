@@ -10,10 +10,9 @@
 
 
 
-class IO {
+class I2C {
 
     public:
-
 
          
 #ifdef __AVR_ATtiny85__
