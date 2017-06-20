@@ -277,7 +277,7 @@ module.exports.handler = function(args) {
 			return new Promise(function(resolve, reject) {
 
 				var pause = 1000;
-				var fade  = 64;
+				var fade  = 255;
 				var max   = 255;
 
 				Promise.resolve().then(function() {
