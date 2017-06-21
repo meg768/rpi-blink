@@ -105,17 +105,17 @@ function NeopixelStrip(options) {
 
 
 
-	_this.setColor = function(red, green, blue) {
+	_this.setColor = function(offset, length, red, green, blue) {
 		red   = parseInt(red);
 		green = parseInt(green);
 		blue  = parseInt(blue);
 
 		console.log('Setting color to', [red, green, blue]);
 
-		return _this.send(CMD_SET_COLOR, [0, 255, red, green, blue]);
+		return _this.send(CMD_SET_COLOR, [offset, length, red, green, blue]);
 	}
 
-	_this.wipeToColor = function(red, green, blue, delay) {
+	_this.wipeToColor = function(offset, length, red, green, blue, delay) {
 
 		console.log('Wiping to color', [red, green, blue]);
 
@@ -127,10 +127,10 @@ function NeopixelStrip(options) {
 		blue   = parseInt(blue);
 		delay  = parseInt(delay);
 
-		return _this.send(CMD_WIPE_TO_COLOR, [0, 255, red, green, blue, delay]);
+		return _this.send(CMD_WIPE_TO_COLOR, [offset, length, red, green, blue, delay]);
 	}
 
-	_this.fadeToColor = function(red, green, blue, steps) {
+	_this.fadeToColor = function(offset, length, red, green, blue, steps) {
 
 		console.log('Fading to color', [red, green, blue]);
 
@@ -142,7 +142,7 @@ function NeopixelStrip(options) {
 		blue   = parseInt(blue);
 		steps  = parseInt(steps);
 
-		return _this.send(CMD_FADE_TO_COLOR, [0, 255, red, green, blue, steps]);
+		return _this.send(CMD_FADE_TO_COLOR, [offset, length, red, green, blue, steps]);
 	}
 
 
