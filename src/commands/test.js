@@ -276,6 +276,9 @@ module.exports.handler = function(args) {
 			return strip.pause(2000);
 		})
 
+		promise.then(function() {
+			return strip.setColor(0, 255, 255, 0, 0);
+		})
 		.then(function() {
 			return strip.fadeToColor(0, 255, 0, 0, 0, 1000);
 		})
