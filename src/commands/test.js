@@ -142,7 +142,7 @@ function NeopixelStrip(options) {
 		red    = parseInt(red);
 		green  = parseInt(green);
 		blue   = parseInt(blue);
-		steps  = parseInt(steps);
+		time   = parseInt(time);
 
 		return _this.send(CMD_FADE_TO_COLOR, [offset, length, red, green, blue, (time >> 8) & 0xFF, time & 0xFF]);
 	}
