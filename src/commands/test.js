@@ -263,7 +263,7 @@ module.exports.handler = function(args) {
 
 		var strip = new NeopixelStrip({device:'/dev/i2c-1'})
 		var bar1  = new NeopixelSegment({strip:strip, offset:0, length:8});
-		var bar1  = new NeopixelSegment({strip:strip, offset:8, length:8});
+		var bar2  = new NeopixelSegment({strip:strip, offset:8, length:8});
 
 		var promise = Promise.resolve();
 
