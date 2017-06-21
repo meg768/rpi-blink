@@ -112,6 +112,7 @@ class App {
                     _strip.setColor(0, 0, 0);
 
                     _strip.updateLength(length);
+                    _strip.setColor(128, 0, 0);
 
                     break;
                 }

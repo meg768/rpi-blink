@@ -213,7 +213,7 @@ function NeopixelStrip(options) {
 
 module.exports.builder = function(args) {
 
-	args.option('command', {alias: 'c', describe:'Command',  default:'demo', choices: ['set', 'wipe', 'fade', 'demo']});
+	args.option('command', {alias: 'c', describe:'Command',  default:'none', choices: ['set', 'wipe', 'fade', 'demo', 'none']});
 	args.option('red', {alias: 'r', describe:'red', default: 64});
 	args.option('green', {alias: 'g', describe:'green', default: 0});
 	args.option('blue', {alias: 'b', describe:'blue', default: 0});
