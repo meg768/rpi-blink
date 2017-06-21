@@ -138,7 +138,7 @@ function NeopixelStrip(options) {
 			steps = 64;
 
 		offset = parseInt(offset);
-		length = parseInt(lenght);
+		length = parseInt(length);
 		red    = parseInt(red);
 		green  = parseInt(green);
 		blue   = parseInt(blue);
