@@ -267,13 +267,13 @@ module.exports.handler = function(args) {
 			return strip.initialize(16);
 		})
 		.then(function() {
-			return bar1.fadeToColor(128, 0, 0);
+			return bar1.fadeToColor(0, 128, 0);
 		})
 		.then(function(result) {
 			return strip.pause(2000);
 		})
 		.then(function() {
-			return bar1.fadeToColor(0, 128, 0);
+			return bar2.fadeToColor(0, 0, 128);
 
 		})
 		.then(function(result) {
