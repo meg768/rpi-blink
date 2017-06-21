@@ -77,7 +77,7 @@ class NeopixelStrip : public Adafruit_NeoPixel {
             wipeToColor(0, numPixels(), red, green, blue, wait);
         }
 
-        void fadeToColor(int offset, int length, int red, int green, int blue, int numSteps) {
+        void fadeToColor(int offset, int length, int red, int green, int blue, int duration) {
 
             int count = numPixels();
             
@@ -98,6 +98,33 @@ class NeopixelStrip : public Adafruit_NeoPixel {
                     rgb[i].blue  = (int)(uint8_t)(color);
                 }
 
+                unsigned long startTime = millis();
+
+                
+                // Start timing
+                if (true) {
+                    
+                    show(); 
+                    
+                    for (int step = 0; step < 1; step++) {
+    
+                        for (int i = 0; i < length; i++) {
+                            uint8_t pixelRed   = rgb[i].red   + (step * (red   - rgb[i].red))   / 251;
+                            uint8_t pixelGreen = rgb[i].green + (step * (green - rgb[i].green)) / 251;
+                            uint8_t pixelBlue  = rgb[i].blue  + (step * (blue  - rgb[i].blue))  / 251;
+        
+                            setPixelColor(offset + i, pixelRed, pixelGreen, pixelBlue);
+                        }
+    
+        
+                    }
+                }
+
+                unsigned long endTime = millis();
+
+                // Calculate number of steps to be finished in specified time
+                int numSteps = duration / (endTime - startTime);
+
                 for (int step = 0; step < numSteps; step++) {
 
                     for (int i = 0; i < length; i++) {
@@ -107,9 +134,10 @@ class NeopixelStrip : public Adafruit_NeoPixel {
     
                         setPixelColor(offset + i, pixelRed, pixelGreen, pixelBlue);
                     }
-    
+
+                    
                     show();
-    
+
                 }
     
                 setColor(offset, length, red, green, blue);
