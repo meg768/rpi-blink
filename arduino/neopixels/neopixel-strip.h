@@ -89,7 +89,7 @@ class NeopixelStrip : public Adafruit_NeoPixel {
                 RGB *rgb = memory.alloc(length * sizeof(RGB));
     
                 if (rgb == NULL)
-                    return setColor(offset, length, red, green, blue);
+                    return setColor(offset, length, 255, 255, 255);
     
                 for (int i = 0; i < length; i++) {
                     uint32_t color = getPixelColor(i + offset);
@@ -98,16 +98,14 @@ class NeopixelStrip : public Adafruit_NeoPixel {
                     rgb[i].blue  = (int)(uint8_t)(color);
                 }
 
-                numSteps = numSteps *3;
-                
-                for (int step = 0, ii = offset; step < numSteps; step++) {
+                for (int step = 0; step < numSteps; step++) {
 
                     for (int i = 0; i < length; i++) {
                         uint8_t pixelRed   = rgb[i].red   + (step * (red   - rgb[i].red))   / numSteps;
                         uint8_t pixelGreen = rgb[i].green + (step * (green - rgb[i].green)) / numSteps;
                         uint8_t pixelBlue  = rgb[i].blue  + (step * (blue  - rgb[i].blue))  / numSteps;
     
-                        setPixelColor(ii++, pixelRed, pixelGreen, pixelBlue);
+                        setPixelColor(offset + i, pixelRed, pixelGreen, pixelBlue);
                     }
     
                     show();
