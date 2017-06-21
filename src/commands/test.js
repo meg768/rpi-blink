@@ -266,10 +266,15 @@ module.exports.handler = function(args) {
 		promise.then(function() {
 			return strip.initialize(16);
 		})
-		.then(function(result) {
+		.then(function() {
 			return strip.pause(2000);
 		})
 		.then(function(result) {
+			return strip.fadeToColor(0, 255, 0, 0, 0);
+		})
+
+		/*
+		.then(function() {
 			return strip.setColor(0, 255, 0, 0, 0);
 		})
 		.then(function() {
@@ -288,6 +293,7 @@ module.exports.handler = function(args) {
 		.then(function(result) {
 			return strip.setColor(0, 255, 0, 0, 0);
 		})
+		*/
 
 		.then(function(result) {
 			console.log('OK');
