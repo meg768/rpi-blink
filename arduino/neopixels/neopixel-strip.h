@@ -39,62 +39,88 @@ class NeopixelStrip : public Adafruit_NeoPixel {
         ~NeopixelStrip() {
         };
 
-        void setColor(int red, int green, int blue) {
+
+        void setColor(int index, int length, int red, int green, int blue) {
 
             int count = numPixels();
-
-            for (int i = 0; i < count; i++) {
-                setPixelColor(i, red, green, blue);
+            
+            if (index + length > count)
+                length = count - index;
+                
+            for (int i = 0; i < length; i++) {
+                setPixelColor(index++, red, green, blue);
+                
             }
 
             show();
         }
+        
+        void setColor(int red, int green, int blue) {
+            setColor(0, numPixels(), red, green, blue);    
+        }
 
-        void wipeToColor(int red, int green, int blue, int wait) {
+        void wipeToColor(int index, int length, int red, int green, int blue, int wait) {
 
             int count = numPixels();
             
-            for (int i = 0; i < count; i++) {
-                setPixelColor(i, red, green, blue);
+            if (index + length > count)
+                length = count - index;
+
+            for (int i = 0; i < length; i++) {
+                setPixelColor(index++, red, green, blue);
                 show();
                 delay(wait);
             }
         }
 
-        void fadeToColor(int red, int green, int blue, int numSteps) {
+        void wipeToColor(int red, int green, int blue, int wait) {
+            wipeToColor(0, numPixels(), red, green, blue, wait);
+        }
+
+        void fadeToColor(int index, int length, int red, int green, int blue, int numSteps) {
 
             int count = numPixels();
+            
+            if (index + length > count)
+                length = count - index;
 
-            Memory memory;
-            RGB *rgb = memory.alloc(count * sizeof(RGB));
-
-            if (rgb == NULL)
-                return setColor(red, green, blue);
-
-            for (int i = 0; i < count; i++) {
-                uint32_t color = getPixelColor(i);
-                rgb[i].red   = (int)(uint8_t)(color >> 16);
-                rgb[i].green = (int)(uint8_t)(color >> 8);
-                rgb[i].blue  = (int)(uint8_t)(color);
-            }
-
-            for (int step = 0; step < numSteps; step++) {
-
-                for (int i = 0; i < count; i++) {
-                    uint8_t pixelRed   = rgb[i].red   + (step * (red   - rgb[i].red))   / numSteps;
-                    uint8_t pixelGreen = rgb[i].green + (step * (green - rgb[i].green)) / numSteps;
-                    uint8_t pixelBlue  = rgb[i].blue  + (step * (blue  - rgb[i].blue))  / numSteps;
-
-                    setPixelColor(i, pixelRed, pixelGreen, pixelBlue);
+            if (length > 0) {
+                Memory memory;
+                RGB *rgb = memory.alloc(length * sizeof(RGB));
+    
+                if (rgb == NULL)
+                    return setColor(index, length, red, green, blue);
+    
+                for (int i = 0; i < length; i++) {
+                    uint32_t color = getPixelColor(i);
+                    rgb[i].red   = (int)(uint8_t)(color >> 16);
+                    rgb[i].green = (int)(uint8_t)(color >> 8);
+                    rgb[i].blue  = (int)(uint8_t)(color);
                 }
-
-                show();
-
+    
+                for (int step = 0; step < numSteps; step++) {
+    
+                    for (int i = 0; i < length; i++) {
+                        uint8_t pixelRed   = rgb[i].red   + (step * (red   - rgb[i].red))   / numSteps;
+                        uint8_t pixelGreen = rgb[i].green + (step * (green - rgb[i].green)) / numSteps;
+                        uint8_t pixelBlue  = rgb[i].blue  + (step * (blue  - rgb[i].blue))  / numSteps;
+    
+                        setPixelColor(index++, pixelRed, pixelGreen, pixelBlue);
+                    }
+    
+                    show();
+    
+                }
+    
+                setColor(index, length, red, green, blue);
             }
 
-            setColor(red, green, blue);
+                
 
         }
 
+        void fadeToColor(int red, int green, int blue, int numSteps) {
+            fadeToColor(0, numPixels(), red, green, blue, numSteps);
+        }
 };
 

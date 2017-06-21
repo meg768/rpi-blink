@@ -12,8 +12,6 @@ function NeopixelStrip(options) {
 	const CMD_SET_COLOR     = 0x11;
 	const CMD_FADE_TO_COLOR = 0x12;
 	const CMD_WIPE_TO_COLOR = 0x13;
-	const CMD_SET_PIXEL     = 0x14;
-	const CMD_REFRESH       = 0x15;
 
 	var _this          = this;         // That
 	var _wire          = undefined;    // I2C communication
@@ -78,42 +76,6 @@ function NeopixelStrip(options) {
 
 
 
-	_this.foo = function(red, green, blue) {
-
-		red   = parseInt(red);
-		green = parseInt(green);
-		blue  = parseInt(blue);
-
-		return new Promise(function(resolve, reject) {
-
-			var packets = [];
-
-			for (var i = 0; i < _length; i++) {
-				packets.push([i, red, green, blue]);
-			}
-
-			var promise = Promise.resolve();
-
-			packets.forEach(function(packet) {
-				promise = promise.then(function() {
-					return _this.send(CMD_SET_PIXEL, packet);
-				});
-
-			});
-
-			promise.then(function() {
-				return _this.send(CMD_REFRESH, []);
-			})
-			.then(function() {
-				resolve();
-			})
-			.catch(function(error) {
-				reject(error);
-			})
-
-		});
-
-	}
 
 	_this.setColor = function(red, green, blue) {
 		red   = parseInt(red);
@@ -122,7 +84,7 @@ function NeopixelStrip(options) {
 
 		console.log('Setting color to', [red, green, blue]);
 
-		return _this.send(CMD_SET_COLOR, [red, green, blue]);
+		return _this.send(CMD_SET_COLOR, [0, 255, red, green, blue]);
 	}
 
 	_this.wipeToColor = function(red, green, blue, delay) {
@@ -137,7 +99,7 @@ function NeopixelStrip(options) {
 		blue   = parseInt(blue);
 		delay  = parseInt(delay);
 
-		return _this.send(CMD_WIPE_TO_COLOR, [red, green, blue, delay]);
+		return _this.send(CMD_WIPE_TO_COLOR, [0, 255, red, green, blue, delay]);
 	}
 
 	_this.fadeToColor = function(red, green, blue, steps) {
@@ -152,7 +114,7 @@ function NeopixelStrip(options) {
 		blue   = parseInt(blue);
 		steps  = parseInt(steps);
 
-		return _this.send(CMD_FADE_TO_COLOR, [red, green, blue, steps]);
+		return _this.send(CMD_FADE_TO_COLOR, [0, 255, red, green, blue, steps]);
 	}
 
 
