@@ -77,22 +77,22 @@ class NeopixelStrip : public Adafruit_NeoPixel {
             wipeToColor(0, numPixels(), red, green, blue, wait);
         }
 
-        void fadeToColor(int index, int length, int red, int green, int blue, int numSteps) {
+        void fadeToColor(int offset, int length, int red, int green, int blue, int numSteps) {
 
             int count = numPixels();
             
-            if (index + length > count)
-                length = count - index;
+            if (offset + length > count)
+                length = count - offset;
 
             if (length > 0) {
                 Memory memory;
                 RGB *rgb = memory.alloc(length * sizeof(RGB));
     
                 if (rgb == NULL)
-                    return setColor(index, length, red, green, blue);
+                    return setColor(offset, length, red, green, blue);
     
                 for (int i = 0; i < length; i++) {
-                    uint32_t color = getPixelColor(i);
+                    uint32_t color = getPixelColor(i + offset);
                     rgb[i].red   = (int)(uint8_t)(color >> 16);
                     rgb[i].green = (int)(uint8_t)(color >> 8);
                     rgb[i].blue  = (int)(uint8_t)(color);
@@ -100,7 +100,7 @@ class NeopixelStrip : public Adafruit_NeoPixel {
 
                 numSteps = numSteps *3;
                 
-                for (int step = 0, ii = index; step < numSteps; step++) {
+                for (int step = 0, ii = offset; step < numSteps; step++) {
 
                     for (int i = 0; i < length; i++) {
                         uint8_t pixelRed   = rgb[i].red   + (step * (red   - rgb[i].red))   / numSteps;
@@ -114,7 +114,7 @@ class NeopixelStrip : public Adafruit_NeoPixel {
     
                 }
     
-                setColor(index, length, red, green, blue);
+                setColor(offset, length, red, green, blue);
             }
 
                 
