@@ -127,7 +127,7 @@ class NeopixelStrip : public Adafruit_NeoPixel {
                 unsigned long endTime = millis();
 
                 // Calculate number of steps to be finished in specified time
-                long numSteps = duration / 100;
+                long numSteps = duration / 10;
 
                 for (long step = 0; step < numSteps; step++) {
 
