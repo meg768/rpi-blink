@@ -19,8 +19,8 @@ function NeopixelSegment(options) {
 		return _strip.setColor(_offset, _length, red, green, blue);
 	}
 
-	_this.fadeToColor = function(red, green, blue, steps) {
-		return _strip.fadeToColor(_offset, _length, red, green, blue, steps);
+	_this.fadeToColor = function(red, green, blue, time) {
+		return _strip.fadeToColor(_offset, _length, red, green, blue, time);
 	}
 
 	_this.wipeToColor = function(red, green, blue, delay) {
