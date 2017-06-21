@@ -273,7 +273,7 @@ module.exports.handler = function(args) {
 			return strip.setColor(0, 255, 0, 0, 128);
 		})
 		.then(function() {
-			return strip.pause(2000);
+			return strip.pause(10);
 		})
 
 		promise.then(function() {
