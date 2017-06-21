@@ -15,15 +15,15 @@ function NeopixelSegment(options) {
 		_offset = options.offset;
 	};
 
-	_this.setColor(red, green, blue) {
+	_this.setColor = function(red, green, blue) {
 		return _strip.setColor(_offset, _length, red, green, blue);
 	}
 
-	_this.fadeToColor(red, green, blue, steps) {
+	_this.fadeToColor = function(red, green, blue, steps) {
 		return _strip.fadeToColor(_offset, _length, red, green, blue, steps);
 	}
 
-	_this.wipeToColor(red, green, blue, delay) {
+	_this.wipeToColor = function(red, green, blue, delay) {
 		return _strip.wipeToColor(_offset, _length, red, green, blue, delay);
 	}
 
