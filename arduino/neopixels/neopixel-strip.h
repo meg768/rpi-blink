@@ -97,37 +97,10 @@ class NeopixelStrip : public Adafruit_NeoPixel {
                     rgb[i].green = (int)(uint8_t)(color >> 8);
                     rgb[i].blue  = (int)(uint8_t)(color);
                 }
-
-                unsigned long startTime = millis();
-
-                
-                // Start timing
-                if (true) {
-                    
-                    show(); 
-
-                    long numSteps = 1;
-    
-                    for (long step = 0; step < numSteps; step++) {
-    
-                        for (int i = 0; i < length; i++) {
-                            int pixelRed   = (long)rgb[i].red   + (step * ((long)red   - (long)rgb[i].red))   / numSteps;
-                            int pixelGreen = (long)rgb[i].green + (step * ((long)green - (long)rgb[i].green)) / numSteps;
-                            int pixelBlue  = (long)rgb[i].blue  + (step * ((long)blue  - (long)rgb[i].blue))  / numSteps;
-        
-                            setPixelColor(offset + i, pixelRed, pixelGreen, pixelBlue);
-                        }
-    
-                        
-                        show();
-    
-                    }
-                }
-
-                unsigned long endTime = millis();
+           
 
                 // Calculate number of steps to be finished in specified time
-                long numSteps = duration / 10;
+                long numSteps = (long)((float)duration * 0.2);
 
                 for (long step = 0; step < numSteps; step++) {
 
