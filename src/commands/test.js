@@ -266,6 +266,9 @@ module.exports.handler = function(args) {
 		promise.then(function() {
 			return strip.initialize(16);
 		})
+		.then(function(result) {
+			return strip.setColor(0, 255, 0, 0, 0);
+		})
 		.then(function() {
 			return bar1.setColor(0, 128, 0);
 		})
