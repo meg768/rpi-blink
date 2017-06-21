@@ -137,6 +137,8 @@ function NeopixelStrip(options) {
 		if (steps == undefined)
 			steps = 64;
 
+		steps = 255;
+		
 		offset = parseInt(offset);
 		length = parseInt(length);
 		red    = parseInt(red);
@@ -271,20 +273,21 @@ module.exports.handler = function(args) {
 		.then(function() {
 			return strip.pause(2000);
 		})
-		.then(function(result) {
-			return strip.fadeToColor(0, 255, 0, 0, 0, 255);
+
+		.then(function() {
+			return strip.fadeToColor(0, 255, 0, 0, 0);
+		})
+		.then(function() {
+			return strip.pause(2000);
 		})
 
-		/*
-		.then(function() {
-			return strip.setColor(0, 255, 0, 0, 0);
-		})
 		.then(function() {
 			return bar1.setColor(0, 128, 0);
 		})
 		.then(function(result) {
 			return strip.pause(2000);
 		})
+
 		.then(function() {
 			return bar2.setColor(0, 0, 128);
 
@@ -292,10 +295,11 @@ module.exports.handler = function(args) {
 		.then(function(result) {
 			return strip.pause(2000);
 		})
+
 		.then(function(result) {
 			return strip.setColor(0, 255, 0, 0, 0);
 		})
-		*/
+
 
 		.then(function(result) {
 			console.log('OK');
