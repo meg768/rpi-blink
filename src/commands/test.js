@@ -276,11 +276,11 @@ module.exports.handler = function(args) {
 			return strip.pause(2000);
 		})
 
-
+/*
 		.then(function() {
 			return strip.fadeToColor(0, 255, 0, 0, 0, 1000);
 		})
-
+*/
 		.then(function(result) {
 			console.log('OK');
 		})
