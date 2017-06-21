@@ -277,7 +277,7 @@ module.exports.handler = function(args) {
 		})
 
 		.then(function() {
-			return strip.fadeToColor(0, 255, 0, 0, 0, 100);
+			return strip.fadeToColor(0, 255, 0, 0, 0, 1000);
 		})
 
 		.then(function(result) {
