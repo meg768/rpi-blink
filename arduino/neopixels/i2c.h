@@ -86,9 +86,31 @@ class I2C {
             }
 
             return false;
-        }
+        };
 
-        static int readByte(int &data) {
+        static int readWord(uint16_t &data) {
+            uint8_t high = 0, low = 0;
+
+            if (readByte(high) && readByte(low)) {
+                data = high << 8 | low;
+                return true;
+            }
+
+            return false;
+        };
+
+        
+        static int readByte(uint8_t &data) {
+
+            if (!waitForAvailableByte())
+                return false;
+
+            data = read();
+
+            return true;
+        };
+
+       static int readByte(int &data) {
 
             if (!waitForAvailableByte())
                 return false;
@@ -101,6 +123,8 @@ class I2C {
         static int readRGB(int &red, int &green, int &blue) {
             return readByte(red) && readByte(green) && readByte(blue);
         };
+
+
 
 
 

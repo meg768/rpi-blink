@@ -144,12 +144,13 @@ class App {
 
                 case CMD_FADE_TO_COLOR: {
 
-                    int index = 0, length = 0, red = 0, green = 0, blue = 0, speed = 0;
-
+                    int index = 0, length = 0, red = 0, green = 0, blue = 0;
+                    uint16_t speed = 0;
+                    
                     if (!io.readByte(index) || !io.readByte(length) || !io.readRGB(red, green, blue))
                         return ERR_INVALID_PARAMETER;
 
-                    if (!io.readByte(speed))
+                    if (!io.readWord(speed))
                         return ERR_INVALID_PARAMETER;
 
                     _strip.fadeToColor(index, length, red, green, blue, speed);

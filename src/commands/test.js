@@ -130,7 +130,7 @@ function NeopixelStrip(options) {
 		return _this.send(CMD_WIPE_TO_COLOR, [offset, length, red, green, blue, delay]);
 	}
 
-	_this.fadeToColor = function(offset, length, red, green, blue, steps) {
+	_this.fadeToColor = function(offset, length, red, green, blue, time) {
 
 		console.log('Fading to color', [red, green, blue]);
 
@@ -146,7 +146,7 @@ function NeopixelStrip(options) {
 		blue   = parseInt(blue);
 		steps  = parseInt(steps);
 
-		return _this.send(CMD_FADE_TO_COLOR, [offset, length, red, green, blue, steps]);
+		return _this.send(CMD_FADE_TO_COLOR, [offset, length, red, green, blue, (time >> 8) & 0xFF, time & 0xFF]);
 	}
 
 
