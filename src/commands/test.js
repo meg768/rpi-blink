@@ -137,7 +137,6 @@ function NeopixelStrip(options) {
 		if (time == undefined)
 			time = 1000;
 
-			time = 3000;
 		offset = parseInt(offset);
 		length = parseInt(length);
 		red    = parseInt(red);
