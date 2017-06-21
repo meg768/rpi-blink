@@ -270,14 +270,14 @@ module.exports.handler = function(args) {
 		})
 
 		promise.then(function() {
-			return strip.setColor(0, 0, 128);
+			return strip.setColor(0, 255, 0, 0, 128);
 		})
 		.then(function() {
 			return strip.pause(2000);
 		})
 
 		.then(function() {
-			return strip.fadeToColor(0, 0, 0);
+			return strip.fadeToColor(0, 255, 0, 0, 0);
 		})
 
 		.then(function(result) {
