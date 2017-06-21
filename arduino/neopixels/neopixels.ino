@@ -117,67 +117,44 @@ class App {
                     break;
                 }
 
-                case CMD_SET_PIXEL: {
-
-
-                    int red = 0, green = 0, blue = 0, index = 0;
-
-                    if (!io.readByte(index))
-                        return ERR_INVALID_PARAMETER;
-
-                    if (!io.readRGB(red, green, blue))
-                        return ERR_INVALID_PARAMETER;
-
-                    _strip.setPixelColor(index, red, green, blue);
-                    break;
-                };
-
-                case CMD_REFRESH: {
-
-
-                    _strip.show();
-                    break;
-                };
-
                 case CMD_SET_COLOR: {
 
+                    int index = 0, length = 0, red = 0, green = 0, blue = 0;
 
-                    int red = 0, green = 0, blue = 0;
+                    if (!io.readByte(index) || !io.readByte(length) || !io.readRGB(red, green, blue))
+                        return ERR_INVALID_PARAMETER;
 
-                    if (!io.readRGB(red, green, blue))
-                      return ERR_INVALID_PARAMETER;
-
-                    _strip.setColor(red, green, blue);
+                    _strip.setColor(index, length, red, green, blue);
 
                     break;
                 };
 
                 case CMD_WIPE_TO_COLOR: {
 
-                    int red = 0, green = 0, blue = 0, delay = 0;
+                    int index = 0, length = 0, red = 0, green = 0, blue = 0, delay = 0;
 
-                    if (!io.readRGB(red, green, blue))
+                    if (!io.readByte(index) || !io.readByte(length) || !io.readRGB(red, green, blue))
                         return ERR_INVALID_PARAMETER;
 
                     if (!io.readByte(delay))
                         return ERR_INVALID_PARAMETER;
 
-                    _strip.wipeToColor(red, green, blue, delay);
+                    _strip.wipeToColor(index, length, red, green, blue, delay);
 
                     break;
                 }
 
                 case CMD_FADE_TO_COLOR: {
 
-                    int red = 0, green = 0, blue = 0, steps = 0;
+                    int index = 0, length = 0, red = 0, green = 0, blue = 0, steps = 0;
 
-                    if (!io.readRGB(red, green, blue))
+                    if (!io.readByte(index) || !io.readByte(length) || !io.readRGB(red, green, blue))
                         return ERR_INVALID_PARAMETER;
 
                     if (!io.readByte(steps))
                         return ERR_INVALID_PARAMETER;
 
-                    _strip.fadeToColor(red, green, blue, steps);
+                    _strip.fadeToColor(index, length, red, green, blue, steps);
 
                     break;
                 }

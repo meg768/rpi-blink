@@ -2,6 +2,34 @@
 module.exports.command  = 'test';
 module.exports.describe = 'Test Wiring Pi';
 
+function NeopixelSegment(options) {
+
+	var _this   = this;
+	var _strip  = undefined;
+	var _length = undefined;
+	var _offset = undefined;
+
+	function init() {
+		_strip  = options.strip;
+		_length = options.length;
+		_offset = options.offset;
+	};
+
+	_this.setColor(red, green, blue) {
+		return _strip.setColor(_offset, _length, red, green, blue);
+	}
+
+	_this.fadeToColor(red, green, blue, steps) {
+		return _strip.fadeToColor(_offset, _length, red, green, blue, steps);
+	}
+
+	_this.wipeToColor(red, green, blue, delay) {
+		return _strip.wipeToColor(_offset, _length, red, green, blue, delay);
+	}
+
+
+	init();
+};
 
 function NeopixelStrip(options) {
 
@@ -231,109 +259,27 @@ module.exports.handler = function(args) {
 
 		var strip = new NeopixelStrip({device:'/dev/i2c-1'})
 
+		var bar1 = new NeopixelSegment(strip, 0, 8);
+		var bar2 = new NeopixelSegment(strip, 8, 8);
 		var promise = Promise.resolve();
 
-
-		function demo() {
-
-			return new Promise(function(resolve, reject) {
-
-				var pause = 3000;
-				var fade  = 255;
-				var max   = 255;
-
-				Promise.resolve().then(function() {
-					return strip.fadeToColor(max, 0, 0, fade);
-
-				})
-				.then(function() {
-					return strip.pause(pause);
-				})
-				.then(function() {
-					return strip.fadeToColor(0, max, 0, fade);
-
-				})
-				.then(function() {
-					return strip.pause(pause);
-				})
-				.then(function() {
-					return strip.fadeToColor(0, 0, max, fade);
-
-				})
-				.then(function() {
-					return strip.pause(pause);
-				})
-				.then(function() {
-					return strip.fadeToColor(max, max, 0, fade);
-
-				})
-				.then(function() {
-					return strip.pause(pause);
-				})
-				.then(function() {
-					return strip.fadeToColor(0, max, max, fade);
-
-				})
-				.then(function() {
-					return strip.pause(pause);
-				})
-				.then(function() {
-					return strip.fadeToColor(max, 0, max, fade);
-
-				})
-				.then(function() {
-					return strip.pause(pause);
-				})
-				.then(function() {
-					return strip.fadeToColor(max, max, max, fade);
-
-				})
-				.then(function() {
-					return strip.pause(pause);
-				})
-				.then(function() {
-					return strip.fadeToColor(0, 0, 0, fade);
-
-				})
-				.then(function() {
-					resolve();
-				})
-				.catch(function(error) {
-					reject(error);
-				});
-			});
-		};
-
 		promise.then(function() {
-			if (args.length != undefined)
-				return strip.initialize(args.length);
-
-			return Promise.resolve();
-
+			return strip.initialize(16);
 		})
-
 		.then(function() {
-			if (args.command == 'set')
-				return strip.setColor(args.red, args.green, args.blue);
-			if (args.command == 'fade')
-				return strip.fadeToColor(args.red, args.green, args.blue);
-			if (args.command == 'wipe')
-				return strip.wipeToColor(args.red, args.green, args.blue);
-			if (args.command == 'none')
-				return Promise.resolve();
-
-			return demo();
+			return bar1.fadeToColor(128, 0, 0);
 		})
-/*
+		.then(function(result) {
+			return strip.pause(2000);
+		})
 		.then(function() {
-			return strip.pause(args.pause);
+			return bar1.fadeToColor(0, 128, 0);
+
+		})
+		.then(function(result) {
+			return strip.pause(2000);
 		})
 
-
-		.then(function() {
-			return strip.setColor(0, 0, 0);
-		})
-*/
 		.then(function(result) {
 			console.log('OK');
 		})
