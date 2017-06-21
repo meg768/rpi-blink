@@ -319,6 +319,8 @@ module.exports.handler = function(args) {
 				return strip.fadeToColor(args.red, args.green, args.blue);
 			if (args.command == 'wipe')
 				return strip.wipeToColor(args.red, args.green, args.blue);
+			if (args.command == 'none')
+				return Promise.resolve();
 
 			return demo();
 		})
