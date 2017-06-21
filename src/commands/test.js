@@ -279,6 +279,9 @@ module.exports.handler = function(args) {
 		.then(function(result) {
 			return strip.pause(2000);
 		})
+		.then(function(result) {
+			return strip.setColor(0, 0, 0);
+		})
 
 		.then(function(result) {
 			console.log('OK');
