@@ -21,8 +21,6 @@ const int CMD_INITIALIZE    = 0x10;  // size
 const int CMD_SET_COLOR     = 0x11;  // red, green, blue
 const int CMD_FADE_TO_COLOR = 0x12;  // red, green, blue
 const int CMD_WIPE_TO_COLOR = 0x13;  // red, green, blue, delay
-const int CMD_SET_PIXEL     = 0x14;  //
-const int CMD_REFRESH       = 0x15;  //
 
 const int ERR_OK                = 0;
 const int ERR_INVALID_PARAMETER = 1;
