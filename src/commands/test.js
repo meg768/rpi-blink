@@ -273,12 +273,30 @@ module.exports.handler = function(args) {
 			return strip.setColor(0, 255, 0, 0, 128);
 		})
 		.then(function() {
-			return strip.pause(10);
+			return strip.pause(100);
 		})
 
-		promise.then(function() {
-			return strip.setColor(0, 255, 0, 128, 0);
+		.then(function() {
+			return bar1.fadeToColor(0, 128, 0, 500);
 		})
+		.then(function() {
+			return bar2.fadeToColor(128, 0, 0, 500);
+		})
+		.then(function() {
+			return strip.pause(1000);
+		})
+
+		.then(function() {
+			return bar1.fadeToColor(128, 0, 0, 500);
+		})
+		.then(function() {
+			return bar2.fadeToColor(0, 0, 128, 500);
+		})
+		.then(function() {
+			return strip.pause(1000);
+		})
+
+
 		.then(function() {
 			return strip.fadeToColor(0, 255, 0, 0, 0, 500);
 		})
