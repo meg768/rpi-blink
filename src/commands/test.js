@@ -280,7 +280,7 @@ module.exports.handler = function(args) {
 			return strip.pause(2000);
 		})
 		.then(function(result) {
-			return strip.setColor(0, 0, 0);
+			return strip.setColor(0, 255, 0, 0, 0);
 		})
 
 		.then(function(result) {
