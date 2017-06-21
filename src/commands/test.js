@@ -264,7 +264,7 @@ module.exports.handler = function(args) {
 		var promise = Promise.resolve();
 
 		promise.then(function() {
-			return strip.initialize(16);
+			return strip.initialize(8);
 		})
 		.then(function() {
 			return bar1.fadeToColor(0, 128, 0);
