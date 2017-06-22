@@ -280,7 +280,7 @@ module.exports.handler = function(args) {
 		var promise = Promise.resolve();
 
 		promise.then(function() {
-			return strip.initialize(24);
+			return strip.initialize(40);
 		})
 
 		promise.then(function() {
