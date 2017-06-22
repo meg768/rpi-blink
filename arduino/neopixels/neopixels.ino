@@ -9,7 +9,7 @@ const int APP_STRIP_LENGTH = 8;
 #else
 const int APP_I2C_ADDRESS  = 0x26;
 const int APP_NEOPIXEL_PIN = 4;
-const int APP_STRIP_LENGTH = 20;
+const int APP_STRIP_LENGTH = 40;
 #endif
 
 class App;
@@ -51,7 +51,7 @@ class App {
             indicators.begin();
             
             _strip.begin();
-            _strip.setColor(0, 0, 4);
+            _strip.setColor(0, 0, 128);
         }
 
         static void onReceiveService() {
