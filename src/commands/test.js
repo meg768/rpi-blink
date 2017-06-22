@@ -30,15 +30,15 @@ function NeopixelStrip(options) {
 		var _strip = _this;
 
 		this.setColor = function(red, green, blue) {
-			return _strip.setColor(offset, length, red, green, blue);
+			return _strip.setSegmentColor(offset, length, red, green, blue);
 		}
 
 		this.fadeToColor = function(red, green, blue, time) {
-			return _strip.fadeToColor(offset, length, red, green, blue, time);
+			return _strip.fadeSegmentToColor(offset, length, red, green, blue, time);
 		}
 
 		this.wipeToColor = function(red, green, blue, delay) {
-			return _strip.wipeToColor(offset, length, red, green, blue, delay);
+			return _strip.wipeSegmentToColor(offset, length, red, green, blue, delay);
 		}
 
 	};
@@ -96,7 +96,11 @@ function NeopixelStrip(options) {
 
 
 
-	_this.setColor = function(offset, length, red, green, blue) {
+	_this.setColor = function(red, green, blue) {
+		return _this.setSegmentColor(0, _length, red, green, blue);
+	}
+
+	_this.setSegmentColor = function(offset, length, red, green, blue) {
 		red   = parseInt(red);
 		green = parseInt(green);
 		blue  = parseInt(blue);
@@ -106,7 +110,12 @@ function NeopixelStrip(options) {
 		return _this.send(CMD_SET_COLOR, [offset, length, red, green, blue]);
 	}
 
-	_this.wipeToColor = function(offset, length, red, green, blue, delay) {
+	_this.wipeToColor = function(red, green, blue, delay) {
+
+		return _this.wipeSegmentToColor(0, _length, red, green, blue);
+	}
+
+	_this.wipeSegmentToColor = function(offset, length, red, green, blue, delay) {
 
 		console.log('Wiping to color', [red, green, blue]);
 
@@ -121,7 +130,12 @@ function NeopixelStrip(options) {
 		return _this.send(CMD_WIPE_TO_COLOR, [offset, length, red, green, blue, delay]);
 	}
 
-	_this.fadeToColor = function(offset, length, red, green, blue, time) {
+	_this.fadeToColor = function(red, green, blue, time) {
+
+		return _this.fadeSegmentToColor(0, _length, red, green, blue, time);
+	}
+
+	_this.fadeSegmentToColor = function(offset, length, red, green, blue, time) {
 
 		console.log('Fading to color', [red, green, blue]);
 
