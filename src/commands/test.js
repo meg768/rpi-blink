@@ -45,13 +45,33 @@ function NeopixelStrip(options) {
 	var _wire          = undefined;    // I2C communication
 	var _length        = 0;            // Length of Neopixels
 	var _debug         = 1;            // Output log messages to console?
-	var _timeout       = 100000;        // Read/write timeout in ms
+	var _timeout       = 10000;        // Read/write timeout in ms
 	var _retryInterval = 100;          // Milliseconds to wait before retrying read/write
 
 	function debug() {
 		if (_debug)
 			console.log.apply(this, arguments);
 	}
+
+	_this.segment = function(offset, length) {
+
+		var _strip = _this;
+		var _this  = this;
+
+		_this.setColor = function(red, green, blue) {
+			return _strip.setColor(offset, length, red, green, blue);
+		}
+
+		_this.fadeToColor = function(red, green, blue, time) {
+			return _strip.fadeToColor(offset, length, red, green, blue, time);
+		}
+
+		_this.wipeToColor = function(red, green, blue, delay) {
+			return _strip.wipeToColor(offset, length, red, green, blue, delay);
+		}
+
+	};
+
 
 	_this.waitForReply = function(timestamp) {
 
@@ -260,8 +280,8 @@ module.exports.handler = function(args) {
 	try {
 
 		var strip = new NeopixelStrip({device:'/dev/i2c-1'})
-		var bar1  = new NeopixelSegment({strip:strip, offset:0, length:8});
-		var bar2  = new NeopixelSegment({strip:strip, offset:8, length:8});
+		var bar1  = new strip.segment(0, 8); //NeopixelSegment({strip:strip, offset:0, length:8});
+		var bar2  = new strip.segment(8, 8); //NeopixelSegment({strip:strip, offset:8, length:8});
 
 		var promise = Promise.resolve();
 
