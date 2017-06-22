@@ -30,15 +30,15 @@ function NeopixelStrip(options) {
 		var _strip = _this;
 
 		this.setColor = function(red, green, blue) {
-			return _strip.setSegmentColor(offset, length, red, green, blue);
+			return _strip.setColor(red, green, blue, offset, length);
 		}
 
 		this.fadeToColor = function(red, green, blue, time) {
-			return _strip.fadeSegmentToColor(offset, length, red, green, blue, time);
+			return _strip.fadeToColor(red, green, blue, time, offset, length);
 		}
 
 		this.wipeToColor = function(red, green, blue, delay) {
-			return _strip.wipeSegmentToColor(offset, length, red, green, blue, delay);
+			return _strip.wipeToColor(red, green, blue, delay, offset, length);
 		}
 
 	};
@@ -96,11 +96,14 @@ function NeopixelStrip(options) {
 
 
 
-	_this.setColor = function(red, green, blue) {
-		return _this.setSegmentColor(0, _length, red, green, blue);
-	}
+	_this.setColor = function(red, green, blue, offset, length) {
 
-	_this.setSegmentColor = function(offset, length, red, green, blue) {
+		if (offset == undefined)
+			offset = 0;
+
+		if (length == undefined)
+			length = _length;
+
 		red   = parseInt(red);
 		green = parseInt(green);
 		blue  = parseInt(blue);
@@ -110,14 +113,16 @@ function NeopixelStrip(options) {
 		return _this.send(CMD_SET_COLOR, [offset, length, red, green, blue]);
 	}
 
-	_this.wipeToColor = function(red, green, blue, delay) {
 
-		return _this.wipeSegmentToColor(0, _length, red, green, blue);
-	}
-
-	_this.wipeSegmentToColor = function(offset, length, red, green, blue, delay) {
+	_this.wipeToColor = function(red, green, blue, delay, offset, length) {
 
 		console.log('Wiping to color', [red, green, blue]);
+
+		if (offset == undefined)
+			offset = 0;
+
+		if (length == undefined)
+			length = _length;
 
 		if (delay == undefined)
 			delay = 1;
@@ -130,14 +135,15 @@ function NeopixelStrip(options) {
 		return _this.send(CMD_WIPE_TO_COLOR, [offset, length, red, green, blue, delay]);
 	}
 
-	_this.fadeToColor = function(red, green, blue, time) {
-
-		return _this.fadeSegmentToColor(0, _length, red, green, blue, time);
-	}
-
-	_this.fadeSegmentToColor = function(offset, length, red, green, blue, time) {
+	_this.fadeToColor = function(red, green, blue, time, offset, length) {
 
 		console.log('Fading to color', [red, green, blue]);
+
+		if (offset == undefined)
+			offset = 0;
+
+		if (length == undefined)
+			length = _length;
 
 		if (time == undefined)
 			time = 1000;
