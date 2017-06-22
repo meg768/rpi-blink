@@ -274,6 +274,8 @@ module.exports.handler = function(args) {
 		var bar1  = new strip.segment(0, 8); //NeopixelSegment({strip:strip, offset:0, length:8});
 		var bar2  = new strip.segment(8, 8); //NeopixelSegment({strip:strip, offset:8, length:8});
 		var bar3  = new strip.segment(16, 8); //NeopixelSegment({strip:strip, offset:8, length:8});
+		var bar4  = new strip.segment(24, 8); //NeopixelSegment({strip:strip, offset:8, length:8});
+		var bar5  = new strip.segment(32, 8); //NeopixelSegment({strip:strip, offset:8, length:8});
 
 		var promise = Promise.resolve();
 
@@ -296,6 +298,12 @@ module.exports.handler = function(args) {
 		})
 		.then(function() {
 			return bar3.fadeToColor(0, 0, 128, 500);
+		})
+		.then(function() {
+			return bar4.fadeToColor(0, 128, 128, 500);
+		})
+		.then(function() {
+			return bar4.fadeToColor(128, 128, 0, 500);
 		})
 		.then(function() {
 			return strip.pause(1000);
