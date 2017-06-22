@@ -277,6 +277,8 @@ module.exports.handler = function(args) {
 		var bar4  = new strip.segment(24, 8); //NeopixelSegment({strip:strip, offset:8, length:8});
 		var bar5  = new strip.segment(32, 8); //NeopixelSegment({strip:strip, offset:8, length:8});
 
+		bar1 = bar2 = bar3 = bar4 = bar5 = strip;
+
 		var promise = Promise.resolve();
 
 		promise.then(function() {
