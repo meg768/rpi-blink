@@ -56,17 +56,16 @@ function NeopixelStrip(options) {
 	_this.segment = function(offset, length) {
 
 		var _strip = _this;
-		var _this  = this;
 
-		_this.setColor = function(red, green, blue) {
+		this.setColor = function(red, green, blue) {
 			return _strip.setColor(offset, length, red, green, blue);
 		}
 
-		_this.fadeToColor = function(red, green, blue, time) {
+		this.fadeToColor = function(red, green, blue, time) {
 			return _strip.fadeToColor(offset, length, red, green, blue, time);
 		}
 
-		_this.wipeToColor = function(red, green, blue, delay) {
+		this.wipeToColor = function(red, green, blue, delay) {
 			return _strip.wipeToColor(offset, length, red, green, blue, delay);
 		}
 
