@@ -2,34 +2,6 @@
 module.exports.command  = 'test';
 module.exports.describe = 'Test Wiring Pi';
 
-function NeopixelSegment(options) {
-
-	var _this   = this;
-	var _strip  = undefined;
-	var _length = undefined;
-	var _offset = undefined;
-
-	function init() {
-		_strip  = options.strip;
-		_length = options.length;
-		_offset = options.offset;
-	};
-
-	_this.setColor = function(red, green, blue) {
-		return _strip.setColor(_offset, _length, red, green, blue);
-	}
-
-	_this.fadeToColor = function(red, green, blue, time) {
-		return _strip.fadeToColor(_offset, _length, red, green, blue, time);
-	}
-
-	_this.wipeToColor = function(red, green, blue, delay) {
-		return _strip.wipeToColor(_offset, _length, red, green, blue, delay);
-	}
-
-
-	init();
-};
 
 function NeopixelStrip(options) {
 
@@ -281,8 +253,8 @@ module.exports.handler = function(args) {
 		var strip = new NeopixelStrip({device:'/dev/i2c-1'})
 		var bar1  = new strip.segment(0, 8); //NeopixelSegment({strip:strip, offset:0, length:8});
 		var bar2  = new strip.segment(8, 8); //NeopixelSegment({strip:strip, offset:8, length:8});
+		var all   = new strip.segment(0, 16)
 
-console.log(bar1);
 		var promise = Promise.resolve();
 
 		promise.then(function() {
@@ -290,7 +262,7 @@ console.log(bar1);
 		})
 
 		promise.then(function() {
-			return strip.setColor(0, 255, 0, 0, 128);
+			return all.setColor(0, 0, 128);
 		})
 		.then(function() {
 			return strip.pause(100);
@@ -318,7 +290,7 @@ console.log(bar1);
 
 
 		.then(function() {
-			return strip.fadeToColor(0, 255, 0, 0, 0, 500);
+			return all.fadeToColor(0, 0, 0, 500);
 		})
 
 		.then(function(result) {
