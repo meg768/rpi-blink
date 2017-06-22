@@ -273,11 +273,12 @@ module.exports.handler = function(args) {
 		var strip = new NeopixelStrip({device:'/dev/i2c-1'})
 		var bar1  = new strip.segment(0, 8); //NeopixelSegment({strip:strip, offset:0, length:8});
 		var bar2  = new strip.segment(8, 8); //NeopixelSegment({strip:strip, offset:8, length:8});
+		var bar3  = new strip.segment(16, 8); //NeopixelSegment({strip:strip, offset:8, length:8});
 
 		var promise = Promise.resolve();
 
 		promise.then(function() {
-			return strip.initialize(16);
+			return strip.initialize(24);
 		})
 
 		promise.then(function() {
@@ -294,19 +295,11 @@ module.exports.handler = function(args) {
 			return bar2.fadeToColor(128, 0, 0, 500);
 		})
 		.then(function() {
-			return strip.pause(1000);
-		})
-
-		.then(function() {
-			return bar1.fadeToColor(128, 0, 0, 500);
-		})
-		.then(function() {
-			return bar2.fadeToColor(0, 0, 128, 500);
+			return bar3.fadeToColor(0, 0, 128, 500);
 		})
 		.then(function() {
 			return strip.pause(1000);
 		})
-
 
 		.then(function() {
 			return strip.fadeToColor(0, 0, 0, 500);
