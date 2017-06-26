@@ -288,6 +288,9 @@ module.exports.handler = function(args) {
 		}
 		else if (args.command == 'set') {
 			promise = promise.then(function() {
+				return strip.initialize(40);
+			});
+			promise = promise.then(function() {
 				return strip.setColor(args.red, args.green, args.blue);
 			});
 
