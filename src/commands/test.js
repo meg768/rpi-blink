@@ -254,7 +254,7 @@ function NeopixelStrip(options) {
 
 module.exports.builder = function(args) {
 
-	args.option('command', {alias: 'c', describe:'Command',  default:'none', choices: ['set', 'wipe', 'fade', 'demo', 'none']});
+	args.option('command', {alias: 'c', describe:'Command',  default:'none', choices: ['set', 'wipe', 'fade', 'demo', 'none', 'init']});
 	args.option('red', {alias: 'r', describe:'red', default: 64});
 	args.option('green', {alias: 'g', describe:'green', default: 0});
 	args.option('blue', {alias: 'b', describe:'blue', default: 0});
@@ -281,55 +281,70 @@ module.exports.handler = function(args) {
 
 		var promise = Promise.resolve();
 
-		promise.then(function() {
-			return strip.initialize(40);
-		})
+		if (args.command == 'init') {
+			promise = promise.then(function() {
+				return strip.initialize(40);
+			});
+		}
+		else if (args.command == 'set') {
+			promise = promise.then(function() {
+				return strip.setColor(args.red, args.green, args.blue);
+			});
 
-		promise.then(function() {
-			return strip.setColor(0, 0, 128);
-		})
-		.then(function() {
-			return strip.pause(100);
-		})
+		}
+		else {
 
-		.then(function() {
-			return strip.setColor(0, 128, 0);
-		})
-		.then(function() {
-			return strip.pause(1000);
-		})
-		.then(function() {
-			return strip.setColor(128, 0, 0);
-		})
-		.then(function() {
-			return strip.pause(1000);
-		})
-		.then(function() {
-			return strip.setColor(0, 0, 128);
-		})
-		.then(function() {
-			return strip.pause(1000);
-		})
-		.then(function() {
-			return strip.setColor(0, 128, 128);
-		})
-		.then(function() {
-			return strip.pause(1000);
-		})
-		.then(function() {
-			return strip.setColor(128, 128, 0);
-		})
-		.then(function() {
-			return strip.pause(1000);
-		})
+				promise = promise.then(function() {
+					return strip.initialize(40);
+				})
 
-		.then(function() {
-			return strip.setColor(2, 2, 2);
+				.then(function() {
+					return strip.setColor(0, 0, 128);
+				})
+				.then(function() {
+					return strip.pause(100);
+				})
+
+				.then(function() {
+					return strip.setColor(0, 128, 0);
+				})
+				.then(function() {
+					return strip.pause(1000);
+				})
+				.then(function() {
+					return strip.setColor(128, 0, 0);
+				})
+				.then(function() {
+					return strip.pause(1000);
+				})
+				.then(function() {
+					return strip.setColor(0, 0, 128);
+				})
+				.then(function() {
+					return strip.pause(1000);
+				})
+				.then(function() {
+					return strip.setColor(0, 128, 128);
+				})
+				.then(function() {
+					return strip.pause(1000);
+				})
+				.then(function() {
+					return strip.setColor(128, 128, 0);
+				})
+				.then(function() {
+					return strip.pause(1000);
+				})
+
+				.then(function() {
+					return strip.setColor(2, 2, 2);
 
 
-		})
+				})
 
-		.then(function(result) {
+		}
+
+		promise.then(function(result) {
 			console.log('OK');
 		})
 		.catch(function(error) {
