@@ -299,9 +299,8 @@ module.exports.handler = function(args) {
 		var bar2  = new strip.segment(8, 8); //NeopixelSegment({strip:strip, offset:8, length:8});
 		var bar3  = new strip.segment(16, 8); //NeopixelSegment({strip:strip, offset:8, length:8});
 		var bar4  = new strip.segment(24, 8); //NeopixelSegment({strip:strip, offset:8, length:8});
-		var bar5  = new strip.segment(32, 8); //NeopixelSegment({strip:strip, offset:8, length:8});
 
-		bar1 = bar2 = bar3 = bar4 = bar5 = strip;
+//		bar1 = bar2 = bar3 = bar4 = strip;
 
 		var promise = Promise.resolve();
 
@@ -322,7 +321,7 @@ module.exports.handler = function(args) {
 		else {
 
 				promise = promise.then(function() {
-					return strip.initialize(40);
+					return strip.initialize(32);
 				})
 
 				.then(function() {
