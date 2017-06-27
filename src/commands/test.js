@@ -287,9 +287,9 @@ module.exports.handler = function(args) {
 				.then(function() {
 					resolve();
 				})
-				.catch(function(error)) {
+				.catch(function(error) {
 					reject(error);
-				}
+				});
 			});
 		}
 
