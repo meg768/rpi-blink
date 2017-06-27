@@ -41,6 +41,11 @@ function NeopixelStrip(options) {
 			return _strip.wipeToColor(red, green, blue, delay, offset, length);
 		}
 
+		this.pause = function(ms) {
+
+			return _strip.pause(ms);
+		}
+
 	};
 
 
@@ -270,6 +275,25 @@ module.exports.handler = function(args) {
 
 	try {
 
+		function setColor(bar, red, green, blue, wait) {
+
+			if (wait == undefined)
+				wait = 1000;
+
+			return new Promise(function(resolve, reject) {
+				bar.fadeToColor(red, green, blue).then(function() {
+					return bar.pause(wait);
+				})
+				.then(function() {
+					resolve();
+				})
+				.catch(function(error)) {
+					reject(error);
+				}
+			});
+		}
+
+
 		var strip = new NeopixelStrip({device:'/dev/i2c-1'})
 		var bar1  = new strip.segment(0, 8); //NeopixelSegment({strip:strip, offset:0, length:8});
 		var bar2  = new strip.segment(8, 8); //NeopixelSegment({strip:strip, offset:8, length:8});
@@ -302,45 +326,38 @@ module.exports.handler = function(args) {
 				})
 
 				.then(function() {
-					return strip.setColor(0, 0, 128);
-				})
-				.then(function() {
-					return strip.pause(100);
+					return strip.setColor(0, 0, 0);
 				})
 
 				.then(function() {
-					return strip.setColor(0, 128, 0);
+					return setColor(bar1, 128, 0, 0);
 				})
 				.then(function() {
-					return strip.pause(1000);
+					return setColor(bar2, 0, 128, 0);
 				})
 				.then(function() {
-					return strip.setColor(128, 0, 0);
+					return setColor(bar3, 0, 0, 128);
 				})
 				.then(function() {
-					return strip.pause(1000);
+					return setColor(bar4, 128, 0, 128);
+				})
+
+
+				.then(function() {
+					return setColor(bar1, 0, 128, 0);
 				})
 				.then(function() {
-					return strip.setColor(0, 0, 128);
+					return setColor(bar2, 0, 0, 128);
 				})
 				.then(function() {
-					return strip.pause(1000);
+					return setColor(bar3, 128, 0, 0);
 				})
 				.then(function() {
-					return strip.setColor(0, 128, 128);
-				})
-				.then(function() {
-					return strip.pause(1000);
-				})
-				.then(function() {
-					return strip.setColor(128, 128, 0);
-				})
-				.then(function() {
-					return strip.pause(1000);
+					return setColor(bar4, 0, 128, 128);
 				})
 
 				.then(function() {
-					return strip.setColor(2, 2, 2);
+					return strip.setColor(0, 0, 0);
 
 
 				})
