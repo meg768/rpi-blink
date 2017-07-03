@@ -36,6 +36,7 @@ https://nodejs.org/en/download/package-manager/#debian-and-ubuntu-based-linux-di
 https://github.com/fivdi/pigpio#installation
 https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md
 https://www.npmjs.com/package/i2c
+
 https://pinout.xyz/pinout/pin2_5v_power
 https://www.raspberrypi.org/forums/viewtopic.php?f=63&t=102243
 https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c
