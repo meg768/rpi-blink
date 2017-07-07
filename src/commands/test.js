@@ -326,7 +326,7 @@ module.exports.handler = function(args) {
 
 
 				.then(function() {
-					return strip.fadeToColor(128, 128, 128);
+					return strip.fadeToColor(255, 255, 255);
 				})
 
 				.then(function() {
@@ -355,7 +355,7 @@ module.exports.handler = function(args) {
 				.then(function() {
 					return setColor(bar4, 0, 128, 128);
 				})
-
+-
 				.then(function() {
 					return strip.fadeToColor(0, 0, 0);
 
