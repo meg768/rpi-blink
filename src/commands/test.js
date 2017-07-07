@@ -325,7 +325,7 @@ module.exports.handler = function(args) {
 				})
 
 				.then(function() {
-					return strip.setColor(0, 0, 0);
+					return strip.setColor(0, 0, 2);
 				})
 
 
