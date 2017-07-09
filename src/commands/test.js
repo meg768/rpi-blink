@@ -337,7 +337,7 @@ module.exports.handler = function(args) {
 
 					var promise = Promise.resolve();
 
-					for (var i = 0; i < 20; 1++) {
+					for (var i = 0; i < 20; i++) {
 						promise = promise.then(function() {
 							console.log('KALLE', i)
 							return setColor(bar[i % 4], random([128, 255, 0], random([128, 255, 0]), random([128, 255, 0]));
