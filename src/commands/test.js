@@ -2,6 +2,8 @@
 module.exports.command  = 'test';
 module.exports.describe = 'Test Wiring Pi';
 
+
+
 var random = require('yow/random');
 
 function NeopixelStrip(options) {
