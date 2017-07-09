@@ -330,16 +330,16 @@ module.exports.handler = function(args) {
 				})
 
 				.then(function() {
-					return strip.fadeToColor(0, 0, 0);
+					return strip.fadeToColor(1, 0, 0);
 				})
 
 				.then(function() {
 
 					var promise = Promise.resolve();
 
-					for (var i = 0; i < 100; 1++) {
+					for (var i = 0; i < 20; 1++) {
 						promise = promise.then(function() {
-							console.log('***************************', i)
+							console.log('KALLE', i)
 							return setColor(bar[i % 4], random([128, 255, 0], random([128, 255, 0]), random([128, 255, 0]));
 						})
 					}
