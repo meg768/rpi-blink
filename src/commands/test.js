@@ -274,6 +274,16 @@ module.exports.builder = function(args) {
 module.exports.handler = function(args) {
 
 	try {
+		var _index = 0;
+
+
+		function pause(ms) {
+
+			return new Promise(function(resolve, reject) {
+				setTimeout(resolve, ms);
+			});
+		}
+
 
 		function setColor(bar, red, green, blue, wait) {
 
@@ -282,7 +292,7 @@ module.exports.handler = function(args) {
 
 			return new Promise(function(resolve, reject) {
 				bar.fadeToColor(red, green, blue).then(function() {
-					return bar.pause(wait);
+					return pause(wait);
 				})
 				.then(function() {
 					resolve();
@@ -293,6 +303,28 @@ module.exports.handler = function(args) {
 			});
 		}
 
+		function setNewColor() {
+			return new Promise(function(resolve, reject) {
+				var red   = random([0, 64, 128]);
+				var green = random([0, 64, 128]);
+				var blue  = random([0, 64, 128]);
+
+				setColor(bars[_index % 4], red, green, blue, 1000).then(function() {
+					_index++;
+					resolve();
+				})
+				.catch(function(error) {
+					reject(error);
+				});
+			});
+
+		}
+
+		function loop() {
+			setNewColor().then(function() {
+				loop();
+			});
+		}
 
 		var strip = new NeopixelStrip({device:'/dev/i2c-1'});
 
@@ -334,23 +366,7 @@ module.exports.handler = function(args) {
 
 				.then(function() {
 
-					var promise = Promise.resolve();
-					var index = 0;
-
-					for (var i = 0; i < 200; i++) {
-						promise = promise.then(function(loop) {
-							//console.log('KALLE', index++);
-							return setColor(bars[index++ % 4], random([128, 255, 0]), random([128, 255, 0]), random([128, 255, 0]));
-						})
-					}
-
-					return promise;
-				})
-
-				.then(function() {
-					return strip.fadeToColor(0, 0, 0);
-
-
+					loop();
 				})
 
 		}
