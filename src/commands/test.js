@@ -330,7 +330,7 @@ module.exports.handler = function(args) {
 				})
 
 				.then(function() {
-					return strip.fadeToColor(1, 0, 0);
+					return strip.fadeToColor(0, 0, 0);
 				})
 
 				.then(function() {
