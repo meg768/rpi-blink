@@ -145,7 +145,7 @@ function NeopixelStrip(options) {
 
 	_this.fadeToColor = function(red, green, blue, time, offset, length) {
 
-		console.log('Fading to color', [red, green, blue]);
+		//console.log('Fading to color', [red, green, blue]);
 
 		if (offset == undefined)
 			offset = 0;
@@ -291,7 +291,7 @@ module.exports.handler = function(args) {
 				wait = 1000;
 
 			return new Promise(function(resolve, reject) {
-				bar.fadeToColor(red, green, blue).then(function() {
+				bar.fadeToColor(red, green, blue, 2000).then(function() {
 					return pause(wait);
 				})
 				.then(function() {
@@ -305,11 +305,11 @@ module.exports.handler = function(args) {
 
 		function setNewColor() {
 			return new Promise(function(resolve, reject) {
-				var red   = random([0, 64, 128]);
-				var green = random([0, 64, 128]);
-				var blue  = random([0, 64, 128]);
+				var red   = random([0, 64]);
+				var green = random([0, 64]);
+				var blue  = random([0, 64]);
 
-				setColor(bars[_index % 4], red, green, blue, 1000).then(function() {
+				setColor(bars[_index % 4], red, green, blue, 5000).then(function() {
 					_index++;
 					resolve();
 				})
