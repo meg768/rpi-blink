@@ -2,6 +2,7 @@
 module.exports.command  = 'test';
 module.exports.describe = 'Test Wiring Pi';
 
+var random = require('yow/random');
 
 function NeopixelStrip(options) {
 
@@ -278,7 +279,7 @@ module.exports.handler = function(args) {
 		function setColor(bar, red, green, blue, wait) {
 
 			if (wait == undefined)
-				wait = 1000;
+				wait = 1;
 
 			return new Promise(function(resolve, reject) {
 				bar.fadeToColor(red, green, blue).then(function() {
@@ -294,11 +295,15 @@ module.exports.handler = function(args) {
 		}
 
 
-		var strip = new NeopixelStrip({device:'/dev/i2c-1'})
+		var strip = new NeopixelStrip({device:'/dev/i2c-1'});
+
+		var bars = [];
 		var bar1  = new strip.segment(0, 8); //NeopixelSegment({strip:strip, offset:0, length:8});
 		var bar2  = new strip.segment(8, 8); //NeopixelSegment({strip:strip, offset:8, length:8});
 		var bar3  = new strip.segment(16, 8); //NeopixelSegment({strip:strip, offset:8, length:8});
 		var bar4  = new strip.segment(24, 8); //NeopixelSegment({strip:strip, offset:8, length:8});
+
+		var bars = [bar1, bar2, bar3, bar4];
 
 //		bar1 = bar2 = bar3 = bar4 = strip;
 
@@ -324,36 +329,22 @@ module.exports.handler = function(args) {
 					return strip.initialize(32);
 				})
 
-
 				.then(function() {
 					return strip.fadeToColor(0, 0, 0);
 				})
 
 				.then(function() {
-					return setColor(bar1, 128, 0, 0);
-				})
-				.then(function() {
-					return setColor(bar2, 0, 128, 0);
-				})
-				.then(function() {
-					return setColor(bar3, 0, 0, 128);
-				})
-				.then(function() {
-					return setColor(bar4, 128, 0, 128);
-				})
 
+					var promise = Promise.resolve();
 
-				.then(function() {
-					return setColor(bar1, 0, 128, 0);
-				})
-				.then(function() {
-					return setColor(bar2, 0, 0, 128);
-				})
-				.then(function() {
-					return setColor(bar3, 128, 0, 0);
-				})
-				.then(function() {
-					return setColor(bar4, 0, 128, 128);
+					for (var i = 0; i < 100; 1++) {
+						promise = promise.then(function() {
+							console.log('***************************', i)
+							return setColor(bar[i % 4], random([128, 255, 0], random([128, 255, 0]), random([128, 255, 0]));
+						})
+					}
+
+					return promise;
 				})
 
 				.then(function() {
