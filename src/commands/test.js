@@ -324,9 +324,13 @@ module.exports.handler = function(args) {
 					return strip.initialize(32);
 				})
 
+				.then(function() {
+					return strip.setColor(0, 0, 2);
+				})
+
 
 				.then(function() {
-					return strip.fadeToColor(0, 0, 0);
+					return strip.fadeToColor(255, 255, 255);
 				})
 
 				.then(function() {
