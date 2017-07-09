@@ -338,11 +338,12 @@ module.exports.handler = function(args) {
 				.then(function() {
 
 					var promise = Promise.resolve();
+					var index = 0;
 
 					for (var i = 0; i < 20; i++) {
-						promise = promise.then(function() {
-							console.log('KALLE', i)
-							return setColor(bars[i % 4], random([128, 255, 0]), random([128, 255, 0]), random([128, 255, 0]));
+						promise = promise.then(function(loop) {
+							console.log('KALLE', index++);
+							return setColor(bars[index % 4], random([128, 255, 0]), random([128, 255, 0]), random([128, 255, 0]));
 						})
 					}
 
