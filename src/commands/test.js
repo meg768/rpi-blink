@@ -281,7 +281,7 @@ module.exports.handler = function(args) {
 		function setColor(bar, red, green, blue, wait) {
 
 			if (wait == undefined)
-				wait = 1;
+				wait = 1000;
 
 			return new Promise(function(resolve, reject) {
 				bar.fadeToColor(red, green, blue).then(function() {
