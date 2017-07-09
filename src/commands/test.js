@@ -212,7 +212,6 @@ function NeopixelStrip(options) {
 
 	_this.write = function(command, data) {
 		return new Promise(function(resolve, reject) {
-			console.log('Writing bytes', command, data);
 			_wire.writeBytes(command, data, function(error) {
 				if (error)
 					reject(error);
@@ -229,12 +228,10 @@ function NeopixelStrip(options) {
 		return new Promise(function(resolve, reject) {
 			_wire.read(bytes, function(error, result) {
 				if (error) {
-					console.log(error.message);
 					reject(error)
 
 				}
 				else {
-					console.log('Got bytes', result);
 					resolve(result);
 
 				}
@@ -342,7 +339,7 @@ module.exports.handler = function(args) {
 
 					for (var i = 0; i < 200; i++) {
 						promise = promise.then(function(loop) {
-							console.log('KALLE', index++);
+							//console.log('KALLE', index++);
 							return setColor(bars[index % 4], random([128, 255, 0]), random([128, 255, 0]), random([128, 255, 0]));
 						})
 					}
