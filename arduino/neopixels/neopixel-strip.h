@@ -30,13 +30,17 @@ class NeopixelStrip : public Adafruit_NeoPixel {
             uint8_t blue;
         };
 
+        // Buffer to hold pixel colors during fading
+        Memory _rgb;
+
     public:
 
         NeopixelStrip(int length, int pin, int type = NEO_GRB + NEO_KHZ800) : Adafruit_NeoPixel(length, pin, type) {
+            _rgb.alloc(length * sizeof(RGB));
         };
 
 
-        ~NeopixelStrip() {
+        virtual ~NeopixelStrip() {
         };
 
 
@@ -77,6 +81,14 @@ class NeopixelStrip : public Adafruit_NeoPixel {
             wipeToColor(0, numPixels(), red, green, blue, wait);
         }
 
+        void updateLength(int length) {
+            Adafruit_NeoPixel::updateLength(length);
+
+            // Set new size of color buffer
+            _rgb.alloc(length * sizeof(RGB));
+       
+        }
+        
         void fadeToColor(int offset, int length, int red, int green, int blue, int duration) {
 
             int count = numPixels();
@@ -85,8 +97,7 @@ class NeopixelStrip : public Adafruit_NeoPixel {
                 length = count - offset;
 
             if (length > 0) {
-                Memory memory;
-                RGB *rgb = memory.alloc(length * sizeof(RGB));
+                RGB *rgb = _rgb.bytes();
     
                 if (rgb == NULL)
                     return setColor(offset, length, red, green, blue);

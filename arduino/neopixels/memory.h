@@ -18,14 +18,23 @@ class Memory {
         }
 
         void *alloc(int size) {
-            void *bytes = ::malloc(size);
 
-            if (bytes == NULL)
-                return NULL;
+            void *bytes = NULL;
+
+            if (size > 0) {
+                bytes = ::malloc(size);
+    
+                if (bytes == NULL)
+                    return NULL;
+            }
 
             free();
 
             return _bytes = bytes;
+        }
+
+        void *bytes() {
+            return _bytes;
         }
 
     private:
