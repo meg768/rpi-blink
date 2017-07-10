@@ -66,13 +66,11 @@ class App {
             if (io.available()) {
                 indicators.busy(true);
                 _status = NAK;
-/*
+
                 int command = 0, error = ERR_INVALID_PARAMETER;
 
                 if (io.readByte(command))
                     error = onCommand(command);
-*/
-                delay(300);
                 
                 _status = ACK;
                 indicators.busy(false);
