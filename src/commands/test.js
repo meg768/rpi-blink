@@ -324,7 +324,7 @@ module.exports.handler = function(args) {
 			return new Promise(function(resolve, reject) {
 				setNewColor().then(function() {
 					loop();
-				});
+				})
 				.catch(function(error) {
 					reject(error);
 				});
