@@ -291,7 +291,7 @@ module.exports.handler = function(args) {
 				wait = 1000;
 
 			return new Promise(function(resolve, reject) {
-				bar.fadeToColor(red, green, blue, 2000).then(function() {
+				bar.fadeToColor(red, green, blue, 200).then(function() {
 					return pause(wait);
 				})
 				.then(function() {
@@ -305,11 +305,11 @@ module.exports.handler = function(args) {
 
 		function setNewColor() {
 			return new Promise(function(resolve, reject) {
-				var red   = random([0, 64]);
-				var green = random([0, 64]);
-				var blue  = random([0, 64]);
+				var red   = random([0, 128]);
+				var green = random([0, 128]);
+				var blue  = random([0, 128]);
 
-				setColor(bars[_index % 4], red, green, blue, 5000).then(function() {
+				setColor(bars[_index % 4], red, green, blue, 100).then(function() {
 					_index++;
 					resolve();
 				})
