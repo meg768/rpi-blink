@@ -321,8 +321,13 @@ module.exports.handler = function(args) {
 		}
 
 		function loop() {
-			setNewColor().then(function() {
-				loop();
+			return new Promise(function(resolve, reject) {
+				setNewColor().then(function() {
+					loop();
+				});
+				.catch(function(error) {
+					reject(error);
+				});
 			});
 		}
 
@@ -360,13 +365,13 @@ module.exports.handler = function(args) {
 					return strip.initialize(32);
 				})
 
-				.then(function() {
+				promise = promise.then(function() {
 					return strip.fadeToColor(0, 0, 0);
 				})
 
-				.then(function() {
+				promise = promise.then(function() {
 
-					loop();
+					return loop();
 				})
 
 		}
