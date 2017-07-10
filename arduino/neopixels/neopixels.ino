@@ -51,7 +51,7 @@ class App {
             indicators.begin();
             
             _strip.begin();
-            _strip.setColor(0, 0, 128);
+            _strip.setColor(128, 0, 128);
         }
 
         static void onReceiveService() {
@@ -66,12 +66,14 @@ class App {
             if (io.available()) {
                 indicators.busy(true);
                 _status = NAK;
-
+/*
                 int command = 0, error = ERR_INVALID_PARAMETER;
 
                 if (io.readByte(command))
                     error = onCommand(command);
-
+*/
+                delay(300);
+                
                 _status = ACK;
                 indicators.busy(false);
             }

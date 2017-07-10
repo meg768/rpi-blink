@@ -229,10 +229,12 @@ function NeopixelStrip(options) {
 		return new Promise(function(resolve, reject) {
 			_wire.read(bytes, function(error, result) {
 				if (error) {
+					console.log('read error', error);
 					reject(error)
 
 				}
 				else {
+					console.log(result);
 					resolve(result);
 
 				}
