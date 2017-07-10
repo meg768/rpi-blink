@@ -188,6 +188,7 @@ function NeopixelStrip(options) {
 				if (now.getTime() - timestamp.getTime() < _timeout) {
 
 					return _this.pause(_retryInterval).then(function() {
+						debug(error);
 						debug('send() failed, trying to send again...');
 						return _this.send(command, bytes, timestamp);
 					});
