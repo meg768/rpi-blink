@@ -118,7 +118,7 @@ function NeopixelStrip(options) {
 
 		//console.log('Setting color to', [red, green, blue]);
 
-		return _this.send(CMD_SET_COLOR, [offset, length, red, green, blue]);
+		return _this.send([CMD_SET_COLOR, offset, length, red, green, blue]);
 	}
 
 
@@ -140,7 +140,7 @@ function NeopixelStrip(options) {
 		blue   = parseInt(blue);
 		delay  = parseInt(delay);
 
-		return _this.send(CMD_WIPE_TO_COLOR, [offset, length, red, green, blue, delay]);
+		return _this.send([CMD_WIPE_TO_COLOR, offset, length, red, green, blue, delay]);
 	}
 
 	_this.fadeToColor = function(red, green, blue, time, offset, length) {
@@ -163,23 +163,23 @@ function NeopixelStrip(options) {
 		blue   = parseInt(blue);
 		time   = parseInt(time);
 
-		return _this.send(CMD_FADE_TO_COLOR, [offset, length, red, green, blue, (time >> 8) & 0xFF, time & 0xFF]);
+		return _this.send([CMD_FADE_TO_COLOR, offset, length, red, green, blue, (time >> 8) & 0xFF, time & 0xFF]);
 	}
 
 
 	_this.initialize = function(length) {
 		_length = length;
-		return _this.send(CMD_INITIALIZE, [parseInt(length)]);
+		return _this.send([CMD_INITIALIZE, parseInt(length)]);
 	}
 
-	_this.send = function(command, bytes, timestamp) {
+	_this.send = function(bytes, timestamp) {
 
 		if (timestamp == undefined)
 			timestamp = new Date();
 
 		return new Promise(function(resolve, reject) {
 
-			_this.write(command, bytes).then(function() {
+			_this.write(bytes).then(function() {
 				return _this.waitForReply();
 			})
 			.catch(function(error) {
@@ -190,7 +190,7 @@ function NeopixelStrip(options) {
 					return _this.pause(_retryInterval).then(function() {
 						debug(error);
 						debug('send() failed, trying to send again...');
-						return _this.send(command, bytes, timestamp);
+						return _this.send(bytes, timestamp);
 					});
 				}
 				else {
@@ -211,9 +211,9 @@ function NeopixelStrip(options) {
 
 
 
-	_this.write = function(command, data) {
+	_this.write = function(data) {
 		return new Promise(function(resolve, reject) {
-			_wire.writeBytes(command, data, function(error) {
+			_wire.write(data, function(error) {
 				if (error) {
 					console.log('write error', error);
 					reject(error);
