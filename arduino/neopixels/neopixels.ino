@@ -14,7 +14,7 @@ const int ACK = 6;
 const int NAK = 21;
 
 const int CMD_INITIALIZE    = 0x10;  // size
-const int CMD_SET_COLOR     = 0x11;  // red, green, blue
+const int CMD_SET_TO_COLOR  = 0x11;  // red, green, blue
 const int CMD_FADE_TO_COLOR = 0x12;  // red, green, blue
 const int CMD_WIPE_TO_COLOR = 0x13;  // red, green, blue, delay
 
@@ -43,11 +43,6 @@ class App {
             _app = this;
             _status = ACK;
             _loop = 0;
-
-
-
- 
-
         }
 
         void setup() {
@@ -67,7 +62,7 @@ class App {
             }
             
             _strip.begin();
-            _strip.setColor(16, 0, 0);
+            _strip.setColor(0, 0, 0);
         }
 
         static void onReceiveService() {
@@ -80,6 +75,7 @@ class App {
 
         void onReceive() {
             _leds[LED_DEBUG_1].toggleState();
+            
             if (io.available()) {
                 _leds[LED_BUSY].setState(HIGH);
                 _status = NAK;
@@ -89,14 +85,12 @@ class App {
                 if (io.readByte(command))
                     error = onCommand(command);
 
-
                 if (error != ERR_OK)
                     _leds[LED_ERROR].toggleState();
 
                 _status = ACK;
  
                 _leds[LED_BUSY].setState(LOW);
-                io.write(_status);
 
             }
 
@@ -114,13 +108,10 @@ class App {
             
             _loop++;
 
-//            if ((_loop % 100) == 0) {
-                _leds[LED_HEARTBEAT].toggleState();
-  //          } 
+            _leds[LED_HEARTBEAT].toggleState();
 
-                onReceive();
-                delay(100);
-
+            onReceive();
+            delay(100);
 
         };
 
@@ -145,7 +136,7 @@ class App {
                     break;
                 }
 
-                case CMD_SET_COLOR: {
+                case CMD_SET_TO_COLOR: {
 
                     int index = 0, length = 0, red = 0, green = 0, blue = 0;
 
