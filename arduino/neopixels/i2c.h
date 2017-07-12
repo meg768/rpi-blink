@@ -70,7 +70,11 @@ class I2C {
 			return Wire.available();
 		}
 
-       static void idle() {
+       static inline void idle() {
+       }
+
+       static inline void flush() {
+            Wire.flush();
        }
 
 #endif

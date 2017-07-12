@@ -13,8 +13,8 @@ class Indicators {
                 _busy.setPin(4);
             #else
 				_heartbeat.setPin(13);
-	            _busy.setPin(12);
-	            _error.setPin(11);
+                _error.setPin(12);
+	            _busy.setPin(11);
 
             #endif
 
@@ -44,7 +44,7 @@ class Indicators {
 		}
 
     private:
-		Blinker _heartbeat, _error, _busy;
+		Blinker _heartbeat, _error, _busy, debug1, _;
 
 };
 

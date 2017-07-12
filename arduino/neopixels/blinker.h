@@ -26,6 +26,7 @@ class Blinker {
         int getState() {
             return _state;
         }
+
         
         void setState(int state) {
             _state = state ? HIGH : LOW;

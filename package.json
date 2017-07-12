@@ -18,6 +18,7 @@
   "homepage": "https://github.com/meg768/rpi-blink#readme",
   "dependencies": {
     "i2c": "^0.2.3",
+    "i2c-bus": "^1.2.2",
     "pigpio": "^0.5.1",
     "wiring-pi": "^2.2.1",
     "yargs": "^8.0.1",

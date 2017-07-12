@@ -1,18 +1,14 @@
 #include "neopixel-strip.h"
 #include "i2c.h"
-#include "indicators.h"
+#include "blinker.h"
 
-#ifdef __AVR_ATtiny85__
-const int APP_I2C_ADDRESS  = 0x26;
-const int APP_NEOPIXEL_PIN = 1;
-const int APP_STRIP_LENGTH = 8;
-#else
+class App;
+
+
 const int APP_I2C_ADDRESS  = 0x26;
 const int APP_NEOPIXEL_PIN = 4;
 const int APP_STRIP_LENGTH = 40;
-#endif
 
-class App;
 
 const int ACK = 6;
 const int NAK = 21;
@@ -29,6 +25,12 @@ const int ERR_NOT_INITIALIZED   = 3;
 const int ERR_INVALID_COMMAND   = 4;
 
 
+const int LED_HEARTBEAT = 0;
+const int LED_ERROR     = 1;
+const int LED_BUSY      = 2;
+const int LED_DEBUG_1   = 3;
+const int LED_DEBUG_2   = 4;
+
 static App *_app = NULL;
 
 
@@ -41,6 +43,11 @@ class App {
             _app = this;
             _status = ACK;
             _loop = 0;
+
+
+
+ 
+
         }
 
         void setup() {
@@ -48,10 +55,19 @@ class App {
             io.onRequest(App::onRequestService);
             io.begin(APP_I2C_ADDRESS);
             
-            indicators.begin();
+            _leds[LED_HEARTBEAT].setPin(13);
+            _leds[LED_ERROR].setPin(12);
+            _leds[LED_BUSY].setPin(11);
+            _leds[LED_DEBUG_1].setPin(10);
+            _leds[LED_DEBUG_2].setPin(9);
+
+            
+            for (int i = 0; i < 5; i++) {
+                _leds[i].blink();
+            }
             
             _strip.begin();
-            _strip.setColor(128, 0, 128);
+            _strip.setColor(16, 0, 0);
         }
 
         static void onReceiveService() {
@@ -63,21 +79,30 @@ class App {
         }
 
         void onReceive() {
+            _leds[LED_DEBUG_1].toggleState();
             if (io.available()) {
-                indicators.busy(true);
+                _leds[LED_BUSY].setState(HIGH);
                 _status = NAK;
 
                 int command = 0, error = ERR_INVALID_PARAMETER;
 
                 if (io.readByte(command))
                     error = onCommand(command);
-                
+
+
+                if (error != ERR_OK)
+                    _leds[LED_ERROR].toggleState();
+
                 _status = ACK;
-                indicators.busy(false);
+ 
+                _leds[LED_BUSY].setState(LOW);
             }
+
+
         }
 
         void onRequest() {
+            _leds[LED_DEBUG_2].toggleState();
             io.write(_status);
         }
 
@@ -88,7 +113,7 @@ class App {
             _loop++;
 
             if ((_loop % 1000) == 0) {
-                indicators.heartbeat();
+                _leds[LED_HEARTBEAT].toggleState();
             } 
 
 
@@ -171,9 +196,11 @@ class App {
     private:
         I2C io;
         NeopixelStrip _strip;
-        Indicators indicators;
+        Blinker _leds[5];
+
         volatile int _status;
-        uint32_t _loop;
+        volatile uint32_t _loop;
+
 };
 
 
