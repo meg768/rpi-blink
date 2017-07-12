@@ -59,7 +59,10 @@ function NeopixelStrip(options) {
 
 		return new Promise(function(resolve, reject) {
 
-			_this.read(1).then(function(bytes) {
+			_this.pause(_retryInterval).then(function() {
+				return _this.read(1);
+			})
+			.then(function(bytes) {
 				return Promise.resolve(bytes.length > 0 && bytes[0] == ACK ? ACK : NAK);
 			})
 			.catch(function(error) {
@@ -74,9 +77,7 @@ function NeopixelStrip(options) {
 					var now = new Date();
 
 					if (now.getTime() - timestamp.getTime() < _timeout) {
-						return _this.pause(_retryInterval).then(function() {
-							return _this.waitForReply(timestamp);
-						});
+						return _this.waitForReply(timestamp);
 					}
 					else
 						return Promise.reject(new Error('Device timed out.'));
@@ -180,7 +181,7 @@ function NeopixelStrip(options) {
 		return new Promise(function(resolve, reject) {
 
 			_this.write(bytes).then(function() {
-				return _this.pause(100);
+				return _this.pause(_retryInterval);
 			})
 			.then(function() {
 				return _this.waitForReply();
