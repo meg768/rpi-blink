@@ -181,9 +181,6 @@ function NeopixelStrip(options) {
 		return new Promise(function(resolve, reject) {
 
 			_this.write(bytes).then(function() {
-				return _this.pause(_retryInterval);
-			})
-			.then(function() {
 				return _this.waitForReply();
 			})
 			.catch(function(error) {
@@ -218,7 +215,7 @@ function NeopixelStrip(options) {
 	_this.write = function(data) {
 		return new Promise(function(resolve, reject) {
 			var buffer = new Buffer(data);
-			console.log('writing', buffer);
+
 			_wire.i2cWrite(0x26, data.length, buffer, function(error, bytes, buffer) {
 				if (error) {
 					console.log('write error', error);
@@ -247,9 +244,7 @@ function NeopixelStrip(options) {
 
 				}
 				else {
-					var array = Array.prototype.slice.call(buffer, 0)
-
-					console.log('Got', array);
+					var array = Array.prototype.slice.call(buffer, 0);
 					resolve(array);
 
 				}
