@@ -21,7 +21,7 @@ function NeopixelStrip(options) {
 	var _length        = 0;            // Length of Neopixels
 	var _debug         = 1;            // Output log messages to console?
 	var _timeout       = 10000;        // Read/write timeout in ms
-	var _retryInterval = 100;          // Milliseconds to wait before retrying read/write
+	var _retryInterval = 200;          // Milliseconds to wait before retrying read/write
 
 	function debug() {
 		if (_debug)
@@ -180,6 +180,9 @@ function NeopixelStrip(options) {
 		return new Promise(function(resolve, reject) {
 
 			_this.write(bytes).then(function() {
+				return _this.pause(100);
+			})
+			.then(function() {
 				return _this.waitForReply();
 			})
 			.catch(function(error) {
