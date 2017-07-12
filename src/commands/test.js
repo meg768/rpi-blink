@@ -21,7 +21,7 @@ function NeopixelStrip(options) {
 	var _length        = 0;            // Length of Neopixels
 	var _debug         = 1;            // Output log messages to console?
 	var _timeout       = 10000;        // Read/write timeout in ms
-	var _retryInterval = 200;          // Milliseconds to wait before retrying read/write
+	var _retryInterval = 300;          // Milliseconds to wait before retrying read/write
 
 	function debug() {
 		if (_debug)
@@ -52,48 +52,6 @@ function NeopixelStrip(options) {
 	};
 
 
-	_this.waitForReply = function(timestamp) {
-
-		if (timestamp == undefined)
-			timestamp = new Date();
-
-		return new Promise(function(resolve, reject) {
-
-			_this.pause(_retryInterval).then(function() {
-				return _this.read(1);
-			})
-			.then(function(bytes) {
-				return Promise.resolve(bytes.length > 0 && bytes[0] == ACK ? ACK : NAK);
-			})
-			.catch(function(error) {
-				// If read failure, assume we got back NAK
-				return Promise.resolve(NAK);
-			})
-			.then(function(status) {
-				if (status == ACK) {
-					return Promise.resolve();
-				}
-				else {
-					var now = new Date();
-
-					if (now.getTime() - timestamp.getTime() < _timeout) {
-						return _this.waitForReply(timestamp);
-					}
-					else
-						return Promise.reject(new Error('Device timed out.'));
-				}
-			})
-
-			.then(function() {
-				resolve();
-			})
-			.catch(function(error) {
-				reject(error);
-			});
-
-		});
-
-	}
 
 	_this.pause = function(ms) {
 
@@ -189,7 +147,6 @@ function NeopixelStrip(options) {
 				if (now.getTime() - timestamp.getTime() < _timeout) {
 
 					return _this.pause(_retryInterval).then(function() {
-						debug(error);
 						debug('send() failed, trying to send again...');
 						return _this.send(bytes, timestamp);
 					});
@@ -210,6 +167,49 @@ function NeopixelStrip(options) {
 	};
 
 
+
+	_this.waitForReply = function(timestamp) {
+
+		if (timestamp == undefined)
+			timestamp = new Date();
+
+		return new Promise(function(resolve, reject) {
+
+			_this.pause(_retryInterval).then(function() {
+				return _this.read(1);
+			})
+			.then(function(bytes) {
+				return Promise.resolve(bytes.length > 0 && bytes[0] == ACK ? ACK : NAK);
+			})
+			.catch(function(error) {
+				// If read failure, assume we got back NAK
+				return Promise.resolve(NAK);
+			})
+			.then(function(status) {
+				if (status == ACK) {
+					return Promise.resolve();
+				}
+				else {
+					var now = new Date();
+
+					if (now.getTime() - timestamp.getTime() < _timeout) {
+						return _this.waitForReply(timestamp);
+					}
+					else
+						return Promise.reject(new Error('Device timed out.'));
+				}
+			})
+
+			.then(function() {
+				resolve();
+			})
+			.catch(function(error) {
+				reject(error);
+			});
+
+		});
+
+	}
 
 
 	_this.write = function(data) {
@@ -257,7 +257,6 @@ function NeopixelStrip(options) {
 		var I2C = require('i2c-bus');
 
 		_wire = I2C.openSync(1);
-		//_wire = new I2C(options.address, {device: options.device});
 	}
 
 	init();
