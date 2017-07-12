@@ -256,7 +256,7 @@ function NeopixelStrip(options) {
 	function init() {
 		var I2C = require('i2c-bus');
 
-		_wire = undefined; //I2C.openSync(1);
+		_wire = I2C.openSync(1);
 		//_wire = new I2C(options.address, {device: options.device});
 	}
 
