@@ -283,8 +283,7 @@ module.exports.handler = function(args) {
 
 	try {
 		var _index = 0;
-		console.log('asdfasf');
-		return;
+
 
 		function pause(ms) {
 
