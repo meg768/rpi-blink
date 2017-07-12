@@ -376,12 +376,11 @@ module.exports.handler = function(args) {
 				promise = promise.then(function() {
 					return strip.fadeToColor(0, 0, 0);
 				})
-/*
+
 				promise = promise.then(function() {
 
 					return loop();
 				})
-*/
 		}
 
 		promise.then(function(result) {
