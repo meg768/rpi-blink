@@ -7,7 +7,7 @@ class App;
 
 const int APP_I2C_ADDRESS  = 0x26;
 const int APP_NEOPIXEL_PIN = 4;
-const int APP_STRIP_LENGTH = 40;
+const int APP_STRIP_LENGTH = 32;
 
 
 const int ACK = 6;
@@ -71,7 +71,7 @@ class App {
         }
 
         static void onReceiveService() {
-            _app->onReceive();
+            //_app->onReceive();
         }
 
         static void onRequestService() {
@@ -96,6 +96,8 @@ class App {
                 _status = ACK;
  
                 _leds[LED_BUSY].setState(LOW);
+                io.write(_status);
+
             }
 
 
@@ -112,9 +114,12 @@ class App {
             
             _loop++;
 
-            if ((_loop % 1000) == 0) {
+//            if ((_loop % 100) == 0) {
                 _leds[LED_HEARTBEAT].toggleState();
-            } 
+  //          } 
+
+                onReceive();
+                delay(100);
 
 
         };

@@ -367,7 +367,7 @@ module.exports.handler = function(args) {
 
 		}
 		else {
-
+/*
 				promise = promise.then(function() {
 					return strip.initialize(32);
 				})
@@ -375,7 +375,7 @@ module.exports.handler = function(args) {
 				promise = promise.then(function() {
 					return strip.fadeToColor(0, 0, 0);
 				})
-
+*/
 				promise = promise.then(function() {
 
 					return loop();
