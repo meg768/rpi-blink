@@ -213,14 +213,17 @@ function NeopixelStrip(options) {
 
 	_this.write = function(data) {
 		return new Promise(function(resolve, reject) {
-			_wire.write(data, function(error) {
+			var buffer = new Buffer(data);
+			_wire.i2cWrite(0x26, data.length, buffer, function(error, bytes, buffer) {
 				if (error) {
 					console.log('write error', error);
 					reject(error);
 
 				}
-				else
+				else {
 					resolve();
+
+				}
 			});
 
 
@@ -228,17 +231,21 @@ function NeopixelStrip(options) {
 
 	}
 
+
 	_this.read = function(bytes) {
 		return new Promise(function(resolve, reject) {
-			_wire.read(bytes, function(error, result) {
+			var buffer = new Buffer(bytes);
+			_wire.i2cRead(0x26, bytes, buffer, function(error, bytes, buffer) {
 				if (error) {
 					console.log('read error', error);
 					reject(error)
 
 				}
 				else {
-					console.log('Got', result);
-					resolve(result);
+					var array = Array.prototype.slice.call(buffer, 0)
+
+					console.log('Got', array);
+					resolve(array);
 
 				}
 			});
@@ -247,15 +254,10 @@ function NeopixelStrip(options) {
 	}
 
 	function init() {
-		var I2C = require('i2c');
+		var I2C = require('i2c-bus');
 
-		if (options.address == undefined)
-			options.address = 0x26;
-
-		if (options.device == undefined)
-			options.device = '/dev/i2c-1';
-
-		_wire = new I2C(options.address, {device: options.device});
+		_wire = undefined; //I2C.openSync(1);
+		//_wire = new I2C(options.address, {device: options.device});
 	}
 
 	init();
@@ -281,7 +283,8 @@ module.exports.handler = function(args) {
 
 	try {
 		var _index = 0;
-
+		console.log('asdfasf');
+		return;
 
 		function pause(ms) {
 
@@ -374,12 +377,12 @@ module.exports.handler = function(args) {
 				promise = promise.then(function() {
 					return strip.fadeToColor(0, 0, 0);
 				})
-
+/*
 				promise = promise.then(function() {
 
 					return loop();
 				})
-
+*/
 		}
 
 		promise.then(function(result) {
