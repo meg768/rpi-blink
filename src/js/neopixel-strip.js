@@ -7,7 +7,7 @@ module.exports = function NeopixelStrip(options) {
 	const NAK = 21;
 
 	const CMD_INITIALIZE    = 0x10;
-	const CMD_SET_COLOR     = 0x11;
+	const CMD_SET_TO_COLOR  = 0x11;
 	const CMD_FADE_TO_COLOR = 0x12;
 	const CMD_WIPE_TO_COLOR = 0x13;
 
@@ -72,7 +72,7 @@ module.exports = function NeopixelStrip(options) {
 
 		debug('Setting color to', [red, green, blue]);
 
-		return _this.send([CMD_SET_COLOR, offset, length, red, green, blue]);
+		return _this.send([CMD_SET_TO_COLOR, offset, length, red, green, blue]);
 	}
 
 
