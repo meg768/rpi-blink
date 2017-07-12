@@ -214,6 +214,7 @@ function NeopixelStrip(options) {
 	_this.write = function(data) {
 		return new Promise(function(resolve, reject) {
 			var buffer = new Buffer(data);
+			console.log('writing', buffer);
 			_wire.i2cWrite(0x26, data.length, buffer, function(error, bytes, buffer) {
 				if (error) {
 					console.log('write error', error);
