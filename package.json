@@ -19,6 +19,7 @@
   "dependencies": {
     "i2c": "^0.2.3",
     "i2c-bus": "^1.2.2",
+    "mysql": "^2.13.0",
     "pigpio": "^0.5.1",
     "wiring-pi": "^2.2.1",
     "yargs": "^8.0.1",
