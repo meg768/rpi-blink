@@ -42,7 +42,7 @@ module.exports.handler = function(args) {
 				wait = 1000;
 
 			return new Promise(function(resolve, reject) {
-				bar.fadeToColor(red, green, blue, 200).then(function() {
+				bar.setColor(red, green, blue, 200).then(function() {
 					return pause(wait);
 				})
 				.then(function() {

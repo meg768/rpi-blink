@@ -13,7 +13,7 @@ module.exports = function NeopixelStrip(options) {
 
 	var _this          = this;         // That
 	var _wire          = undefined;    // I2C communication
-	var _length        = 0;            // Length of Neopixels
+	var _length        = 32;            // Length of Neopixels
 	var _debug         = 1;            // Output log messages to console?
 	var _timeout       = 10000;        // Read/write timeout in ms
 	var _retryInterval = 300;          // Milliseconds to wait before retrying read/write
