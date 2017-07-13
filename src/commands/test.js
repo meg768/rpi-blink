@@ -39,7 +39,7 @@ module.exports.handler = function(args) {
 		function setColor(bar, red, green, blue, wait) {
 
 			if (wait == undefined)
-				wait = 200;
+				wait = 300;
 
 			return new Promise(function(resolve, reject) {
 				bar.setColor(red, green, blue, 200).then(function() {
