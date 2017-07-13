@@ -50,7 +50,7 @@ module.exports.handler = function(args) {
 			});
 		}
 
-		functiuon run() {
+		function run() {
 
 			var promise = Promise.resolve();
 
