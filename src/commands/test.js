@@ -63,7 +63,7 @@ module.exports.handler = function(args) {
 
 				strip.setColor(red, green, blue, _index * 8, 8).then(function() {
 					_index = (_index + 1) % 4;
-					setTimeout(0, loop);
+					setTimeout(loop, 0);
 					resolve();
 				})
 				.catch(function(error) {
