@@ -60,7 +60,7 @@ module.exports.handler = function(args) {
 				var green = random([0, 32]);
 				var blue  = random([0, 32]);
 
-				strip.setColor(red, green, blue, 0, 32).then(function() {
+				strip.setColor(red, green, blue, (_index % 4) * 8, 8).then(function() {
 					_index++;
 					resolve();
 				})
