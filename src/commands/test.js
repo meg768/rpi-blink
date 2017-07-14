@@ -56,12 +56,12 @@ module.exports.handler = function(args) {
 
 		function setNewColor() {
 			return new Promise(function(resolve, reject) {
-				var red   = random([0, 32]);
-				var green = random([0, 32]);
-				var blue  = random([0, 32]);
+				var red   = random([0, 255]);
+				var green = random([0, 255]);
+				var blue  = random([0, 255]);
 
-				strip.setColor(red, green, blue, (_index % 4) * 8, 8).then(function() {
-					_index++;
+				strip.setColor(red, green, blue, _index * 8, 8).then(function() {
+					_index = (_index + 1) % 4;
 					resolve();
 				})
 				.catch(function(error) {
