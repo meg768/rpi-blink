@@ -54,7 +54,8 @@ module.exports.handler = function(args) {
 			});
 		}
 
-		function setNewColor() {
+
+		function loop() {
 			return new Promise(function(resolve, reject) {
 				var red   = random([0, 255]);
 				var green = random([0, 255]);
@@ -62,19 +63,8 @@ module.exports.handler = function(args) {
 
 				strip.setColor(red, green, blue, _index * 8, 8).then(function() {
 					_index = (_index + 1) % 4;
+					setTimeout(0, loop);
 					resolve();
-				})
-				.catch(function(error) {
-					reject(error);
-				});
-			});
-
-		}
-
-		function loop() {
-			return new Promise(function(resolve, reject) {
-				setNewColor().then(function() {
-					setTimeout(10, loop);
 				})
 				.catch(function(error) {
 					reject(error);
