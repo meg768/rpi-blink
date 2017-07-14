@@ -74,7 +74,7 @@ module.exports.handler = function(args) {
 		function loop() {
 			return new Promise(function(resolve, reject) {
 				setNewColor().then(function() {
-					loop();
+					setTimeout(10, loop);
 				})
 				.catch(function(error) {
 					reject(error);
