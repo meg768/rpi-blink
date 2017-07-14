@@ -118,6 +118,8 @@ class App {
 
         int onCommand(int command) {
 
+            static unsigned int foo = 0;
+
             switch (command) {
                 case CMD_INITIALIZE: {
                     int length = 0;
@@ -143,7 +145,10 @@ class App {
                     if (!io.readByte(index) || !io.readByte(length) || !io.readRGB(red, green, blue))
                         return ERR_INVALID_PARAMETER;
 
-                    _strip.setColor(index, length, red, green, blue);
+
+                    _strip.setColor(foo * 8, 8, red, green, blue);
+                    foo = (foo + 1) % 4;
+//                    _strip.setColor(index, length, red, green, blue);
 
                     break;
                 };
