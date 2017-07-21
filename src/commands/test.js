@@ -27,44 +27,37 @@ module.exports.handler = function(args) {
 	try {
 		var _strip = new NeopixelStrip();
 
-		function loop() {
-			console.log('Starting loop...');
+		function loop(index) {
+
+			if (index == undefined)
+				index = 0;
 
 			return new Promise(function(resolve, reject) {
-console.log('A');
+
+				var promise = Promise.resolve();
+
 				Promise.resolve().then(function() {
-					console.log('B');
-					var promise = Promise.resolve();
-					var index = 0;
+					var red   = random([0, 128]);
+					var green = random([0, 128]);
+					var blue  = random([0, 128]);
 
-					while (true) {
-						console.log('C');
-
-						promise = promise.then(function() {
-							var red   = random([0, 128]);
-							var green = random([0, 128]);
-							var blue  = random([0, 128]);
-							console.log(index);
-							return _strip.setColor(red, green, blue, index * 8 + 1, 6);
-						})
-						.then(function() {
-							return _strip.pause(100);
-						})
-						.then(function() {
-							index++;
-
-							if (index >= 4)
-								index = 0;
-
-							return promise.resolve();
-						})
-						.catch(function(error) {
-							throw error;
-						})
-
-					}
-
+					console.log(index);
+					return _strip.setColor(red, green, blue, index * 8 + 1, 6);
 				})
+
+				.then(function() {
+					return _strip.pause(100);
+				})
+
+				.then(function() {
+					index++;
+
+					if (index >= 4)
+						index = 0;
+
+					return loop(index);
+				})
+
 				.catch(function(error) {
 					reject(error);
 				});
