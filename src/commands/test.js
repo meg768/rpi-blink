@@ -47,7 +47,7 @@ module.exports.handler = function(args) {
 
 					console.log('Setting segment', index, 'to color', [red, green, blue]);
 
-					return _strip.setColor(red, green, blue, index * 8 + 1, 6);
+					return _strip.setColor(red, green, blue, index * 8, 8);
 				})
 
 				.then(function() {
