@@ -41,6 +41,7 @@ module.exports.handler = function(args) {
 				var promise = Promise.resolve();
 
 				Promise.resolve().then(function() {
+
 					var red   = random([0, 128]);
 					var green = random([0, 128]);
 					var blue  = random([0, 128]);
