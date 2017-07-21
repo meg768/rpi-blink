@@ -47,16 +47,16 @@ module.exports.handler = function(args) {
 				})
 
 				.then(function() {
-					return _strip.pause(100);
-				})
+					setTimeout(function() {
+						resolve();
 
-				.then(function() {
-					index++;
+						index++;
 
-					if (index >= 4)
-						index = 0;
+						if (index >= 4)
+							index = 0;
 
-					return loop(index);
+						loop(index);
+					}, 100)
 				})
 
 				.catch(function(error) {
