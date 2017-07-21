@@ -39,7 +39,7 @@ module.exports.handler = function(args) {
 							var red   = random([0, 128]);
 							var green = random([0, 128]);
 							var blue  = random([0, 128]);
-
+							console.log(index);
 							return _strip.setColor(red, green, blue, index * 8 + 1, 6);
 						})
 						.then(function() {
