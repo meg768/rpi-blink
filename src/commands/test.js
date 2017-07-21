@@ -28,13 +28,18 @@ module.exports.handler = function(args) {
 		var _strip = new NeopixelStrip();
 
 		function loop() {
-			return new Promise(function(resolve, reject) {
+			console.log('Starting loop...');
 
+			return new Promise(function(resolve, reject) {
+console.log('A');
 				Promise.resolve().then(function() {
+					console.log('B');
 					var promise = Promise.resolve();
 					var index = 0;
 
 					while (true) {
+						console.log('C');
+
 						promise = promise.then(function() {
 							var red   = random([0, 128]);
 							var green = random([0, 128]);
