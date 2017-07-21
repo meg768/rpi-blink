@@ -5,6 +5,8 @@ module.exports.describe = 'Test Wiring Pi';
 
 
 var random = require('yow').random;
+var logs = require('yow').logs;
+
 var NeopixelStrip = require('../js/neopixel-strip.js');
 
 
@@ -26,6 +28,8 @@ module.exports.handler = function(args) {
 
 	try {
 		var _strip = new NeopixelStrip();
+
+		logs.prefix();
 
 		function loop(index) {
 
@@ -55,8 +59,8 @@ module.exports.handler = function(args) {
 						if (index >= 4)
 							index = 0;
 
-						loop(index);
-					}, 100)
+						return loop(index);
+					}, 100);
 				})
 
 				.catch(function(error) {
