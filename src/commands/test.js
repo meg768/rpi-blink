@@ -4,8 +4,8 @@ module.exports.describe = 'Test Wiring Pi';
 
 
 
-var random = require('yow').random;
-var logs = require('yow').logs;
+var random = require('yow/random');
+var logs = require('yow/logs');
 
 var NeopixelStrip = require('../js/neopixel-strip.js');
 
