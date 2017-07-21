@@ -41,7 +41,8 @@ module.exports.handler = function(args) {
 					var green = random([0, 128]);
 					var blue  = random([0, 128]);
 
-					console.log(index);
+					console.log('Setting segment', index, 'to color', [red, green, blue]);
+
 					return _strip.setColor(red, green, blue, index * 8 + 1, 6);
 				})
 

@@ -70,8 +70,6 @@ module.exports = function NeopixelStrip(options) {
 		green = parseInt(green);
 		blue  = parseInt(blue);
 
-		debug('Setting color to', [red, green, blue]);
-
 		return _this.send([CMD_SET_TO_COLOR, offset, length, red, green, blue]);
 	}
 
