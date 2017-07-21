@@ -25,19 +25,40 @@ module.exports.builder = function(args) {
 module.exports.handler = function(args) {
 
 	try {
-		var _index = 0;
 		var _strip = new NeopixelStrip();
 
 		function loop() {
 			return new Promise(function(resolve, reject) {
-				var red   = random([0, 128]);
-				var green = random([0, 128]);
-				var blue  = random([0, 128]);
 
-				_strip.setColor(red, green, blue, _index * 8, 8).then(function() {
-					_index = (_index + 1) % 4;
-					setTimeout(loop, 100);
-					resolve();
+				Promise.resolve().then(function() {
+					var promise = Promise.resolve();
+					var index = 0;
+
+					while (true) {
+						promise = promise.then(function() {
+							var red   = random([0, 128]);
+							var green = random([0, 128]);
+							var blue  = random([0, 128]);
+
+							return _strip.setColor(red, green, blue, index * 8 + 1, 6);
+						})
+						.then(function() {
+							return _strip.pause(100);
+						})
+						.then(function() {
+							index++;
+
+							if (index >= 4)
+								index = 0;
+
+							return promise.resolve();
+						})
+						.catch(function(error) {
+							throw error;
+						})
+
+					}
+
 				})
 				.catch(function(error) {
 					reject(error);
