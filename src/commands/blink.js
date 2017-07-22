@@ -1,21 +1,16 @@
 
-module.exports.command  = 'blink <pin>';
+module.exports.command  = 'blink';
 module.exports.describe = 'Blink on the specified pin';
 
 
 module.exports.builder = function(args) {
 
-	args.option('delay', {alias: 'd', describe:'Delay', default: 250});
-	args.option('iterations', {alias: 'i', describe:'Iterations', default: 5});
+	args.option('red', {alias: 'r', describe:'red', default: 64});
+	args.option('green', {alias: 'g', describe:'green', default: 0});
+	args.option('blue', {alias: 'b', describe:'blue', default: 0});
+	args.option('segment', {alias: 's', describe:'segment', default: 0});
 
 	args.wrap(null);
-
-	args.check(function(argv) {
-		if (argv.pin <= 0 || argv.pin == undefined)
-			throw new Error('Invalid pin number');
-
-		return true;
-	});
 
 };
 
@@ -26,44 +21,23 @@ function delay(ms) {
 }
 
 module.exports.handler = function(args) {
+
 	try {
-		var Gpio    = require('pigpio').Gpio;
-		var led     = new Gpio(args.pin, {mode: Gpio.OUTPUT});
-		var promise = Promise.resolve();
-		var mode    = false;
+		var socket = require('socket.io-client')('http://app-o.se');
 
-		function onoff(ms) {
-			return new Promise(function(resolve, reject) {
-				led.digitalWrite(0);
+		socket.on('connect', function(data) {
 
-				delay(ms).then(function() {
-					led.digitalWrite(1);
-					return delay(ms);
-				})
-				.then(function() {
-					led.digitalWrite(0);
-					resolve();
+			var data = {};
+			data.red = args.red;
+			data.green = args.green;
+			data.blue = args.blue;
+			data.segment = args.segment;
 
-				});
-			});
+			socket.emit('broadcast', {room:'lamp', event:'color', message:data});
 
-		}
-
-		console.log(args.iterations);
-
-		for (var i = 0; i < args.iterations; i++) {
-			promise = promise.then(function() {
-				return onoff(args.delay);
-			});
-		}
-
-		promise.then(function() {
-			console.log('Finished.');
-		})
-		.catch(function(error) {
-			console.error(error.stack);
-
+			socket.disconnect();
 		});
+
 
 	}
 	catch(error) {
