@@ -33,6 +33,8 @@ module.exports.handler = function(args) {
 				var blue    = parseInt(data.blue);
 				var segment = parseInt(data.segment);
 
+				console.log('Setting to color', [red, green, blue], 'segment', segment);
+
 				strip.setColor(red, green, blue, segment * 8, 8).then(function() {
 					console.log('Finished');
 				})
