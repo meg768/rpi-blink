@@ -28,6 +28,8 @@ module.exports.handler = function(args) {
 
 			socket.on('color', function(data) {
 
+				console.log('Incoming', data);
+				
 				var red     = parseInt(data.red);
 				var green   = parseInt(data.green);
 				var blue    = parseInt(data.blue);
