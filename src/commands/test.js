@@ -52,8 +52,9 @@ module.exports.handler = function(args) {
 				})
 
 				.then(function() {
+					resolve();
+
 					setTimeout(function() {
-						resolve();
 
 						index++;
 
