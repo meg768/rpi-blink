@@ -25,7 +25,7 @@ module.exports.handler = function(args) {
 	try {
 		var socket = require('socket.io-client')('http://app-o.se');
 
-		socket.on('connect', function(data) {
+		socket.on('connect', function() {
 
 			var context = {};
 			context.red = args.red;
@@ -33,7 +33,7 @@ module.exports.handler = function(args) {
 			context.blue = args.blue;
 			context.segment = args.segment;
 
-			socket.emit('send', {room:'lamp', message:'color', context:data});
+			socket.emit('send', {room:'lamp', message:'color', context:context});
 
 			socket.disconnect();
 		});
