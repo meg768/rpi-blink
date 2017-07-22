@@ -145,7 +145,7 @@ module.exports = function NeopixelStrip(options) {
 					});
 				}
 				else {
-					return Promise.reject(new Error('Device timed out. Could not write to device'));
+					throw new Error('Device timed out. Could not write to device');
 
 				}
 			})
@@ -189,7 +189,7 @@ module.exports = function NeopixelStrip(options) {
 						return _this.waitForReply(timestamp);
 					}
 					else
-						return Promise.reject(new Error('Device timed out.'));
+						throw new Error('Device timed out.');
 				}
 			})
 
