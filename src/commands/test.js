@@ -62,7 +62,7 @@ module.exports.handler = function(args) {
 							index = 0;
 
 						return loop(index);
-					}, 100);
+					}, 1);
 				})
 
 				.catch(function(error) {
