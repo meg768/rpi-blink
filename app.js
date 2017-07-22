@@ -15,6 +15,7 @@ var App = function() {
 			args.command(require('./src/commands/pwm.js'));
 			args.command(require('./src/commands/test.js'));
 			args.command(require('./src/commands/spy.js'));
+			args.command(require('./src/commands/lamp.js'));
 
 			args.help();
 

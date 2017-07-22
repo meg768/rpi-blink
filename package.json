@@ -21,6 +21,7 @@
     "i2c-bus": "^1.2.2",
     "mysql": "^2.13.0",
     "pigpio": "^0.5.1",
+    "socket.io-client": "^2.0.3",
     "wiring-pi": "^2.2.1",
     "yargs": "^8.0.1",
     "yow": "^1.0.46"
