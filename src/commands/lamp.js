@@ -26,10 +26,28 @@ module.exports.handler = function(args) {
 
 			socket.emit('join', {room:'lamp'});
 
+			socket.on('fade-to-color', function(data) {
+
+				var red     = parseInt(data.red);
+				var green   = parseInt(data.green);
+				var blue    = parseInt(data.blue);
+				var segment = parseInt(data.segment);
+				var time    = data.time == undefined ? 300 : data.time;
+
+				console.log('Fading to color', [red, green, blue], 'segment', segment);
+
+				strip.fadeToColor(red, green, blue, time, segment * 8, 8).then(function() {
+				})
+				.catch(function(error) {
+					console.log(error);
+				});
+
+			});
+
 			socket.on('color', function(data) {
 
 				console.log('Incoming', data);
-				
+
 				var red     = parseInt(data.red);
 				var green   = parseInt(data.green);
 				var blue    = parseInt(data.blue);
@@ -38,7 +56,6 @@ module.exports.handler = function(args) {
 				console.log('Setting to color', [red, green, blue], 'segment', segment);
 
 				strip.setColor(red, green, blue, segment * 8, 8).then(function() {
-					console.log('Finished');
 				})
 				.catch(function(error) {
 					console.log(error);
