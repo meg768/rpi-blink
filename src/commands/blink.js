@@ -27,13 +27,13 @@ module.exports.handler = function(args) {
 
 		socket.on('connect', function(data) {
 
-			var data = {};
-			data.red = args.red;
-			data.green = args.green;
-			data.blue = args.blue;
-			data.segment = args.segment;
+			var context = {};
+			context.red = args.red;
+			context.green = args.green;
+			context.blue = args.blue;
+			context.segment = args.segment;
 
-			socket.emit('broadcast', {room:'lamp', event:'color', message:data});
+			socket.emit('send', {room:'lamp', message:'color', context:data});
 
 			socket.disconnect();
 		});
