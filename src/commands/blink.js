@@ -33,7 +33,7 @@ module.exports.handler = function(args) {
 			context.blue = args.blue;
 			context.segment = args.segment;
 
-			socket.emit('send', {room:'lamp', message:'color', context:context});
+			socket.emit('message', {room:'lamp', message:'color', context:context});
 
 			socket.disconnect();
 		});
